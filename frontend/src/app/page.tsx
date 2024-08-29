@@ -9,29 +9,42 @@ import { MapPin, User, Award, Target } from 'lucide-react'
 import { Footer } from './components/Footer'
 import { useAuth } from './contexts/AuthContext'
 import { useRouter } from 'next/navigation';
+import { Loading } from './components/Loading'
 
 export default function Home() {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const { login, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      router.push('/dashboard');
+    const checkUser = async () => {
+      if (user) {
+        setIsLoading(true)
+        router.push('/dashboard')
+      } else {
+        setIsLoading(false)
+      }
     }
-  }, [user, router]);
+    checkUser()
+  }, [user, router])
 
-  const handleMetaMaskLogin = async () => {
-    await login('metamask');
-  };
-
-  const handleWeb3AuthLogin = async () => {
-    await login('web3auth');
-  };
-
-  if (user) {
-    return null; // 必要に応じて、ここでローディング
+  const handleLogin = async (method: 'metamask' | 'web3auth') => {
+    setIsLoggingIn(true)
+    try {
+      await login(method)
+      setIsLoading(true)
+      router.push('/dashboard')
+    } catch (error) {
+      console.error(`Error during ${method} login:`, error)
+      setIsLoggingIn(false)
+    }
   }
+
+  if (isLoading) {
+    return <Loading />
+  }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
@@ -49,7 +62,7 @@ export default function Home() {
         <div className="container mx-auto max-w-3xl">
         <div className="grid gap-6 md:grid-cols-2 mb-8">
             <Button
-              onClick={handleMetaMaskLogin}
+              onClick={() => handleLogin('metamask')}
               disabled={isLoggingIn}
               className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
@@ -57,7 +70,7 @@ export default function Home() {
               <span>{isLoggingIn ? 'Logging in...' : 'Login with Metamask'}</span>
             </Button>
             <Button
-              onClick={handleWeb3AuthLogin}
+              onClick={() => handleLogin('web3auth')}
               disabled={isLoggingIn}
               className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
