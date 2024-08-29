@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { MapPin, Award, Target, ChevronRight } from 'lucide-react';
 import { Footer } from '../components/Footer';
+import { useAuth } from '../contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -24,6 +26,15 @@ export default function DashboardPage() {
     { id: 2, title: "Visit 5 historical landmarks", progress: 40 },
     { id: 3, title: "Reach level 10", progress: 50 },
   ];
+
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/');
+    }
+  }, [user, router]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">

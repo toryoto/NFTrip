@@ -1,28 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin, User, Award, Target } from 'lucide-react'
 import { Footer } from './components/Footer'
+import { useAuth } from './contexts/AuthContext'
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const { login, user } = useAuth();
+  const router = useRouter();
 
-  const handleMetamaskLogin = () => {
-    setIsLoggingIn(true)
-    // Metamaskログインのロジックをここに実装
-    // 成功後にリダイレクトまたは状態を更新
-    setTimeout(() => setIsLoggingIn(false), 2000) // モックの遅延
-  }
+  useEffect(() => {
+    if (user) {
+      router.push('/dashboard');
+    }
+  }, [user, router]);
 
-  const handleWeb3AuthLogin = () => {
-    setIsLoggingIn(true)
-    // Web3Authログインのロジックをここに実装
-    // 成功後にリダイレクトまたは状態を更新
-    setTimeout(() => setIsLoggingIn(false), 2000) // モックの遅延
+  const handleMetaMaskLogin = async () => {
+    await login('metamask');
+  };
+
+  const handleWeb3AuthLogin = async () => {
+    await login('web3auth');
+  };
+
+  if (user) {
+    return null; // 必要に応じて、ここでローディング
   }
 
   return (
@@ -41,7 +49,7 @@ export default function Home() {
         <div className="container mx-auto max-w-3xl">
         <div className="grid gap-6 md:grid-cols-2 mb-8">
             <Button
-              onClick={handleMetamaskLogin}
+              onClick={handleMetaMaskLogin}
               disabled={isLoggingIn}
               className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
@@ -81,4 +89,3 @@ export default function Home() {
     </div>
   )
 }
-//https://v0.dev/chat/LN2LzenWsgO
