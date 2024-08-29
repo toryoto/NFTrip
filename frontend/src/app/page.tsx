@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { MapPin, User, Award, Target } from 'lucide-react'
 import { Footer } from './components/Footer'
 import { useAuth } from './contexts/AuthContext'
 import { useRouter } from 'next/navigation';
@@ -13,17 +12,15 @@ import { Loading } from './components/Loading'
 
 export default function Home() {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const { login, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     const checkUser = async () => {
       if (user) {
-        setIsLoading(true)
+        setIsLoading(true);
         router.push('/dashboard')
-      } else {
-        setIsLoading(false)
       }
     }
     checkUser()
@@ -44,7 +41,6 @@ export default function Home() {
   if (isLoading) {
     return <Loading />
   }
-
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
