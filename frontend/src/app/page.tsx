@@ -39,22 +39,22 @@ export default function Home() {
       </header>
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto max-w-3xl">
-          <div className="grid gap-4 md:grid-cols-2 mb-8">
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
             <Button
               onClick={handleMetamaskLogin}
               disabled={isLoggingIn}
-              className="bg-orange-500 hover:bg-orange-600 text-white py-6 text-lg"
+              className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
-              {isLoggingIn ? 'Logging in...' : 'Login with Metamask'}
-              <Image src="/metamask-logo.svg" width={24} height={24} alt="Metamask" className="ml-2" />
+              <Image src="/images/metamask-logo.png" width={32} height={32} alt="Metamask" className="mr-3" />
+              <span>{isLoggingIn ? 'Logging in...' : 'Login with Metamask'}</span>
             </Button>
             <Button
               onClick={handleWeb3AuthLogin}
               disabled={isLoggingIn}
-              className="bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg"
+              className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
-              {isLoggingIn ? 'Logging in...' : 'Login with Web3Auth'}
-              <Image src="/web3auth-logo.svg" width={24} height={24} alt="Web3Auth" className="ml-2" />
+              <Image src="/images/web3auth-logo.png" width={32} height={32} alt="Web3Auth" className="mr-3" />
+              <span>{isLoggingIn ? 'Logging in...' : 'Login with Web3Auth'}</span>
             </Button>
           </div>
           
