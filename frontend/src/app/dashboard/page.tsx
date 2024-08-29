@@ -1,13 +1,15 @@
 'use client'
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { MapPin, Award, Target, ChevronRight } from 'lucide-react';
+import { MapPin, Award, Target, ChevronRight, LogOut } from 'lucide-react';
 import { Footer } from '../components/Footer';
+import { useAuth } from '../contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -24,6 +26,26 @@ export default function DashboardPage() {
     { id: 2, title: "Visit 5 historical landmarks", progress: 40 },
     { id: 3, title: "Reach level 10", progress: 50 },
   ];
+
+  const { user, logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/');
+    }
+  }, [user, router]);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+
+    setTimeout(() => {
+      setIsLoggingOut(false)
+      logout();
+      router.push('/')
+    }, 1000)
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-900 text-white">
@@ -43,6 +65,26 @@ export default function DashboardPage() {
               />
             </div>
           </Link>
+          <Button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isLoggingOut ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Logging out...
+                </span>
+              ) : (
+                <>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </>
+              )}
+            </Button>
         </div>
       </header>
       <main className="flex-1 py-8 px-4">

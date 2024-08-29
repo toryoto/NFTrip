@@ -1,28 +1,45 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { MapPin, User, Award, Target } from 'lucide-react'
 import { Footer } from './components/Footer'
+import { useAuth } from './contexts/AuthContext'
+import { useRouter } from 'next/navigation';
+import { Loading } from './components/Loading'
 
 export default function Home() {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const { login, user } = useAuth();
+  const router = useRouter();
 
-  const handleMetamaskLogin = () => {
+  useEffect(() => {
+    const checkUser = async () => {
+      if (user) {
+        setIsLoading(true);
+        router.push('/dashboard')
+      }
+    }
+    checkUser()
+  }, [user, router])
+
+  const handleLogin = async (method: 'metamask' | 'web3auth') => {
     setIsLoggingIn(true)
-    // Metamaskログインのロジックをここに実装
-    // 成功後にリダイレクトまたは状態を更新
-    setTimeout(() => setIsLoggingIn(false), 2000) // モックの遅延
+    try {
+      await login(method)
+      setIsLoading(true)
+      router.push('/dashboard')
+    } catch (error) {
+      console.error(`Error during ${method} login:`, error)
+      setIsLoggingIn(false)
+    }
   }
 
-  const handleWeb3AuthLogin = () => {
-    setIsLoggingIn(true)
-    // Web3Authログインのロジックをここに実装
-    // 成功後にリダイレクトまたは状態を更新
-    setTimeout(() => setIsLoggingIn(false), 2000) // モックの遅延
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
@@ -41,7 +58,7 @@ export default function Home() {
         <div className="container mx-auto max-w-3xl">
         <div className="grid gap-6 md:grid-cols-2 mb-8">
             <Button
-              onClick={handleMetamaskLogin}
+              onClick={() => handleLogin('metamask')}
               disabled={isLoggingIn}
               className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
@@ -49,7 +66,7 @@ export default function Home() {
               <span>{isLoggingIn ? 'Logging in...' : 'Login with Metamask'}</span>
             </Button>
             <Button
-              onClick={handleWeb3AuthLogin}
+              onClick={() => handleLogin('web3auth')}
               disabled={isLoggingIn}
               className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
@@ -81,4 +98,3 @@ export default function Home() {
     </div>
   )
 }
-//https://v0.dev/chat/LN2LzenWsgO
