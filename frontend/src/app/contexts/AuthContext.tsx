@@ -1,4 +1,5 @@
 'use client'; 
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { BrowserProvider, JsonRpcSigner } from 'ethers';
@@ -56,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ wallet_address, auth_type }),
+      credentials: 'include',
     });
 
     if (!response.ok) {
