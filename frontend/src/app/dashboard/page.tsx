@@ -38,6 +38,7 @@ export default function DashboardPage() {
   }, [user, router]);
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     await logout();
     router.push('/');
   }

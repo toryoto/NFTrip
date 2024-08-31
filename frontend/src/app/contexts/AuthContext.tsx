@@ -18,18 +18,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const initAuth = async () => {
-      setLoading(true);
       try {
         await web3auth.initModal();
         await checkAuth();
       } catch (error) {
         console.error('Error initializing auth:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -72,7 +68,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const login = async (method: AuthMethod) => {
-    setLoading(true);
     try {
       const provider = await getProvider(method);
       const address = await getAddress(provider);
@@ -82,13 +77,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error(`Error during ${method} login:`, error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   const logout = async () => {
-    setLoading(true);
     try {
       const response = await fetch('/api/v1/auth/logout', {
         method: 'POST',
@@ -103,13 +95,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Error during logout:', error);
       throw error;
-    } finally {
-      setLoading(false);
     }
   };
 
   const checkAuth = async () => {
-    setLoading(true);
     try {
       const response = await fetch('/api/v1/auth/me', {
         method: 'GET',
@@ -125,15 +114,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Error checking authentication:', error);
       setUser(null);
-    } finally {
-      setLoading(false);
     }
   }
 
   return (
     // コンテキストのプロバイダーでアプリ全体にvalueを渡す
     // AuthContext.Providerは自動で生成される
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
