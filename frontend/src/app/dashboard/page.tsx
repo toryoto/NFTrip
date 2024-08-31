@@ -38,13 +38,8 @@ export default function DashboardPage() {
   }, [user, router]);
 
   const handleLogout = async () => {
-    setIsLoggingOut(true)
-
-    setTimeout(() => {
-      setIsLoggingOut(false)
-      logout();
-      router.push('/')
-    }, 1000)
+    await logout();
+    router.push('/');
   }
 
   return (
@@ -58,7 +53,7 @@ export default function DashboardPage() {
             <div className="text-sm font-medium text-gray-300">John Doe</div>
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
               <Image
-                src="/placeholder.svg"
+                src="/images/no-user-icon.png"
                 alt="User Avatar"
                 layout="fill"
                 objectFit="cover"
