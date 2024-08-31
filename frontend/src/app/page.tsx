@@ -11,34 +11,25 @@ import { useRouter } from 'next/navigation';
 import { Loading } from './components/Loading'
 
 export default function Home() {
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const { login, user } = useAuth();
+  const { login, user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    const checkUser = async () => {
-      if (user) {
-        setIsLoading(true);
-        router.push('/dashboard')
-      }
+    if (user && !loading) {
+      router.push('/dashboard')
     }
-    checkUser()
-  }, [user, router])
+  }, [user, loading, router])
 
   const handleLogin = async (method: 'metamask' | 'web3auth') => {
-    setIsLoggingIn(true)
     try {
       await login(method)
-      setIsLoading(true)
       router.push('/dashboard')
     } catch (error) {
       console.error(`Error during ${method} login:`, error)
-      setIsLoggingIn(false)
     }
   }
 
-  if (isLoading) {
+  if (loading) {
     return <Loading />
   }
 
@@ -59,19 +50,19 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-2 mb-8">
             <Button
               onClick={() => handleLogin('metamask')}
-              disabled={isLoggingIn}
+              disabled={loading}
               className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
               <Image src="/images/metamask-logo.png" width={32} height={32} alt="Metamask" className="mr-3" />
-              <span>{isLoggingIn ? 'Logging in...' : 'Login with Metamask'}</span>
+              <span>{loading ? 'Logging in...' : 'Login with Metamask'}</span>
             </Button>
             <Button
               onClick={() => handleLogin('web3auth')}
-              disabled={isLoggingIn}
+              disabled={loading}
               className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-4 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center"
             >
               <Image src="/images/web3auth-logo.png" width={32} height={32} alt="Web3Auth" className="mr-3" />
-              <span>{isLoggingIn ? 'Logging in...' : 'Login with Web3Auth'}</span>
+              <span>{loading ? 'Logging in...' : 'Login with Web3Auth'}</span>
             </Button>
           </div>
           
