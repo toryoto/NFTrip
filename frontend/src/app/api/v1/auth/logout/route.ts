@@ -1,17 +1,13 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { cookies } from 'next/headers';
 
 export async function POST() {
   try {
     await supabase.auth.signOut();
 
+    cookies().delete('auth_token');
     const response = NextResponse.json({ message: 'Logged out successfully' }, { status: 200 });
-    response.cookies.set('auth_token', '', { 
-      httpOnly: true, 
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 0 
-    });
     
     return response;
   } catch (error) {
