@@ -19,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [Loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -94,6 +95,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw error;
     }
   };
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('/api/v1/auth/me', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     // コンテキストのプロバイダーでアプリ全体にvalueを渡す
