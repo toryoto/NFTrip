@@ -25,7 +25,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       try {
         await web3auth.initModal();
-        checkAuth();
+        await checkAuth();
       } catch (error) {
         console.error('Error initializing auth:', error);
       } finally {
