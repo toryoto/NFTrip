@@ -72,7 +72,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { user: newUser } = await callApi(address, method);
 
       setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
     } catch (error) {
       console.error(`Error during ${method} login:`, error);
       throw error;
@@ -81,12 +80,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      await supabase.auth.signOut();
-      if (web3auth.connected) {
-        await web3auth.logout();
-      }
+      const response = await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      if (!response.ok) throw new Error('Logout failed');
+
+      if (web3auth.connected) await web3auth.logout();
+
       setUser(null);
-      localStorage.removeItem('user');
     } catch (error) {
       console.error('Error during logout:', error);
       throw error;
