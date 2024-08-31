@@ -56,7 +56,7 @@ export default function Home() {
       </header>
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto max-w-3xl">
-        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          <div className="grid gap-6 md:grid-cols-2 mb-8">
             <Button
               onClick={() => handleLogin('metamask')}
               disabled={isLoggingIn}
