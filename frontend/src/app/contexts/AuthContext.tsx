@@ -92,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // 認証情報(cookie)が残っている場合に復元する
   const checkAuth = async () => {
     try {
       const response = await fetch('/api/v1/auth/me', {
