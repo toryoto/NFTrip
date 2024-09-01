@@ -66,6 +66,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { user: newUser } = await response.json();
 
       setUser(newUser);
+
+      return newUser;
     } catch (error) {
       console.error(`Error during ${method} login:`, error);
       throw error;
