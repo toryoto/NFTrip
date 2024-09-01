@@ -1,16 +1,10 @@
 'use client'; 
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ethers } from 'ethers';
-import { BrowserProvider, JsonRpcSigner } from 'ethers';
+import { BrowserProvider } from 'ethers';
 import { web3auth } from '@/lib/web3auth';
 import { User, AuthMethod, AuthContextType } from '../types/auth';
-
-declare global {
-  interface Window {
-    ethereum?: ethers.Eip1193Provider;
-  }
-}
+import { ExtendedWindow } from '../types/ethere';
 
 // createContextを使用して、認証情報を保持するコンテキストを作成する
 // このコンテキストはアプリのどこからでも使用できる
@@ -34,11 +28,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getProvider = async (method: AuthMethod): Promise<BrowserProvider> => {
     if (method === 'metamask') {
-      if (!window.ethereum) {
+      const ethereum = (window as ExtendedWindow).ethereum;
+      if (!ethereum) {
         throw new Error('MetaMask not detected');
       }
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      return new BrowserProvider(window.ethereum);
+      await ethereum.request({ method: 'eth_requestAccounts' });
+      return new BrowserProvider(ethereum);
     } else {
       const web3authProvider = await web3auth.connect();
       return new BrowserProvider(web3authProvider as any);
@@ -50,28 +45,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return await signer.getAddress();
   };
 
-  const callApi = async (wallet_address: string, auth_type: string) => {
-    const response = await fetch('/api/v1/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ wallet_address, auth_type }),
-      credentials: 'include',
-    });
-
-    if (!response.ok) {
-      throw new Error('Login failed');
-    }
-
-    return await response.json();
-  }
-
   const login = async (method: AuthMethod) => {
     try {
       const provider = await getProvider(method);
       const address = await getAddress(provider);
-      const { user: newUser } = await callApi(address, method);
+
+      const response = await fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ wallet_address: address, auth_type: method }),
+        credentials: 'include',
+      });
+  
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      const { user: newUser } = await response.json();
 
       setUser(newUser);
     } catch (error) {
