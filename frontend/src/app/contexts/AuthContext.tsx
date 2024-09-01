@@ -5,6 +5,7 @@ import { BrowserProvider } from 'ethers';
 import { web3auth } from '@/lib/web3auth';
 import { User, AuthMethod, AuthContextType } from '../types/auth';
 import { ExtendedWindow } from '../types/ethere';
+import { Loading } from '../components/Loading';
 
 // createContextを使用して、認証情報を保持するコンテキストを作成する
 // このコンテキストはアプリのどこからでも使用できる
@@ -12,14 +13,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const initAuth = async () => {
       try {
-        await web3auth.initModal();
         await checkAuth();
+        await web3auth.initModal();
       } catch (error) {
         console.error('Error initializing auth:', error);
+      } finally {
+        setIsInitialized(true);
       }
     };
 
@@ -46,6 +50,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const login = async (method: AuthMethod) => {
+    if (!isInitialized) {
+      throw new Error('Auth system is not initialized yet');
+    }
+
     try {
       const provider = await getProvider(method);
       const address = await getAddress(provider);
@@ -75,6 +83,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
+    if (!isInitialized) {
+      throw new Error('Auth system is not initialized yet');
+    }
+
     try {
       const response = await fetch('/api/v1/auth/logout', {
         method: 'POST',
@@ -112,10 +124,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
+  if (!isInitialized) {
+    return <Loading />
+  }
+
   return (
     // コンテキストのプロバイダーでアプリ全体にvalueを渡す
     // AuthContext.Providerは自動で生成される
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isInitialized }}>
       {children}
     </AuthContext.Provider>
   );
