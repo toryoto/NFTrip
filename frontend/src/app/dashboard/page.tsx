@@ -31,15 +31,16 @@ export default function DashboardPage() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/');
-    }
-  }, [user, router]);
-
   const handleLogout = async () => {
-    await logout();
-    router.push('/');
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoggingOut(false);
+    }
   }
 
   return (

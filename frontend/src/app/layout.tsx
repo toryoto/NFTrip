@@ -2,8 +2,14 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '../app/contexts/AuthContext';
+import dynamic from "next/dynamic";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const AuthProviderClient = dynamic(
+  () => import('../app/contexts/AuthContext').then((mod) => mod.AuthProvider),
+  { ssr: false }
+)
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,9 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>
+        <AuthProviderClient>
           {children}
-        </AuthProvider>
+        </AuthProviderClient>
       </body>
     </html>
   );
