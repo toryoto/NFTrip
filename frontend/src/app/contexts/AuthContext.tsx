@@ -1,27 +1,31 @@
-'use client'; 
+'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BrowserProvider } from 'ethers';
-import { web3auth } from '@/lib/web3auth';
 import { User, AuthMethod, AuthContextType } from '../types/auth';
 import { ExtendedWindow } from '../types/ethere';
 import { Loading } from '../components/Loading';
+import { Web3Auth } from "@web3auth/modal";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
 
   useEffect(() => {
     const initAuth = async () => {
       setIsLoading(true);
 
       try {
+        const web3authModule = await import('@/lib/web3auth');
+        const web3authInstance = web3authModule.web3auth;
+
+        await web3authInstance.initModal();
+        setWeb3auth(web3authInstance);
+
         await checkAuth();
-        if (typeof window !== 'undefined') {
-          await web3auth.initModal();
-        }
       } catch (error) {
         console.error('Error initializing auth:', error);
       } finally {
@@ -41,6 +45,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await ethereum.request({ method: 'eth_requestAccounts' });
       return new BrowserProvider(ethereum);
     } else {
+      if (!web3auth) {
+        throw new Error('Web3Auth not initialized');
+      }
       const web3authProvider = await web3auth.connect();
       return new BrowserProvider(web3authProvider as any);
     }
@@ -89,7 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (!response.ok) throw new Error('Logout failed');
 
-      if (web3auth.connected) await web3auth.logout();
+      if (web3auth?.connected) await web3auth.logout();
 
       setUser(null);
     } catch (error) {
@@ -98,7 +105,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // 認証情報(cookie)が残っている場合に復元する
   const checkAuth = async () => {
     try {
       const response = await fetch('/api/v1/auth/me', {
