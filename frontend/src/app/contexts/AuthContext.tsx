@@ -7,8 +7,6 @@ import { User, AuthMethod, AuthContextType } from '../types/auth';
 import { ExtendedWindow } from '../types/ethere';
 import { Loading } from '../components/Loading';
 
-// createContextを使用して、認証情報を保持するコンテキストを作成する
-// このコンテキストはアプリのどこからでも使用できる
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -125,17 +123,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    // コンテキストのプロバイダーでアプリ全体にvalueを渡す
-    // AuthContext.Providerは自動で生成される
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// コンポーネントでの認証関連処理を簡潔にするためにuseContextをラップしたuseAuthを実装
 export const useAuth = () => {
-  // AuthContextはuser,login,logoutを所持するコンテキスト
   const context = useContext(AuthContext);
   if (context === undefined) throw new Error('useAuth must be used within an AuthProvider');
   return context;
