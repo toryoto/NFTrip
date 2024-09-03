@@ -13,7 +13,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     struct Location {
       uint256 dailyMintLimit;
       mapping(uint256 => uint256) dailyMintCount;
-
+      mapping(address => uint256) lastMintDate;
     }
 
     mapping(uint256 => Location) public locations;
@@ -33,6 +33,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function mint(uint256 locationId, string memory _tokenURI) public {
       require(locations[locationId].dailyMintLimit > 0, "Location does not exist");
       require(checkDailyLimit(locationId), "Daily mint limit reached for this location");
+      require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
 
       uint256 tokenId = _tokenIdCounter.current();
       _tokenIdCounter.increment();
@@ -43,6 +44,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
       uint256 currentDate = block.timestamp / 86400; // Convert to days
       locations[locationId].dailyMintCount[currentDate]++;
+      locations[locationId].lastMintDate[msg.sender] = currentDate;
 
       emit NFTMinted(tokenId, locationId, msg.sender, block.timestamp, _tokenURI);
     }
@@ -67,6 +69,11 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function checkDailyLimit(uint256 locationId) internal view returns (bool) {
       uint256 currentDate = block.timestamp / 86400; // Convert to days
       return locations[locationId].dailyMintCount[currentDate] < locations[locationId].dailyMintLimit;
+    }
+
+    function checkUserDailyLimit(uint256 locationId, address user) internal view returns (bool) {
+      uint256 currentDate = block.timestamp / 86400; // Convert to days
+      return locations[locationId].lastMintDate[user] != currentDate;
     }
 
     function getDailyMintCount(uint256 locationId) public view returns (uint256) {
