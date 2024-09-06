@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { MapPin, Award, Target, ChevronRight, LogOut } from 'lucide-react';
+import { MapPin, Award, Target, ChevronRight, Info } from 'lucide-react';
 import { Footer } from '../components/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -14,11 +14,10 @@ import Header from '../components/Header';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
-  const nearbySpots = [
-    { id: 1, name: "Tokyo Tower", distance: "0.5 km" },
-    { id: 2, name: "Senso-ji Temple", distance: "1.2 km" },
-    { id: 3, name: "Meiji Shrine", distance: "2.3 km" },
-    { id: 4, name: "Shibuya Crossing", distance: "3.1 km" },
+  const featuredSpots = [
+    { id: 1, name: "Tokyo Tower", distance: "0.5 km", thumbnail: "tokyo-tower-thumbnail.jpg" },
+    { id: 2, name: "Senso-ji Temple", distance: "1.2 km", thumbnail: "sensoji-temple-thumbnail.jpg" },
+    { id: 3, name: "Meiji Shrine", distance: "2.3 km", thumbnail: "meiji-shrine-thumbnail.jpg" },
   ];
   const userLevel = 5;
   const totalNFTs = 23;
@@ -45,75 +44,93 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <Header username="John Doe" isLoggingOut={isLoggingOut} onLogout={handleLogout} />
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <Header username={"John Doe"} isLoggingOut={isLoggingOut} onLogout={handleLogout} />
       <main className="flex-1 py-8 px-4">
-        <div className="container mx-auto grid gap-8 lg:grid-cols-2">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-2xl text-blue-400">Nearby NFT Spots</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {nearbySpots.map((spot) => (
-                <Card key={spot.id} className="bg-gray-700 border-gray-600 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-lg font-medium text-white">
-                      {spot.name}
-                    </CardTitle>
-                    <MapPin className="h-5 w-5 text-blue-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between items-center">
-                      <div className="text-2xl font-bold text-gray-300">{spot.distance}</div>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                        Get NFT
-                      </Button>
+        <div className="container mx-auto space-y-8">
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-blue-400">Featured NFT Spots</h2>
+              <Link href="/spots" passHref>
+                <Button variant="outline" className="text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white">
+                  View All Spots
+                </Button>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {featuredSpots.map((spot) => (
+                <Card key={spot.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
+                  <div className="relative h-48 overflow-hidden">
+                    <Image
+                      src={`/images/${spot.thumbnail}`}
+                      alt={spot.name}
+                      width={640}
+                      height={360}
+                      className="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
+                  </div>
+                  <CardContent className="p-4 relative">
+                    <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{spot.name}</h3>
+                    <div className="flex items-center text-gray-400 mb-2">
+                      <MapPin className="h-4 w-4 mr-1" />
+                      <span>{spot.distance}</span>
+                    </div>
+                    <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <Info className="h-4 w-4 text-white" />
                     </div>
                   </CardContent>
                 </Card>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </section>
 
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-2xl text-blue-400">Your Progress</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center justify-between bg-gray-700 p-4 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <Award className="h-6 w-6 text-yellow-400" />
-                  <div className="text-lg font-medium text-white">Level {userLevel}</div>
-                </div>
-                <div className="text-3xl font-bold text-blue-400">{totalNFTs} NFTs</div>
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-400">Progress to Level {userLevel + 1}</span>
-                  <span className="text-sm text-gray-400">75%</span>
-                </div>
-                <Progress value={75} className="h-2 bg-gray-700 [&>div[role=progressbar]]:bg-blue-500" />
-              </div>
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-blue-400">Active Missions</h3>
-                {missions.map((mission) => (
-                  <div key={mission.id} className="bg-gray-700 p-4 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center">
-                        <Target className="mr-2 h-5 w-5 text-blue-400" />
-                        <div className="text-sm font-medium text-white">{mission.title}</div>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-gray-400" />
+          <section>
+            <h2 className="text-2xl font-bold text-blue-400 mb-4">Your Progress</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="bg-gray-800 border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <Award className="h-8 w-8 text-yellow-400" />
+                      <div className="text-2xl font-bold text-white">Level {userLevel}</div>
                     </div>
-                    <Progress value={mission.progress} className="h-2 bg-gray-600 [&>div[role=progressbar]]:bg-blue-500" />
-                    <div className="text-right mt-1">
-                      <span className="text-xs text-gray-400">{mission.progress}% Complete</span>
-                    </div>
+                    <div className="text-3xl font-bold text-blue-400">{totalNFTs} NFTs</div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  <div>
+                    <div className="flex justify-between mb-2">
+                      <span className="text-sm text-gray-400">Progress to Level {userLevel + 1}</span>
+                      <span className="text-sm text-gray-400">75%</span>
+                    </div>
+                    <Progress value={75} className="h-2 bg-gray-700 [&>div[role=progressbar]]:bg-blue-500" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gray-800 border-gray-700">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold text-blue-400 mb-4">Active Missions</h3>
+                  <div className="space-y-4">
+                    {missions.map((mission) => (
+                      <div key={mission.id} className="bg-gray-700 p-4 rounded-lg group hover:bg-gray-600 transition-colors duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center">
+                            <Target className="mr-2 h-5 w-5 text-blue-400" />
+                            <div className="text-sm font-medium text-white">{mission.title}</div>
+                          </div>
+                          <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors duration-300" />
+                        </div>
+                        <Progress value={mission.progress} className="h-2 bg-gray-600 [&>div[role=progressbar]]:bg-blue-500" />
+                        <div className="text-right mt-1">
+                          <span className="text-xs text-gray-400">{mission.progress}% Complete</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
         </div>
       </main>
       <Footer />
