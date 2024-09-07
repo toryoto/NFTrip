@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { Location, LocationImage } from '../app/types/location'
+import { Location, LocationImage,LocationWithThumbnailAndDistance } from '../app/types/location'
 
 export async function getLocations(): Promise<(Location & { thumbnail: string | null })[]> {
   // Supabaseから観光地情報を取得
@@ -32,7 +32,7 @@ export async function getLocations(): Promise<(Location & { thumbnail: string | 
   }))
 }
 
-export async function getNearestLocations(user_lat: number, user_lon: number, max_results: number): Promise<Location & { distance: number }> {
+export async function getNearestLocations(user_lat: number, user_lon: number, max_results: number): Promise<LocationWithThumbnailAndDistance[]> {
   const { data: locations, error } = await supabase.rpc('get_nearest_locations', {
     user_lat, user_lon, max_results
   });
