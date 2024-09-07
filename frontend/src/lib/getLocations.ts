@@ -12,19 +12,7 @@ export async function getLocations(): Promise<(Location & { thumbnail: string | 
     return []
   }
 
-  // Supabaseから観光地画像を取得
-  const { data: images, error: imagesError } = await supabase
-    .from('location_images')
-    .select('*')
-    .eq('image_type', 'thumbnail')
-    .eq('is_primary', true)
-
-  if (imagesError) {
-    console.error('Error fetching images:', imagesError)
-    return locations
-  }
-
-  const imageMap = new Map(images.map((img: LocationImage) => [img.location_id, img.image_hash]))
+  const imageMap = await getLocationImagesMap()
 
   return locations.map((location: Location) => ({
     ...location,
@@ -41,21 +29,35 @@ export async function getNearestLocations(user_lat: number, user_lon: number, ma
 
   const locationIds = locations.map((loc: Location) => loc.id);
 
-  const { data: images, error: imagesError } = await supabase
+  const imageMap = await getLocationImagesMap(locationIds);
+
+  return locations.map((location: Location) => ({
+    ...location,
+    thumbnail: imageMap.get(location.id) || null
+  }));
+}
+
+async function getLocationImagesMap(locationIds?: number[]): Promise<Map<number, string | null>> {
+  let query = supabase
     .from('location_images')
     .select('*')
     .eq('image_type', 'thumbnail')
     .eq('is_primary', true)
-    .in('location_id', locationIds);
 
-  if (imagesError) throw imagesError;
+  if (locationIds) {
+    query = query.in('location_id', locationIds)
+  }
+  console.log(query)
 
-  const imageMap = new Map(images.map((img: LocationImage) => [img.location_id, img.image_hash]));
+  const { data: images, error } = await query
 
-  const nearestLocations = locations.map((location: Location) => ({
-    ...location,
-    thumbnail: imageMap.get(location.id) ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${imageMap.get(location.id)}` : null
-  }));
+  if (error) {
+    console.error('Error fetching images:', error)
+    return new Map()
+  }
 
-  return nearestLocations;
+  return new Map(images.map((img: LocationImage) => [
+    img.location_id, 
+    img.image_hash ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${img.image_hash}` : null
+  ]))
 }
