@@ -31,3 +31,31 @@ export async function getLocations(): Promise<(Location & { thumbnail: string | 
     thumbnail: imageMap.get(location.id) || null
   }))
 }
+
+export async function getNearestLocations(user_lat: number, user_lon: number, max_results: number): Promise<Location & { distance: number }> {
+  const { data: locations, error } = await supabase.rpc('get_nearest_locations', {
+    user_lat, user_lon, max_results
+  });
+
+  if (error) throw error;
+
+  const locationIds = locations.map((loc: Location) => loc.id);
+
+  const { data: images, error: imagesError } = await supabase
+    .from('location_images')
+    .select('*')
+    .eq('image_type', 'thumbnail')
+    .eq('is_primary', true)
+    .in('location_id', locationIds);
+
+  if (imagesError) throw imagesError;
+
+  const imageMap = new Map(images.map((img: LocationImage) => [img.location_id, img.image_hash]));
+
+  const nearestLocations = locations.map((location: Location) => ({
+    ...location,
+    thumbnail: imageMap.get(location.id) ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${imageMap.get(location.id)}` : null
+  }));
+
+  return nearestLocations;
+}
