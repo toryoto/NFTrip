@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import Header from '../components/Header'
 import { getLocations } from '@/lib/getLocations'
 import { Location } from '@/app/types/location'
+import { Loading } from '../components/Loading'
 
 export default function TouristSpots() {
   const [userLocation, setUserLocation] = useState<{ lat: any; lon: any }>({ lat: null, lon: null })
@@ -19,13 +20,16 @@ export default function TouristSpots() {
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const router = useRouter()
   const [locations, setLocations] = useState<(Location & { thumbnail: string | null })[]>([])
+  const [loading, setLoading] = useState<Boolean>(false);
 
   useEffect(() => {
+    setLoading(true)
     const fetchLocations = async () => {
       const fetchedLocations = await getLocations()
       setLocations(fetchedLocations)
     }
     fetchLocations()
+    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -77,6 +81,10 @@ export default function TouristSpots() {
     } finally {
       setIsLoggingOut(false)
     }
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (
