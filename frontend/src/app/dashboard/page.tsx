@@ -25,7 +25,7 @@ export default function DashboardPage() {
   ];
 
   const { user, logout } = useAuth();
-  const [userLocation, setUserLocation] = useState<{ lat: any; lon: any }>({ lat: null, lon: null })
+  const [userLocation, setUserLocation] = useState<{ lat: number | null; lon: number | null }>({ lat: null, lon: null })
   const [nearestLocations, setNearestLocations] = useState<LocationWithThumbnailAndDistance[]>([])
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
