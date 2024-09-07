@@ -18,6 +18,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
   mapping(uint256 => Location) public locations;
   mapping(uint256 => string) private _tokenURIs;
+  uint256[] private _locationIds;
 
   event NFTMinted(uint256 tokenId, uint256 locationId, address recipient, uint256 timestamp, string tokenURI);
   event LocationAdded(uint256 locationId, uint256 dailyMintLimit);
@@ -27,6 +28,8 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   function addLocation(uint256 locationId, uint256 dailyMintLimit) public onlyOwner {
     require(locations[locationId].dailyMintLimit == 0, "Location already exists");
     locations[locationId].dailyMintLimit = dailyMintLimit;
+
+    _locationIds.push(locationId);
     emit LocationAdded(locationId, dailyMintLimit);
   }
 
@@ -79,5 +82,9 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   function getDailyMintCount(uint256 locationId) public view returns (uint256) {
     uint256 currentDate = block.timestamp / 86400; // Convert to days
     return locations[locationId].dailyMintCount[currentDate];
+  }
+
+  function getLocations() public view returns (uint256[] memory) {
+    return _locationIds;
   }
 }
