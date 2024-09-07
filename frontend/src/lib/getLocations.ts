@@ -47,8 +47,7 @@ async function getLocationImagesMap(locationIds?: number[]): Promise<Map<number,
   if (locationIds) {
     query = query.in('location_id', locationIds)
   }
-  console.log(query)
-
+  
   const { data: images, error } = await query
 
   if (error) {
