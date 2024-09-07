@@ -96,7 +96,7 @@ export default function TouristSpots() {
             <Card key={location.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
               <div className="relative h-48 overflow-hidden">
                 <Image
-                  src={`https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${location.thumbnail}`} 
+                  src={location.thumbnail || '/images/default-thumbnail.jpg'}
                   alt={location.name}
                   width={640}
                   height={360}
