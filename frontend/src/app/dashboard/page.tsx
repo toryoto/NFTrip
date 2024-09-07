@@ -11,14 +11,11 @@ import { Footer } from '../components/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
+import { getNearestLocations } from '@/lib/getLocations';
+import { LocationWithThumbnailAndDistance } from '../types/location';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
-  const featuredSpots = [
-    { id: 1, name: "Tokyo Tower", distance: "0.5 km", thumbnail: "tokyo-tower-thumbnail.jpg" },
-    { id: 2, name: "Senso-ji Temple", distance: "1.2 km", thumbnail: "sensoji-temple-thumbnail.jpg" },
-    { id: 3, name: "Meiji Shrine", distance: "2.3 km", thumbnail: "meiji-shrine-thumbnail.jpg" },
-  ];
   const userLevel = 5;
   const totalNFTs = 23;
   const missions = [
@@ -28,8 +25,42 @@ export default function DashboardPage() {
   ];
 
   const { user, logout } = useAuth();
+  const [userLocation, setUserLocation] = useState<{ lat: any; lon: any }>({ lat: null, lon: null })
+  const [nearestLocations, setNearestLocations] = useState<LocationWithThumbnailAndDistance[]>([])
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude
+        });
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+      },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, []);
+
+  useEffect(() => {
+    const fetchNearestLocations = async () => {
+      if (userLocation.lat !== null && userLocation.lon !== null) {
+        try {
+          const fetchedNearestLocations = await getNearestLocations(userLocation.lat, userLocation.lon, 3);
+          setNearestLocations(fetchedNearestLocations);
+        } catch (error) {
+          console.error('Failed to fetch nearest locations:', error);
+        }
+      }
+    };
+
+    fetchNearestLocations();
+  }, [userLocation.lat, userLocation.lon]);
 
   const handleLogout = async () => {
     try {
@@ -50,7 +81,7 @@ export default function DashboardPage() {
         <div className="container mx-auto space-y-8">
           <section>
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-blue-400">Featured NFT Spots</h2>
+              <h2 className="text-2xl font-bold text-blue-400">Nearest NFT Spots</h2>
               <Link href="/spots" passHref>
                 <Button variant="outline" className="text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white">
                   View All Spots
@@ -58,31 +89,31 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {featuredSpots.map((spot) => (
-                <Card key={spot.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={`/images/${spot.thumbnail}`}
-                      alt={spot.name}
-                      width={640}
-                      height={360}
-                      className="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
-                  </div>
-                  <CardContent className="p-4 relative">
-                    <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{spot.name}</h3>
-                    <div className="flex items-center text-gray-400 mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>{spot.distance}</span>
+                {nearestLocations.map((location) => (
+                  <Card key={location.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
+                    <div className="relative h-48 overflow-hidden">
+                      <Image
+                        src={location.thumbnail || '/images/default-thumbnail.jpg'}
+                        alt={location.name}
+                        width={640}
+                        height={360}
+                        className="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
                     </div>
-                    <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <Info className="h-4 w-4 text-white" />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                    <CardContent className="p-4 relative">
+                      <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{location.name}</h3>
+                      <div className="flex items-center text-green-400 mb-2">
+                        <MapPin className="h-4 w-4 mr-1 text-green-400" />
+                        <span>{location.distance.toFixed(2)} km</span>
+                      </div>
+                      <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <Info className="h-4 w-4 text-white" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
           </section>
 
           <section>
