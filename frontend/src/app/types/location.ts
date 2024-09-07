@@ -15,3 +15,8 @@ export type LocationImage = {
   image_type: 'thumbnail' | 'nft'
   is_primary: boolean
 }
+
+export interface LocationWithThumbnailAndDistance extends Location {
+  thumbnail: string | null;
+  distance: number;
+}
