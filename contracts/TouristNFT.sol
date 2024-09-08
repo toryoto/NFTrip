@@ -15,6 +15,8 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     mapping(uint256 => uint256) dailyMintCount;
     mapping(address => uint256) lastMintDate;
   }
+  
+  uint256[] private _locationIds;
 
   mapping(uint256 => Location) public locations;
   mapping(uint256 => string) private _tokenURIs;
@@ -79,5 +81,9 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   function getDailyMintCount(uint256 locationId) public view returns (uint256) {
     uint256 currentDate = block.timestamp / 86400; // Convert to days
     return locations[locationId].dailyMintCount[currentDate];
+  }
+
+  function getLocations() public view returns (uint256[] memory) {
+    return _locationIds;
   }
 }
