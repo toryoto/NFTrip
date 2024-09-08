@@ -10,45 +10,47 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIdCounter;
 
-  struct Location {
-    uint256 dailyMintLimit;
-    mapping(uint256 => uint256) dailyMintCount;
-    mapping(address => uint256) lastMintDate;
-  }
-  
+  mapping(uint256 => string) private _tokenURIs;
+  mapping(uint256 => bool) private _activeLocations;
   uint256[] private _locationIds;
 
-  mapping(uint256 => Location) public locations;
-  mapping(uint256 => string) private _tokenURIs;
+  event NFTMinted(uint256 tokenId, address recipient, uint256 timestamp, string tokenURI);
+  event LocationAdded(uint256 locationId);
 
-  event NFTMinted(uint256 tokenId, uint256 locationId, address recipient, uint256 timestamp, string tokenURI);
-  event LocationAdded(uint256 locationId, uint256 dailyMintLimit);
-
-  constructor() ERC721("TouristNFT", "TNFT") {}
-
-  function addLocation(uint256 locationId, uint256 dailyMintLimit) public onlyOwner {
-    require(locations[locationId].dailyMintLimit == 0, "Location already exists");
-    locations[locationId].dailyMintLimit = dailyMintLimit;
-    emit LocationAdded(locationId, dailyMintLimit);
+  constructor(uint256[] memory initialLocationIds) ERC721("TouristNFT", "TNFT") {
+    for (uint i = 0; i < initialLocationIds.length; i++) {
+      _addLocation(initialLocationIds[i]);
+    }
   }
 
-  function mint(uint256 locationId, string memory _tokenURI) public {
-    require(locations[locationId].dailyMintLimit > 0, "Location does not exist");
-    require(checkDailyLimit(locationId), "Daily mint limit reached for this location");
-    require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
+  function addLocation(uint256 locationId) public onlyOwner {
+    _addLocation(locationId);
+  }
 
+  function _addLocation(uint256 locationId) private {
+    require(!_activeLocations[locationId], "Location already exists");
+    _activeLocations[locationId] = true;
+    _locationIds.push(locationId);
+    emit LocationAdded(locationId);
+  }
+
+  function addLocations(uint256[] memory locationIds) public onlyOwner {
+    for (uint i = 0; i < locationIds.length; i++) {
+      _addLocation(locationIds[i]);
+    }
+  }
+
+
+  function mint(uint256 locationId, string memory _tokenURI) public {
+    require(_activeLocations[locationId], "Invalid location");
+    
     uint256 tokenId = _tokenIdCounter.current();
     _tokenIdCounter.increment();
 
     _safeMint(msg.sender, tokenId);
-    // 各トークンにNFTメタデータを設定する
     _setTokenURI(tokenId, _tokenURI);
 
-    uint256 currentDate = block.timestamp / 86400; // Convert to days
-    locations[locationId].dailyMintCount[currentDate]++;
-    locations[locationId].lastMintDate[msg.sender] = currentDate;
-
-    emit NFTMinted(tokenId, locationId, msg.sender, block.timestamp, _tokenURI);
+    emit NFTMinted(tokenId, msg.sender, block.timestamp, _tokenURI);
   }
 
   function tokenURI(uint256 tokenId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
@@ -68,22 +70,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     super._beforeTokenTransfer(from, to, tokenId, batchSize);
   }
 
-  function checkDailyLimit(uint256 locationId) internal view returns (bool) {
-    uint256 currentDate = block.timestamp / 86400; // Convert to days
-    return locations[locationId].dailyMintCount[currentDate] < locations[locationId].dailyMintLimit;
-  }
-
-  function checkUserDailyLimit(uint256 locationId, address user) internal view returns (bool) {
-    uint256 currentDate = block.timestamp / 86400; // Convert to days
-    return locations[locationId].lastMintDate[user] != currentDate;
-  }
-
-  function getDailyMintCount(uint256 locationId) public view returns (uint256) {
-    uint256 currentDate = block.timestamp / 86400; // Convert to days
-    return locations[locationId].dailyMintCount[currentDate];
-  }
-
-  function getLocations() public view returns (uint256[] memory) {
-    return _locationIds;
+  function isActiveLocation(uint256 locationId) public view returns (bool) {
+    return _activeLocations[locationId];
   }
 }
