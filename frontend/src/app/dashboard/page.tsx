@@ -11,8 +11,8 @@ import { Footer } from '../components/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
-import { getNearestLocations } from '@/lib/getLocations';
-import { LocationWithThumbnailAndDistance } from '../types/location';
+import { useLocations } from '@/hooks/useLocations';
+import { Loading } from '../components/Loading';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -25,42 +25,9 @@ export default function DashboardPage() {
   ];
 
   const { user, logout } = useAuth();
-  const [userLocation, setUserLocation] = useState<{ lat: number | null; lon: number | null }>({ lat: null, lon: null })
-  const [nearestLocations, setNearestLocations] = useState<LocationWithThumbnailAndDistance[]>([])
+  const { nearestLocations, loading } = useLocations()
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude
-        });
-      },
-      (error) => {
-        console.error('Geolocation error:', error);
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
-
-  useEffect(() => {
-    const fetchNearestLocations = async () => {
-      if (userLocation.lat !== null && userLocation.lon !== null) {
-        try {
-          const fetchedNearestLocations = await getNearestLocations(userLocation.lat, userLocation.lon, 3);
-          setNearestLocations(fetchedNearestLocations);
-        } catch (error) {
-          console.error('Failed to fetch nearest locations:', error);
-        }
-      }
-    };
-
-    fetchNearestLocations();
-  }, [userLocation.lat, userLocation.lon]);
 
   const handleLogout = async () => {
     try {
@@ -72,6 +39,10 @@ export default function DashboardPage() {
     } finally {
       setIsLoggingOut(false);
     }
+  }
+
+  if (loading) {
+    return <Loading />;
   }
 
   return (

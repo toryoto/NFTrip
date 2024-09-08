@@ -9,67 +9,14 @@ import { Footer } from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import Header from '../components/Header'
-import { getLocations } from '@/lib/getLocations'
-import { Location } from '@/app/types/location'
 import { Loading } from '../components/Loading'
+import { useLocations } from '@/hooks/useLocations'
 
 export default function TouristSpots() {
-  const [userLocation, setUserLocation] = useState<{ lat: any; lon: any }>({ lat: null, lon: null })
-  const [distances, setDistances] = useState<{ [key: number]: number }>({})
   const { user, logout } = useAuth()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { locations, loading, distances } = useLocations()
   const router = useRouter()
-  const [locations, setLocations] = useState<(Location & { thumbnail: string | null })[]>([])
-  const [loading, setLoading] = useState<Boolean>(false);
-
-  useEffect(() => {
-    setLoading(true)
-    const fetchLocations = async () => {
-      const fetchedLocations = await getLocations()
-      setLocations(fetchedLocations)
-    }
-    fetchLocations()
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude
-        })
-      },
-      (error) => console.error(error),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    )
-
-    return () => navigator.geolocation.clearWatch(watchId)
-  }, [])
-
-  useEffect(() => {
-    if (userLocation.lat !== null && userLocation.lon !== null) {
-      const newDistances: { [key: string]: number } = {}
-      locations.forEach(location => {
-        const distance = calculateDistance(userLocation.lat, userLocation.lon, location.latitude, location.longitude)
-        newDistances[location.id] = distance
-      })
-      setDistances(newDistances)
-    }
-  }, [userLocation, locations])
-
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371 // Earth's radius in km
-    const dLat = (lat2 - lat1) * Math.PI / 180
-    const dLon = (lon2 - lon1) * Math.PI / 180
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-    const distance = R * c
-    return Number(distance.toFixed(1))
-  }
 
   const handleLogout = async () => {
     try {
