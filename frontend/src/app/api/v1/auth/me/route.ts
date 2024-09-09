@@ -2,13 +2,9 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
+import { User } from '@/app/types/auth'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-interface JwtPayload {
-  userId: string;
-  wallet_address: string;
-}
 
 export async function GET() {
   const cookieStore = cookies();
@@ -19,11 +15,12 @@ export async function GET() {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as User;
 
     const safeUser = {
-      id: decoded.userId,
+      id: decoded.id,
       wallet_address: decoded.wallet_address,
+      auth_type: decoded.auth_type
     };
 
     return NextResponse.json(safeUser);
