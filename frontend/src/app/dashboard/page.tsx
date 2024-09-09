@@ -15,6 +15,8 @@ import { useLocations } from '@/hooks/useLocations';
 import { Loading } from '../components/Loading';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { LocationWithThumbnailAndDistance } from '../types/location';
+import { getNFTImage } from '@/lib/getLocations';
+import { generateAndUploadNFTMetaData } from '@/lib/pinata';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -27,17 +29,35 @@ export default function DashboardPage() {
   ];
 
   const { user, logout } = useAuth();
-  const { getAllLocationIds } = useSmartContractInteractions();
+  const { mintNFT,getAllLocationIds } = useSmartContractInteractions();
   const { nearestLocations, loading } = useLocations()
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
-    // NFT用画像の取得
-
-    // NFTMetaDataの作成
-
-    // NFTMint処理
+    if (!user) {
+      console.log('Please authenticate first');
+      return;
+    }
+  
+    try {
+      console.log('Preparing NFT image...');
+      const imageHash = await getNFTImage(location.id);
+      console.log('NFT image prepared:', imageHash);
+  
+      console.log('Generating NFT metadata...');
+      const NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
+      console.log('NFT metadata generated:', NFTMetadataHash);
+  
+      console.log('Minting NFT...');
+      const transactionHash = await mintNFT(user?.auth_type, location.id, NFTMetadataHash);
+      console.log('NFT minted successfully! Transaction hash:', transactionHash);
+  
+      return transactionHash;
+    } catch (error) {
+      console.error("NFT minting failed:", error);
+      throw error;
+    }
   };
 
   const handleGetLocationIds = async () => {
