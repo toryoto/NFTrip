@@ -14,18 +14,29 @@ export function useSmartContractInteractions() {
     return new ethers.Contract(CONTRACT_ADDRESS, TouristNFTABI.abi, signer);
   }
 
-  const isActiveLocation = async (locationId: number, method: AuthMethod): Promise<boolean> => {
+  const getAllLocationIds = async (method: AuthMethod): Promise<bigint[]> => {
     try {
       const contract = await getContract(method);
-      const isActive = await contract.isActiveLocation(locationId);
-      return isActive;
+      const addedLocationIds = await contract.getAllLocationIds();
+      return addedLocationIds;
     } catch (error) {
       console.error('Error checking active location:', error);
-      return false;
+      return [];
     };  
   };
 
+  const mintNFT = async (method: AuthMethod, locationId: number, tokenURI: string) => {
+    try {
+      const contract = await getContract(method);
+      const tx = await contract.mintNFT(locationId, tokenURI);
+    } catch (error) {
+      console.error("Mint process failed:", error);
+      throw error;
+    }
+  }
+
   return {
-    isActiveLocation
+    getAllLocationIds,
+    mintNFT
   }
 }
