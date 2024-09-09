@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
 import { useLocations } from '@/hooks/useLocations';
 import { Loading } from '../components/Loading';
+import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
+import { LocationWithThumbnailAndDistance } from '../types/location';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -25,9 +27,33 @@ export default function DashboardPage() {
   ];
 
   const { user, logout } = useAuth();
+  const { getAllLocationIds } = useSmartContractInteractions();
   const { nearestLocations, loading } = useLocations()
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+
+  const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
+    // NFT用画像の取得
+
+    // NFTMetaDataの作成
+
+    // NFTMint処理
+  };
+
+  const handleGetLocationIds = async () => {
+    if (!user) {
+      console.log('Please authenticate first');
+      return;
+    }
+    try {
+      console.log(user)
+      const addedLocationIds = await getAllLocationIds(user.auth_type);
+      const locationIds = addedLocationIds.map(id => Number(id));
+      console.log('Added Location IDs:', locationIds);
+    } catch (error) {
+      console.error('Error checking location:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -78,6 +104,12 @@ export default function DashboardPage() {
                         <MapPin className="h-4 w-4 mr-1 text-green-400" />
                         <span>{location.distance.toFixed(2)} km</span>
                       </div>
+                      <Button 
+                        onClick={() => handleMintNFT(location)}
+                        className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+                      >
+                        GET NFT!
+                      </Button>
                       <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <Info className="h-4 w-4 text-white" />
                       </div>
