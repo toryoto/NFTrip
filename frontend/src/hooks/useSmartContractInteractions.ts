@@ -28,7 +28,9 @@ export function useSmartContractInteractions() {
   const mintNFT = async (method: AuthMethod, locationId: number, tokenURI: string) => {
     try {
       const contract = await getContract(method);
-      const tx = await contract.mintNFT(locationId, tokenURI);
+      const tx = await contract.mint(locationId, tokenURI);
+      const receipt = await tx.wait();
+      return receipt.transactionHash;
     } catch (error) {
       console.error("Mint process failed:", error);
       throw error;
