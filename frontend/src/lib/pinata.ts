@@ -1,8 +1,8 @@
 import { LocationWithThumbnailAndDistance } from '@/app/types/location';
 import axios from 'axios';
 
-const PINATA_API_KEY  = process.env.PINATA_API_KEY;
-const PINATA_SECRET_API_KEY  = process.env.PINATA_SECRET_API_KEY;
+const PINATA_API_KEY  = process.env.NEXT_PUBLIC_PINATA_API_KEY;
+const PINATA_SECRET_API_KEY  = process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY;
 
 if (!PINATA_API_KEY || !PINATA_SECRET_API_KEY) {
   throw new Error('Pinata API keys are not set in the environment variables.');
