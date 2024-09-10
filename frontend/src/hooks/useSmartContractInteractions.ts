@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import TouristNFTABI from '../../abi/TouristNFT.sol/TouristNFT.json';
+import TouristNFTABI from '../../abi/TouristNFT.json';
 import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
 
