@@ -60,3 +60,22 @@ async function getLocationImagesMap(locationIds?: number[]): Promise<Map<number,
     img.image_hash ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${img.image_hash}` : null
   ]))
 }
+
+// 引数の観光地idに紐づくNFT画像を取得する関数
+// ここで取得したNFT画像を引数にPinataにNFTメタデータを保存するメソッドを実行する
+export async function getNFTImage(locationId: number) {
+  const { data: nftImage, error } = await supabase
+    .from('location_images')
+    .select('*')
+    .eq('location_id', locationId)
+    .eq('image_type', 'nft')
+    .eq('is_primary', true)
+    .single();
+  
+  if (error) {
+    console.error('Error fetching locations:', error)
+    throw Error
+  }
+
+  return nftImage.image_hash;
+}

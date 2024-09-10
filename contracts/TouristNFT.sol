@@ -7,77 +7,92 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIdCounter;
+  using Counters for Counters.Counter;
+  Counters.Counter private _tokenIdCounter;
 
-    struct Location {
-      uint256 dailyMintLimit;
-      mapping(uint256 => uint256) dailyMintCount;
-      mapping(address => uint256) lastMintDate;
+  struct Location {
+    uint256 dailyMintLimit;
+    mapping(uint256 => uint256) dailyMintCount;
+    mapping(address => uint256) lastMintDate;
+  }
+
+  mapping(uint256 => Location) public locations;
+  mapping(uint256 => string) private _tokenURIs;
+
+  uint256[] private _addedLocationIds;
+
+  event NFTMinted(uint256 tokenId, uint256 locationId, address recipient, uint256 timestamp, string tokenURI);
+  event LocationAdded(uint256 locationId, uint256 dailyMintLimit);
+
+  constructor() ERC721("TouristNFT", "TNFT") {}
+
+  function addLocation(uint256 locationId, uint256 dailyMintLimit) public onlyOwner {
+    require(locations[locationId].dailyMintLimit == 0, "Location already exists");
+    locations[locationId].dailyMintLimit = dailyMintLimit;
+    _addedLocationIds.push(locationId);
+    emit LocationAdded(locationId, dailyMintLimit);
+  }
+
+  function initializeLocations() public onlyOwner {
+    for(uint256 i = 1; i <= 10; i++) {
+      if (locations[i].dailyMintLimit == 0) {
+        addLocation(i, 10);
+      }
     }
+  }
 
-    mapping(uint256 => Location) public locations;
-    mapping(uint256 => string) private _tokenURIs;
+  function mint(uint256 locationId, string memory _tokenURI) public {
+    require(locations[locationId].dailyMintLimit > 0, "Location does not exist");
+    require(checkDailyLimit(locationId), "Daily mint limit reached for this location");
+    require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
 
-    event NFTMinted(uint256 tokenId, uint256 locationId, address recipient, uint256 timestamp, string tokenURI);
-    event LocationAdded(uint256 locationId, uint256 dailyMintLimit);
+    uint256 tokenId = _tokenIdCounter.current();
+    _tokenIdCounter.increment();
 
-    constructor() ERC721("TouristNFT", "TNFT") {}
+    _safeMint(msg.sender, tokenId);
+    // 各トークンにNFTメタデータを設定する
+    _setTokenURI(tokenId, _tokenURI);
 
-    function addLocation(uint256 locationId, uint256 dailyMintLimit) public onlyOwner {
-      require(locations[locationId].dailyMintLimit == 0, "Location already exists");
-      locations[locationId].dailyMintLimit = dailyMintLimit;
-      emit LocationAdded(locationId, dailyMintLimit);
-    }
+    uint256 currentDate = block.timestamp / 86400; // Convert to days
+    locations[locationId].dailyMintCount[currentDate]++;
+    locations[locationId].lastMintDate[msg.sender] = currentDate;
 
-    function mint(uint256 locationId, string memory _tokenURI) public {
-      require(locations[locationId].dailyMintLimit > 0, "Location does not exist");
-      require(checkDailyLimit(locationId), "Daily mint limit reached for this location");
-      require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
+    emit NFTMinted(tokenId, locationId, msg.sender, block.timestamp, _tokenURI);
+  }
 
-      uint256 tokenId = _tokenIdCounter.current();
-      _tokenIdCounter.increment();
+  function tokenURI(uint256 tokenId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
+    return super.tokenURI(tokenId);
+  }
 
-      _safeMint(msg.sender, tokenId);
-      // 各トークンにNFTメタデータを設定する
-      _setTokenURI(tokenId, _tokenURI);
+  function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    super._burn(tokenId);
+  }
 
-      uint256 currentDate = block.timestamp / 86400; // Convert to days
-      locations[locationId].dailyMintCount[currentDate]++;
-      locations[locationId].lastMintDate[msg.sender] = currentDate;
+  // コントラクトがERC721インターフェイスをサポートしているかを確認する
+  function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable, ERC721URIStorage) returns (bool) {
+    return super.supportsInterface(interfaceId);
+  }
 
-      emit NFTMinted(tokenId, locationId, msg.sender, block.timestamp, _tokenURI);
-    }
+  function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override(ERC721, ERC721Enumerable) {
+    super._beforeTokenTransfer(from, to, tokenId, batchSize);
+  }
 
-    function tokenURI(uint256 tokenId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
-      return super.tokenURI(tokenId);
-    }
+  function checkDailyLimit(uint256 locationId) internal view returns (bool) {
+    uint256 currentDate = block.timestamp / 86400; // Convert to days
+    return locations[locationId].dailyMintCount[currentDate] < locations[locationId].dailyMintLimit;
+  }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-      super._burn(tokenId);
-    }
+  function checkUserDailyLimit(uint256 locationId, address user) internal view returns (bool) {
+    uint256 currentDate = block.timestamp / 86400; // Convert to days
+    return locations[locationId].lastMintDate[user] != currentDate;
+  }
 
-    // コントラクトがERC721インターフェイスをサポートしているかを確認する
-    function supportsInterface(bytes4 interfaceId) public view override(ERC721, ERC721Enumerable, ERC721URIStorage) returns (bool) {
-      return super.supportsInterface(interfaceId);
-    }
+  function getDailyMintCount(uint256 locationId) public view returns (uint256) {
+    uint256 currentDate = block.timestamp / 86400; // Convert to days
+    return locations[locationId].dailyMintCount[currentDate];
+  }
 
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize) internal override(ERC721, ERC721Enumerable) {
-      super._beforeTokenTransfer(from, to, tokenId, batchSize);
-    }
-
-    function checkDailyLimit(uint256 locationId) internal view returns (bool) {
-      uint256 currentDate = block.timestamp / 86400; // Convert to days
-      return locations[locationId].dailyMintCount[currentDate] < locations[locationId].dailyMintLimit;
-    }
-
-    function checkUserDailyLimit(uint256 locationId, address user) internal view returns (bool) {
-      uint256 currentDate = block.timestamp / 86400; // Convert to days
-      return locations[locationId].lastMintDate[user] != currentDate;
-    }
-
-    function getDailyMintCount(uint256 locationId) public view returns (uint256) {
-      uint256 currentDate = block.timestamp / 86400; // Convert to days
-      return locations[locationId].dailyMintCount[currentDate];
-    }
+  function getAllLocationIds() public view returns (uint256[] memory) {
+    return _addedLocationIds;
+  }
 }

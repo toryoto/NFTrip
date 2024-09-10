@@ -13,6 +13,10 @@ import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
 import { useLocations } from '@/hooks/useLocations';
 import { Loading } from '../components/Loading';
+import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
+import { LocationWithThumbnailAndDistance } from '../types/location';
+import { getNFTImage } from '@/lib/getLocations';
+import { generateAndUploadNFTMetaData } from '@/lib/pinata';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -25,9 +29,51 @@ export default function DashboardPage() {
   ];
 
   const { user, logout } = useAuth();
+  const { mintNFT,getAllLocationIds } = useSmartContractInteractions();
   const { nearestLocations, loading } = useLocations()
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+
+  const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
+    if (!user) {
+      console.log('Please authenticate first');
+      return;
+    }
+  
+    try {
+      console.log('Preparing NFT image...');
+      const imageHash = await getNFTImage(location.id);
+      console.log('NFT image prepared:', imageHash);
+  
+      console.log('Generating NFT metadata...');
+      const NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
+      console.log('NFT metadata generated:', NFTMetadataHash);
+  
+      console.log('Minting NFT...');
+      const transactionHash = await mintNFT(user?.auth_type, location.id, NFTMetadataHash);
+      console.log('NFT minted successfully! Transaction hash:', transactionHash);
+  
+      return transactionHash;
+    } catch (error) {
+      console.error("NFT minting failed:", error);
+      throw error;
+    }
+  };
+
+  const handleGetLocationIds = async () => {
+    if (!user) {
+      console.log('Please authenticate first');
+      return;
+    }
+    try {
+      console.log(user)
+      const addedLocationIds = await getAllLocationIds(user.auth_type);
+      const locationIds = addedLocationIds.map(id => Number(id));
+      console.log('Added Location IDs:', locationIds);
+    } catch (error) {
+      console.error('Error checking location:', error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -78,6 +124,12 @@ export default function DashboardPage() {
                         <MapPin className="h-4 w-4 mr-1 text-green-400" />
                         <span>{location.distance.toFixed(2)} km</span>
                       </div>
+                      <Button 
+                        onClick={() => handleMintNFT(location)}
+                        className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+                      >
+                        GET NFT!
+                      </Button>
                       <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <Info className="h-4 w-4 text-white" />
                       </div>
