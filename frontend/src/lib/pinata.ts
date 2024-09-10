@@ -1,6 +1,5 @@
 import { LocationWithThumbnailAndDistance } from '@/app/types/location';
 import axios from 'axios';
-import FormData from 'form-data';
 
 const PINATA_API_KEY  = process.env.PINATA_API_KEY;
 const PINATA_SECRET_API_KEY  = process.env.PINATA_SECRET_API_KEY;
