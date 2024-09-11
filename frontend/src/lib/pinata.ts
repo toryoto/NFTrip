@@ -5,6 +5,6 @@ export async function generateAndUploadNFTMetaData(
   imageHash: string,
   location: LocationWithThumbnailAndDistance
 ) {
-  const response = await axios.post('/api/vi/pinata/nft-metadata', {imageHash, location});
+  const response = await axios.post('/api/v1/pinata/nft-metadata', {imageHash, location});
   return response.data.ipfsHash
 }
