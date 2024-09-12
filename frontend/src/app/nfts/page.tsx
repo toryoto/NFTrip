@@ -34,7 +34,7 @@ export default function NFTGalleryPage() {
 
           const processedNFTs = await Promise.all(fetchedNFTs.map(async (uri) => {
             console.log(uri)
-            const response = await fetch(uri.replace('ipfs://', 'https://ipfs.io/ipfs/'));
+            const response = await fetch(uri.replace('ipfs://', 'https://chocolate-secret-cat-833.mypinata.cloud/ipfs/'));
             const data = await response.json();
             return {
               ...data,
@@ -81,8 +81,8 @@ export default function NFTGalleryPage() {
                     <Image
                       src={nft.image}
                       alt={nft.name}
-                      layout="fill"
-                      objectFit="cover"
+                      fill
+                      style={{ objectFit: 'contain' }}
                       className="transition-transform duration-300 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
