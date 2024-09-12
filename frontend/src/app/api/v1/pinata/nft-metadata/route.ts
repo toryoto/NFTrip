@@ -31,7 +31,11 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({ ipfsHash: `ipfs://${response.data.ipfsHash}` });
+    if (response.data && response.data.IpfsHash) {
+      return NextResponse.json({ ipfsHash: `ipfs://${response.data.IpfsHash}` });
+    } else {
+      throw new Error('Invalid response from Pinata: IpfsHash not found');
+    }
   } catch (error) {
     console.error('Error in Pinata NFT Metadata API route:', error);
     return NextResponse.json({ error: 'An error occurred while processing your request' }, { status: 500 });

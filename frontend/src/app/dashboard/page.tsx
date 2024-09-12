@@ -44,15 +44,18 @@ export default function DashboardPage() {
       console.log('Preparing NFT image...');
       const imageHash = await getNFTImage(location.id);
       console.log('NFT image prepared:', imageHash);
-  
+
       console.log('Generating NFT metadata...');
       const NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
+      if (!NFTMetadataHash) {
+        throw new Error('NFT metadata hash is undefined');
+      }
       console.log('NFT metadata generated:', NFTMetadataHash);
-  
+
       console.log('Minting NFT...');
       const transactionHash = await mintNFT(user?.auth_type, location.id, NFTMetadataHash);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
-  
+
       return transactionHash;
     } catch (error) {
       console.error("NFT minting failed:", error);
