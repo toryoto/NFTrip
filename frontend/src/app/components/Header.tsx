@@ -23,8 +23,8 @@ const Header: React.FC<HeaderProps> = ({ username, isLoggingOut, onLogout }) => 
             <Image
               src="/images/no-user-icon.png"
               alt="User Avatar"
-              layout="fill"
-              objectFit="cover"
+              style={{ objectFit: 'contain' }}
+              fill
             />
           </div>
         </Link>
