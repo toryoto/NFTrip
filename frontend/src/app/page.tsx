@@ -1,69 +1,199 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Footer } from './components/Footer'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, MapPin, Gift, Clock, GamepadIcon } from "lucide-react"
 
 export default function Home() {
+  const [currentImage, setCurrentImage] = useState(0)
+  const images = [
+    '/images/tokyo.png',
+    '/images/fuji.png',
+    '/images/shibuya.png',
+    '/images/kiyomizu.png',
+    '/images/asakusa.png'
+  ]
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [])
+
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-      <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60">
-        <div className="container flex items-center justify-between py-4">
-          <h1 className="text-3xl font-bold text-blue-400">
-            Find NFT Spots
-          </h1>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+      <header className="sticky top-0 z-50 w-full bg-gray-900/80 backdrop-blur-md shadow-sm">
+        <div className="container mx-auto flex items-center justify-between py-4">
+          <Link href="/">
+            <h1 className="text-2xl font-bold text-white">Find NFT Spots</h1>
+          </Link>
+          <nav className="hidden md:flex space-x-6">
+            <NavLink href="#features">特徴</NavLink>
+            <NavLink href="#how-it-works">使い方</NavLink>
+            <NavLink href="#about">About</NavLink>
+          </nav>
           <Link href="/login">
-            <Button variant="outline" className="text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white transition-colors duration-300">
-              Login
-              <ArrowRight className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="bg-transparent text-white border-gray-600 hover:bg-gray-800">
+              ログイン
             </Button>
           </Link>
         </div>
       </header>
-      <main className="flex-1 py-12 px-4">
-        <div className="container mx-auto max-w-4xl">
-          <Card className="bg-gray-800 border-gray-700 shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-3xl text-blue-400 mb-2">Welcome to Find NFT Spots</CardTitle>
-              <p className="text-gray-300">Discover and Collect NFTs in the Real World</p>
-            </CardHeader>
-            <CardContent className="text-gray-300">
-              <p className="mb-6 text-lg">
-                Explore the city and discover unique NFT spots around you. Collect digital art, 
-                complete missions, and level up your NFT collection experience.
-              </p>
-              <div className="grid md:grid-cols-2 gap-6">
-                <FeatureCard
-                  title="Find Exclusive NFTs"
-                  description="Discover nearby locations with rare and exclusive NFTs waiting to be collected."
+
+      <main className="flex-1">
+        <section className="relative h-screen w-full overflow-hidden">
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={currentImage}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <Image
+                src={images[currentImage]}
+                alt={`Landmark ${currentImage + 1}`}
+                layout="fill"
+                objectFit="cover"
+                quality={100}
+                priority
+              />
+              <div className="absolute inset-0 bg-black/60" />
+            </motion.div>
+          </AnimatePresence>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center text-white">
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-5xl md:text-6xl font-bold mb-4"
+              >
+                日本の歴史をNFTで体験
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="text-xl md:text-2xl mb-8"
+              >
+                位置情報ゲームで街を探索し、ユニークなNFTを収集しよう
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <Link href="/login">
+                  <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
+                    今すぐ始める
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        <section id="features" className="py-20 bg-gray-800">
+          <div className="container mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">アプリの特徴</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <FeatureCard
+                icon={<MapPin className="h-8 w-8" />}
+                title="位置情報クイズ"
+                description="その場所に関連する社会・文化・歴史のクイズに挑戦しよう！"
+              />
+              <FeatureCard
+                icon={<Gift className="h-8 w-8" />}
+                title="NFT報酬"
+                description="クイズに正解して、ユニークな観光地NFTを獲得しよう！"
+              />
+              <FeatureCard
+                icon={<Clock className="h-8 w-8" />}
+                title="時間分散"
+                description="混雑していない時間帯に訪れて、限定NFTをゲットしよう！"
+              />
+              <FeatureCard
+                icon={<GamepadIcon className="h-8 w-8" />}
+                title="ゲーミフィケーション"
+                description="レベルアップやミッションをクリアして、楽しみながら学ぼう！"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section id="how-it-works" className="py-20 bg-gray-900">
+          <div className="container mx-auto">
+            <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">使い方</h2>
+            <div className="max-w-3xl mx-auto">
+              <ol className="relative border-l border-gray-700">
+                <HowItWorksStep
+                  number={1}
+                  title="アプリにログイン"
+                  description="MetamaskかGoogleアカウントなどを使用したログインが可能です"
                 />
-                <FeatureCard
-                  title="Complete Missions"
-                  description="Engage in exciting missions and earn rewards as you explore the city."
+                <HowItWorksStep
+                  number={2}
+                  title="スポットを探す"
+                  description="地図上で近くのNFTスポットを見つけ、そこに向かいます。"
                 />
-                <FeatureCard
-                  title="Track Progress"
-                  description="Monitor your achievements and watch your collection grow with each new discovery."
+                <HowItWorksStep
+                  number={3}
+                  title="クイズに挑戦"
+                  description="スポットに到着したら、その場所に関するクイズに挑戦します。"
                 />
-                <FeatureCard
-                  title="Join the Community"
-                  description="Connect with fellow NFT enthusiasts and share your experiences in our vibrant community."
+                <HowItWorksStep
+                  number={4}
+                  title="NFTを獲得"
+                  description="クイズに正解すると、その場所のユニークなNFTを獲得できます。"
                 />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </ol>
+            </div>
+          </div>
+        </section>
       </main>
-      <Footer />
+
+      <footer className="bg-gray-900 text-white py-8">
+        <div className="container mx-auto text-center">
+          <p>&copy; 2023 Find NFT Spots. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   )
 }
 
-function FeatureCard({ title, description }: { title: string; description: string }) {
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div className="bg-gray-700 p-6 rounded-lg shadow-md">
-      <h3 className="text-xl font-semibold text-blue-300 mb-2">{title}</h3>
+    <Link href={href} className="text-gray-300 hover:text-white transition-colors">
+      {children}
+    </Link>
+  )
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <div className="bg-gray-700 p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+      <div className="text-blue-400 mb-4">{icon}</div>
+      <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
       <p className="text-gray-300">{description}</p>
     </div>
+  )
+}
+
+function HowItWorksStep({ number, title, description }: { number: number; title: string; description: string }) {
+  return (
+    <li className="mb-10 ml-6">
+      <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-900 rounded-full -left-4 ring-4 ring-gray-900">
+        <span className="text-blue-300 font-bold">{number}</span>
+      </span>
+      <h3 className="font-semibold text-white">{title}</h3>
+      <p className="text-gray-300">{description}</p>
+    </li>
   )
 }
