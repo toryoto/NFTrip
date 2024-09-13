@@ -17,6 +17,7 @@ import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractio
 import { LocationWithThumbnailAndDistance } from '../types/location';
 import { getNFTImage } from '@/lib/getLocations';
 import { generateAndUploadNFTMetaData } from '@/lib/pinata';
+import { useToast } from "@/components/ui/use-toast"
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -29,37 +30,58 @@ export default function DashboardPage() {
   ];
 
   const { user, logout } = useAuth();
-  const { mintNFT,getAllLocationIds } = useSmartContractInteractions();
+  const { mintNFT, getAllLocationIds } = useSmartContractInteractions();
   const { nearestLocations, loading } = useLocations()
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isMinting, setIsMinting] = useState(false)
+  const [isMintingLocation, setIsMintingLocation] = useState<number>();
+  const [progress, setProgress] = useState(0)
   const router = useRouter();
+  const { toast } = useToast()
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
     if (!user) {
       console.log('Please authenticate first');
       return;
     }
+
+    setIsMinting(true);
+    setIsMintingLocation(location.id)
+    setProgress(0);
   
     try {
-      console.log('Preparing NFT image...');
+      setProgress(10);
       const imageHash = await getNFTImage(location.id);
       console.log('NFT image prepared:', imageHash);
 
-      console.log('Generating NFT metadata...');
+      setProgress(40);
       const NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
       if (!NFTMetadataHash) {
         throw new Error('NFT metadata hash is undefined');
       }
       console.log('NFT metadata generated:', NFTMetadataHash);
 
-      console.log('Minting NFT...');
+      setProgress(70);
       const transactionHash = await mintNFT(user?.auth_type, location.id, NFTMetadataHash);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
 
+      setProgress(100);
+      toast({
+        title: "NFT Minted Successfully!",
+        description: `Your new NFT for ${location.name} has been minted.`,
+      })
+
       return transactionHash;
-    } catch (error) {
+    } catch (error: any) {
       console.error("NFT minting failed:", error);
-      throw error;
+      toast({
+        title: "NFT Minting Failed",
+        description: error.message || "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsMinting(false)
+      setProgress(0)
     }
   };
 
@@ -129,10 +151,17 @@ export default function DashboardPage() {
                       </div>
                       <Button 
                         onClick={() => handleMintNFT(location)}
+                        disabled={isMinting}
                         className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
                       >
-                        GET NFT!
+                        {(isMinting && isMintingLocation == location.id) ? 'Minting...' : 'GET NFT!'}
                       </Button>
+                      {isMinting && (isMintingLocation == location.id) && (
+                        <div className="mt-2">
+                          <Progress value={progress} className="h-2 bg-gray-700 [&>div[role=progressbar]]:bg-blue-500" />
+                          <p className="text-sm text-gray-400 mt-1">{progress}% Complete</p>
+                        </div>
+                      )}
                       <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <Info className="h-4 w-4 text-white" />
                       </div>
