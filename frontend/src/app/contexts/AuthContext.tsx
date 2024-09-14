@@ -6,6 +6,7 @@ import { User, AuthMethod, AuthContextType } from '../types/auth';
 import { ExtendedWindow } from '../types/ethere';
 import { Loading } from '../components/Loading';
 import { Web3Auth } from "@web3auth/modal";
+import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -13,6 +14,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -99,6 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (web3auth?.connected) await web3auth.logout();
 
       setUser(null);
+      router.push('/')
     } catch (error) {
       console.error('Error during logout:', error);
       throw error;
