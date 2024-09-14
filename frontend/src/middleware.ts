@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from 'next/headers';
 
-const protectedRoutes = ['/dashboard', '/spots'];
+const protectedRoutes = ['/dashboard', '/spots', '/profile'];
 const publicRoutes = ['/', 'login'];
 
 export default async function middleware(req: NextRequest) {
@@ -23,5 +23,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/:path*', '/dashboard/:path*', '/login/:path*', '/spots/:path'],
+  matcher: ['/:path*', '/dashboard/:path*', '/login/:path*', '/spots/:path', '/profile/:path'],
 }
