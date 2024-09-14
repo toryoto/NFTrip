@@ -57,7 +57,6 @@ export default function NFTGalleryPage() {
   const handleLogout = async () => {
     try {
       await logout();
-      // Redirect to login page or home page after logout
     } catch (error) {
       console.error(error);
     }
@@ -69,7 +68,7 @@ export default function NFTGalleryPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header username={"John Doe"} isLoggingOut={false} onLogout={handleLogout} />
+      <Header username={"John Doe"} wallet_address={user?.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <section>

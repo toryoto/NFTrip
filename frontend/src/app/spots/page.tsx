@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Info } from 'lucide-react'
 import { Footer } from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
-import { useRouter } from 'next/navigation'
 import Header from '../components/Header'
 import { Loading } from '../components/Loading'
 import { useLocations } from '@/hooks/useLocations'
@@ -16,13 +15,11 @@ export default function TouristSpots() {
   const { user, logout } = useAuth()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const { locations, loading, distances } = useLocations()
-  const router = useRouter()
 
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true)
       await logout()
-      router.push('/')
     } catch (error) {
       console.error(error)
     } finally {
