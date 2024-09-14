@@ -7,6 +7,13 @@ export interface User {
   auth_type: AuthMethod;
 }
 
+export interface UserProfile {
+  name: string
+  bio: string
+  avatar_hash: string
+  email: string
+}
+
 export interface AuthContextType {
   user: User | null;
   login: (method: AuthMethod) => Promise<void>;
