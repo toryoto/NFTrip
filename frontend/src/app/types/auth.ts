@@ -10,7 +10,7 @@ export interface User {
 export interface UserProfile {
   name: string
   bio: string
-  avatar_hash: string
+  avatar_url: string
   email: string
 }
 
