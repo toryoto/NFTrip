@@ -11,12 +11,14 @@ import Header from '../components/Header';
 import { Loading } from '../components/Loading';
 import { NFT, NFTAttribute } from '../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
+import { useRouter } from 'next/navigation';
 
 export default function NFTGalleryPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
   const { user, logout } = useAuth();
-  const { fetchMyNFTs } = useSmartContractInteractions()
+  const { fetchMyNFTs } = useSmartContractInteractions();
+  const router = useRouter();
 
   const ipfsToHttp = (ipfsUrl: string) => {
     return `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${ipfsUrl}`;
@@ -66,9 +68,14 @@ export default function NFTGalleryPage() {
     return <Loading />;
   }
 
+  if (!user) {
+    router.push('/');
+    return
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header username={"John Doe"} wallet_address={user?.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
+      <Header wallet_address={user?.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <section>

@@ -9,6 +9,7 @@ import { Footer } from '../components/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import { NearestNFTSpots } from '../components/NearestNFTSpots';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -22,6 +23,7 @@ export default function DashboardPage() {
 
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const router = useRouter()
 
   const handleLogout = async () => {
     try {
@@ -34,9 +36,14 @@ export default function DashboardPage() {
     }
   }
 
+  if (!user) {
+    router.push('/');
+    return
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header username={"John Doe"} wallet_address={user?.wallet_address} isLoggingOut={isLoggingOut} onLogout={handleLogout} />
+      <Header wallet_address={user?.wallet_address} isLoggingOut={isLoggingOut} onLogout={handleLogout} />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <NearestNFTSpots />

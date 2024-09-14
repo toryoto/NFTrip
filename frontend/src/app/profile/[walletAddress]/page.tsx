@@ -5,17 +5,19 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Mail, Edit, Image as ImageIcon } from 'lucide-react'
+import { Mail, Edit, Image as ImageIcon, Router } from 'lucide-react'
 import { Footer } from '@/app/components/Footer'
 import { useAuth } from '@/app/contexts/AuthContext'
 import { UserProfile } from '@/app/types/auth'
 import Header from '@/app/components/Header'
 import { supabase } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
 export default function UserProfilePage() {
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const router = useRouter()
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -78,9 +80,14 @@ export default function UserProfilePage() {
     }
   }
 
+  if (!user) {
+    router.push('/');
+    return
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header username={userProfile?.name || "Anonymous User"} wallet_address={user?.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
+      <Header wallet_address={user?.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <Card className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg shadow-lg shadow-blue-500/20">
