@@ -30,6 +30,7 @@ const Header: React.FC<HeaderProps> = ({ wallet_address, isLoggingOut, onLogout 
               alt="User Avatar"
               style={{ objectFit: 'contain' }}
               fill
+              sizes="128px"
             />
           </div>
         </Link>
