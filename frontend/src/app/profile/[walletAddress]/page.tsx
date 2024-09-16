@@ -16,7 +16,7 @@ import { Loading } from '@/app/components/Loading'
 export default function UserProfilePage() {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const { userProfile, updateProfile } = useUserProfile(1);
+  const { userProfile, updateProfile } = useUserProfile(user?.id);
 
   const handleLogout = async () => {
     try {
