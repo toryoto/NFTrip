@@ -46,7 +46,7 @@ export default function UserProfilePage() {
                 <div className="relative w-32 h-32 rounded-full overflow-hidden">
                   <Image
                     src={userProfile.avatar_url || "/images/no-user-icon.png"}
-                    alt={userProfile.name}
+                    alt={user.wallet_address}
                     fill
                     sizes="128px"
                     style={{ objectFit: 'cover' }}
@@ -55,7 +55,7 @@ export default function UserProfilePage() {
                 </div>
                 <div className="flex-1 text-center md:text-left">
                   <div className="flex flex-col md:flex-row justify-between items-center mb-2 gap-4">
-                    <h1 className="text-3xl font-bold text-blue-400">{userProfile.name}</h1>
+                    <h1 className="text-3xl font-bold text-blue-400">{userProfile.name || "No Name"}</h1>
                     <div className="flex gap-2">
                       <Button 
                         className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"

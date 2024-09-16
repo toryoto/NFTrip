@@ -10,9 +10,9 @@ export interface User {
 export interface UserProfile {
   id: number
   name: string
-  bio: string | null
-  avatar_url: string | null
-  email: string | null
+  bio: string
+  avatar_url: string
+  email: string
 }
 
 export interface AuthContextType {
