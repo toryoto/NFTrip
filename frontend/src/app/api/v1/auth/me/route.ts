@@ -22,6 +22,7 @@ export async function GET() {
       wallet_address: decoded.wallet_address,
       auth_type: decoded.auth_type
     };
+    console.log(safeUser)
 
     return NextResponse.json(safeUser);
   } catch (error) {
