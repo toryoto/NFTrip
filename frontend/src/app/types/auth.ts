@@ -2,7 +2,7 @@ export type AuthMethod = 'metamask' | 'web3auth';
 import { BrowserProvider } from 'ethers';
 
 export interface User {
-  id: string;
+  id: number;
   wallet_address: string;
   auth_type: AuthMethod;
 }
