@@ -18,7 +18,7 @@ import { Loading } from '@/app/components/Loading'
 
 export default function EditProfilePage() {
   const { user, logout } = useAuth()
-  const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user?.id);
+  const { userProfile, updateProfile, uploadAvatar, loading } = useUserProfile(user?.id);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const router = useRouter()
   const [formData, setFormData] = useState<Partial<UserProfile>>({
@@ -92,7 +92,7 @@ export default function EditProfilePage() {
     }
   };
 
-  if (!userProfile) {
+  if (!userProfile || loading) {
     return <Loading />;
   }
   
