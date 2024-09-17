@@ -1,27 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from 'next/headers';
 
-const protectedRoutes = ['/dashboard', '/spots'];
-const publicRoutes = ['/', 'login'];
+const protectedRoutes = ['/dashboard', '/spots', '/profile', '/nfts'];
+const publicRoutes = ['/', '/login'];
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.includes(path);
-  const isPublicRoute  = publicRoutes.includes(path);
+  const isProtectedRoute = protectedRoutes.some(route => path.startsWith(route));
+  const isPublicRoute = publicRoutes.some(route => path === route);
 
-  const cookie = cookies().get('auth_token')?.value;
+  const authToken = cookies().get('auth_token')?.value;
 
-  if (isProtectedRoute && !cookie) {
-    return NextResponse.redirect(new URL('/login', req.nextUrl));
+  if (isProtectedRoute && !authToken) {
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  if (isPublicRoute && cookie && !req.nextUrl.pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
+  if (isPublicRoute && authToken) {
+    return NextResponse.redirect(new URL('/dashboard', req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/:path*', '/dashboard/:path*', '/login/:path*', '/spots/:path'],
+  matcher: [
+    '/',
+    '/login',
+    '/dashboard/:path*',
+    '/spots/:path*',
+    '/profile/:path*',
+    '/nfts/:path*',
+  ],
 }

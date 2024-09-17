@@ -5,26 +5,32 @@ import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
-  username: string;
+  wallet_address: string;
   isLoggingOut: boolean;
   onLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ username, isLoggingOut, onLogout }) => {
+const sliceWalletAddress = (str: string, startChars: number, endChars: number) => {
+  if (str.length <= startChars + endChars) return str;
+  return `${str.slice(0, startChars)}...${str.slice(-endChars)}`;
+};
+
+const Header: React.FC<HeaderProps> = ({ wallet_address, isLoggingOut, onLogout }) => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60">
       <div className="container flex flex-col items-center py-4 md:flex-row md:justify-between">
         <h1 className="text-3xl font-bold text-blue-400 mb-2 md:mb-0">
           Find NFT Spots
         </h1>
-        <Link href="/profile" className="flex items-center space-x-2">
-          <div className="text-sm font-medium text-gray-300">{username}</div>
+        <Link href={`/profile/${wallet_address}`} className="flex items-center space-x-2">
+          <div className="text-sm font-medium text-gray-300">{sliceWalletAddress(wallet_address, 4,3)}</div>
           <div className="relative w-8 h-8 rounded-full overflow-hidden">
             <Image
               src="/images/no-user-icon.png"
               alt="User Avatar"
               style={{ objectFit: 'contain' }}
               fill
+              sizes="128px"
             />
           </div>
         </Link>
