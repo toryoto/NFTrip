@@ -8,7 +8,6 @@ export function useUserProfile(userId: number | undefined) {
 
   const fetchUserProfile = useCallback(async () => {
     if (!userId) {
-			console.log(11)
       return;
     }
 
@@ -18,20 +17,20 @@ export function useUserProfile(userId: number | undefined) {
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
-        .eq('id', userId)
+        .eq('user_id', 1)
         .single();
 
       if (error) throw error;
 
       setUserProfile({
         id: userId,
-        name: data?.name || "No Name",
+        name: data?.name || null,
         bio: data?.bio || null,
         avatar_url: data?.avatar_url || null,
         email: data?.email || null,
       });
     } catch (error) {
-			console.log(`Failed to fetch user profile: ${error}`);
+      console.error('Failed to fetch user profile:', error);
     } finally {
 			setLoading(false);
 		}
