@@ -15,11 +15,10 @@ import { useRouter } from 'next/navigation'
 import { UserProfile } from '@/app/types/auth'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { Loading } from '@/app/components/Loading'
-import { supabase } from '@/lib/supabase'
 
 export default function EditProfilePage() {
   const { user, logout } = useAuth()
-  const { userProfile, updateProfile } = useUserProfile(user?.id);
+  const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user?.id);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const router = useRouter()
   const [formData, setFormData] = useState<Partial<UserProfile>>({
@@ -55,25 +54,6 @@ export default function EditProfilePage() {
     }
   };
 
-  const uploadAvatar = async (file: File): Promise<string | null> => {
-    const filePath = `${user?.id}_${file.name}`;
-
-    const { error } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file);
-
-    if (error) {
-      console.error('Error uploading avatar:', error);
-      return null;
-    };
-
-    const { data } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(filePath);
-    
-    return data.publicUrl
-  };
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -95,8 +75,6 @@ export default function EditProfilePage() {
         };
         await updateProfile(updatedProfile);
         
-        console.log(updatedProfile);
-        console.log('Profile updated successfully');
         router.push(`/profile/${user?.wallet_address}`)
       } else {
         console.error('User profile not found');

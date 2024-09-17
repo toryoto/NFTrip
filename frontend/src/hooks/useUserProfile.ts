@@ -17,7 +17,7 @@ export function useUserProfile(userId: number | undefined) {
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
-        .eq('user_id', 1)
+        .eq('user_id', userId)
         .single();
 
       if (error) throw error;
@@ -69,7 +69,26 @@ export function useUserProfile(userId: number | undefined) {
 		}
 	}, [userId]);
 
+  const uploadAvatar = async (file: File): Promise<string | null> => {
+    const filePath = `${userId}_${file.name}`;
+
+    const { error } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (error) {
+      console.error('Error uploading avatar:', error);
+      return null;
+    };
+
+    const { data } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+    
+    return data.publicUrl
+  };
+
 	const refetch = useCallback(() => fetchUserProfile(), [fetchUserProfile]);
 
-  return { userProfile, loading, updateProfile, refetch }; 
+  return { userProfile, loading, uploadAvatar, updateProfile, refetch }; 
 }
