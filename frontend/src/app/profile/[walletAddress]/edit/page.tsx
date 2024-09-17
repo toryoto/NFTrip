@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { UserProfile } from '@/app/types/auth'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { Loading } from '@/app/components/Loading'
+import { X } from 'lucide-react'
 
 export default function EditProfilePage() {
   const { user, logout } = useAuth()
@@ -54,6 +55,14 @@ export default function EditProfilePage() {
     }
   };
 
+  const handleResetAvatar = () => {
+    setFormData(prevData => ({
+      ...prevData,
+      avatar_url: ''
+    }));
+    setAvatarFile(null);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -71,7 +80,7 @@ export default function EditProfilePage() {
           ...Object.fromEntries(
             Object.entries(formData).filter(([_, value]) => value !== '')
           ),
-          avatar_url: avatar_url || userProfile.avatar_url
+          avatar_url: avatar_url
         };
         await updateProfile(updatedProfile);
         
@@ -109,15 +118,16 @@ export default function EditProfilePage() {
           <Card className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg shadow-lg shadow-blue-500/20">
             <form onSubmit={handleSubmit}>
               <CardContent className="p-6 space-y-6">
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="relative w-32 h-32 rounded-full overflow-hidden group">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="relative w-32 h-32">
+                  <div className="w-32 h-32 rounded-full overflow-hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                     <Image
                       src={formData.avatar_url || "/images/no-user-icon.png"}
                       alt={formData.name || "User avatar"}
                       fill
                       style={{ objectFit: 'cover' }}
                       className="transition-opacity duration-300 group-hover:opacity-50"
-                      sizes="200px"
+                      sizes="128px"
                       priority
                     />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -134,8 +144,19 @@ export default function EditProfilePage() {
                       />
                     </div>
                   </div>
-                  <p className="text-sm text-gray-400">Click to change avatar</p>
+                  {formData.avatar_url && (
+                    <button
+                      type="button"
+                      onClick={handleResetAvatar}
+                      className="absolute top-0 right-0 bg-red-500 rounded-full p-1 shadow-md transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+                      aria-label="Reset avatar"
+                    >
+                      <X className="h-4 w-4 text-white" />
+                    </button>
+                  )}
                 </div>
+                <p className="text-sm text-gray-400">Click to change avatar</p>
+              </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-white">Name</Label>
