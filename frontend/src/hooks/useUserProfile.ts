@@ -72,20 +72,25 @@ export function useUserProfile(userId: number | undefined) {
   const uploadAvatar = async (file: File): Promise<string | null> => {
     const filePath = `${userId}_${file.name}`;
 
-    const { error } = await supabase.storage
+    try {
+      const { error } = await supabase.storage
       .from('avatars')
-      .upload(filePath, file);
+      .upload(filePath, file, { upsert: true });
 
-    if (error) {
-      console.error('Error uploading avatar:', error);
+      if (error) {
+        console.error('Error uploading avatar:', error);
+        return null;
+      };
+
+      const { data } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+      
+      return data.publicUrl
+    } catch (error) {
+      console.error('Error in avatar upload process:', error);
       return null;
-    };
-
-    const { data } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(filePath);
-    
-    return data.publicUrl
+    }
   };
 
 	const refetch = useCallback(() => fetchUserProfile(), [fetchUserProfile]);
