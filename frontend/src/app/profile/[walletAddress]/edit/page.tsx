@@ -44,7 +44,7 @@ export default function EditProfilePage() {
     const { name, value } = event.target;
     setFormData(prevData => ({
       ...prevData,
-      [name]: value
+      [name]: value || null
     }));
   };
 
