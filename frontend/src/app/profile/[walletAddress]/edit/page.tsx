@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -13,18 +13,98 @@ import { useAuth } from '@/app/contexts/AuthContext'
 import Header from '@/app/components/Header'
 import { useRouter } from 'next/navigation'
 import { UserProfile } from '@/app/types/auth'
+import { useUserProfile } from '@/hooks/useUserProfile'
+import { Loading } from '@/app/components/Loading'
+import { supabase } from '@/lib/supabase'
 
-export default function Component() {
+export default function EditProfilePage() {
   const { user, logout } = useAuth()
+  const { userProfile, updateProfile } = useUserProfile(user?.id);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const router = useRouter()
-  
-  // Mock user data - replace with actual data fetching logic
-  const [userProfile, setUserProfile] = useState<UserProfile>({
-    name: "Alex Johnson",
-    bio: "Blockchain enthusiast and NFT collector. Exploring the intersection of art and technology.",
-    avatar_url: "",
-    email: "alex@example.com",
-  })
+  const [formData, setFormData] = useState<Partial<UserProfile>>({
+    name: '',
+    email: '',
+    bio: '',
+    avatar_url: ''
+  });
+
+  // フォーム管理stateにページアクセス時のデータをセットする
+  useEffect(() => {
+    if (userProfile) {
+      setFormData({
+        name: userProfile.name,
+        email: userProfile.email,
+        bio: userProfile.bio,
+        avatar_url: userProfile.avatar_url
+      });
+    }
+  }, [userProfile]);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setAvatarFile(event.target.files[0]);
+    }
+  };
+
+  const uploadAvatar = async (file: File): Promise<string | null> => {
+    const filePath = `${user?.id}_${file.name}`;
+
+    const { error } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (error) {
+      console.error('Error uploading avatar:', error);
+      return null;
+    };
+
+    const { data } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+    
+    return data.publicUrl
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      let avatar_url = formData.avatar_url;
+
+      if (avatarFile) {
+        const uploadedUrl = await uploadAvatar(avatarFile);
+        if (uploadedUrl) {
+          avatar_url = uploadedUrl;
+        }
+      }
+
+      if (userProfile) {
+        const updatedProfile: Partial<UserProfile> = {
+          ...Object.fromEntries(
+            Object.entries(formData).filter(([_, value]) => value !== '')
+          ),
+          avatar_url: avatar_url || userProfile.avatar_url
+        };
+        await updateProfile(updatedProfile);
+        
+        console.log(updatedProfile);
+        console.log('Profile updated successfully');
+        router.push(`/profile/${user?.wallet_address}`)
+      } else {
+        console.error('User profile not found');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  }
 
   const handleLogout = async () => {
     try {
@@ -32,24 +112,12 @@ export default function Component() {
     } catch (error) {
       console.error(error)
     }
-  }
+  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setUserProfile(prev => ({ ...prev, [name]: value }))
+  if (!userProfile) {
+    return <Loading />;
   }
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Handle file upload logic here
-    console.log("Avatar file selected:", e.target.files?.[0])
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle form submission logic here
-    console.log("Form submitted with data:", userProfile)
-  }
-
+  
   if (!user) {
     router.push('/');
     return
@@ -66,8 +134,8 @@ export default function Component() {
                 <div className="flex flex-col items-center space-y-4">
                   <div className="relative w-32 h-32 rounded-full overflow-hidden group">
                     <Image
-                      src={"/images/no-user-icon.png" }
-                      alt={userProfile.name}
+                      src={formData.avatar_url || "/images/no-user-icon.png"}
+                      alt={formData.name || "User avatar"}
                       fill
                       style={{ objectFit: 'cover' }}
                       className="transition-opacity duration-300 group-hover:opacity-50"
@@ -89,37 +157,41 @@ export default function Component() {
                   <p className="text-sm text-gray-400">Click to change avatar</p>
                 </div>
 
-                <div className="space-y-2 text-white">
-                  <Label htmlFor="name">Name</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-white">Name</Label>
                   <Input
                     id="name"
                     name="name"
-                    value={userProfile.name}
+                    value={formData.name ?? ''}
                     onChange={handleInputChange}
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    placeholder="Enter your name"
                   />
                 </div>
 
-                <div className="space-y-2 text-white">
-                  <Label htmlFor="email">Email</Label>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-white">Email</Label>
                   <Input
                     id="email"
                     name="email"
                     type="email"
-                    value={userProfile.email}
+                    value={formData.email ?? ''}
                     onChange={handleInputChange}
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    placeholder="Enter your email"
                   />
                 </div>
 
-                <div className="space-y-2 text-white">
-                  <Label htmlFor="bio">Bio</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="bio" className="text-white">Bio</Label>
                   <Textarea
                     id="bio"
                     name="bio"
-                    value={userProfile.bio}
+                    value={formData.bio ?? ''}
                     onChange={handleInputChange}
-                    className="bg-gray-700 border-gray-600 text-white min-h-[100px]"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 min-h-[100px]"
+                    placeholder="Tell us about yourself"
                   />
                 </div>
               </CardContent>
