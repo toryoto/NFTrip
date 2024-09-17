@@ -117,6 +117,8 @@ export default function EditProfilePage() {
                       fill
                       style={{ objectFit: 'cover' }}
                       className="transition-opacity duration-300 group-hover:opacity-50"
+                      sizes="200px"
+                      priority
                     />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <Label htmlFor="avatar-upload" className="cursor-pointer">

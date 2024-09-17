@@ -48,9 +48,10 @@ export default function UserProfilePage() {
                     src={userProfile.avatar_url || "/images/no-user-icon.png"}
                     alt={user.wallet_address}
                     fill
-                    sizes="128px"
+                    sizes="200px"
                     style={{ objectFit: 'cover' }}
                     className="transition-transform duration-300 hover:scale-110"
+                    priority
                   />
                 </div>
                 <div className="flex-1 text-center md:text-left">
