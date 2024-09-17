@@ -19,7 +19,8 @@ import { X } from 'lucide-react'
 
 export default function EditProfilePage() {
   const { user, logout } = useAuth()
-  const { userProfile, updateProfile, uploadAvatar, loading } = useUserProfile(user?.id);
+  const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user?.id);
+  const [ loading, setLoading ] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const router = useRouter()
   const [formData, setFormData] = useState<Partial<UserProfile>>({
@@ -64,6 +65,7 @@ export default function EditProfilePage() {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     event.preventDefault();
     try {
       let avatar_url = formData.avatar_url;
@@ -90,6 +92,8 @@ export default function EditProfilePage() {
       }
     } catch (error) {
       console.error('Error updating profile:', error);
+    } finally {
+      setLoading(false);
     }
   }
 

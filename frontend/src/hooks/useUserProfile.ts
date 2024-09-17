@@ -4,7 +4,6 @@ import { UserProfile } from '@/app/types/auth';
 
 export function useUserProfile(userId: number | undefined) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-	const [loading, setLoading] = useState(true);
 
   const fetchUserProfile = useCallback(async () => {
     if (!userId) {
@@ -12,8 +11,6 @@ export function useUserProfile(userId: number | undefined) {
     }
 
     try {
-			setLoading(true);
-
       const { data, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -31,9 +28,7 @@ export function useUserProfile(userId: number | undefined) {
       });
     } catch (error) {
       console.error('Failed to fetch user profile:', error);
-    } finally {
-			setLoading(false);
-		}
+    }
   }, [userId]);
 
 	useEffect(() => {
@@ -44,8 +39,6 @@ export function useUserProfile(userId: number | undefined) {
 		if (!userId) return;
 
 		try {
-			setLoading(true);
-
 			const { error } = await supabase
 				.from('user_profiles')
 				.update(data)
@@ -64,8 +57,6 @@ export function useUserProfile(userId: number | undefined) {
 			} : null)
 		} catch (error) {
 			console.log(`Failed to update user profile${error}`);
-		} finally {
-			setLoading(false)
 		}
 	}, [userId]);
 
@@ -95,5 +86,5 @@ export function useUserProfile(userId: number | undefined) {
 
 	const refetch = useCallback(() => fetchUserProfile(), [fetchUserProfile]);
 
-  return { userProfile, loading, uploadAvatar, updateProfile, refetch }; 
+  return { userProfile, uploadAvatar, updateProfile, refetch }; 
 }
