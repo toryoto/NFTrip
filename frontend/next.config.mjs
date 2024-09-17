@@ -13,7 +13,8 @@ const nextConfig = {
         hostname: 'ipfs.io',
         pathname: '/ipfs/**',
       },
-    ]
+    ],
+    domains: ['hbdlgkqiqnzkdlzrcihg.supabase.co'],
   },
 };
 
