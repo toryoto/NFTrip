@@ -16,7 +16,7 @@ export interface UserProfile {
 }
 
 export interface AuthContextType {
-  user: User | null;
+  user: User;
   login: (method: AuthMethod) => Promise<void>;
   logout: () => Promise<void>;
   getProvider: (method: AuthMethod) => Promise<BrowserProvider>
