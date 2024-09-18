@@ -1,21 +1,40 @@
-import React from 'react';
+'use client'
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '../contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 
-interface HeaderProps {
-  wallet_address: string;
-  isLoggingOut: boolean;
-  onLogout: () => void;
-}
+const Header: React.FC = () => {
+  const { user, logout } = useAuth()
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const router = useRouter()
 
-const sliceWalletAddress = (str: string, startChars: number, endChars: number) => {
-  if (str.length <= startChars + endChars) return str;
-  return `${str.slice(0, startChars)}...${str.slice(-endChars)}`;
-};
+  const sliceWalletAddress = (str: string, startChars: number, endChars: number) => {
+    if (str.length <= startChars + endChars) return str;
+    return `${str.slice(0, startChars)}...${str.slice(-endChars)}`;
+  };
 
-const Header: React.FC<HeaderProps> = ({ wallet_address, isLoggingOut, onLogout }) => {
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    try {
+      await logout();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  }
+
+  if (!user) {
+    router.push('/');
+    return
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60">
       <div className="container flex flex-wrap items-center justify-between py-4 gap-4">
@@ -23,8 +42,8 @@ const Header: React.FC<HeaderProps> = ({ wallet_address, isLoggingOut, onLogout 
           Find NFT Spots
         </h1>
         <div className="flex items-center space-x-4">
-          <Link href={`/profile/${wallet_address}`} className="flex items-center space-x-2">
-            <div className="text-sm font-medium text-gray-300">{sliceWalletAddress(wallet_address, 4, 3)}</div>
+          <Link href={`/profile/${user.wallet_address}`} className="flex items-center space-x-2">
+            <div className="text-sm font-medium text-gray-300">{sliceWalletAddress(user.wallet_address, 4, 3)}</div>
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
               <Image
                 src="/images/no-user-icon.png"
@@ -36,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ wallet_address, isLoggingOut, onLogout 
             </div>
           </Link>
           <Button
-            onClick={onLogout}
+            onClick={handleLogout}
             disabled={isLoggingOut}
             className="bg-red-600 hover:bg-red-700 text-white"
           >
