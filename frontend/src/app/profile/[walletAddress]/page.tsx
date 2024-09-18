@@ -14,30 +14,19 @@ import { useUserProfile } from '@/hooks/useUserProfile'
 import { Loading } from '@/app/components/Loading'
 
 export default function UserProfilePage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
   const { userProfile } = useUserProfile(user?.id);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   if (!userProfile) {
     return <Loading />;
   }
   
-  if (!user) {
-    router.push('/');
-    return
-  }
+  if (!user) return
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header wallet_address={user.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
+      <Header />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <Card className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg shadow-lg shadow-blue-500/20">

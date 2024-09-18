@@ -13,21 +13,9 @@ import { useLocations } from '@/hooks/useLocations'
 import { useRouter } from 'next/navigation'
 
 export default function TouristSpots() {
-  const { user, logout } = useAuth()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { user } = useAuth()
   const { locations, loading, distances } = useLocations()
   const router = useRouter()
-
-  const handleLogout = async () => {
-    try {
-      setIsLoggingOut(true)
-      await logout()
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsLoggingOut(false)
-    }
-  }
 
   if (loading) {
     return <Loading />;
@@ -40,7 +28,7 @@ export default function TouristSpots() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header wallet_address={user?.wallet_address} isLoggingOut={isLoggingOut} onLogout={handleLogout} />
+      <Header />
       <main className="flex-1 py-8 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {locations.map((location) => (

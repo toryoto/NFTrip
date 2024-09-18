@@ -56,14 +56,6 @@ export default function NFTGalleryPage() {
     fetchNFTs();
   }, [user]);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   if (loading) {
     return <Loading />;
   }
@@ -75,7 +67,7 @@ export default function NFTGalleryPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header wallet_address={user?.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
+      <Header />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <section>

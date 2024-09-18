@@ -18,7 +18,7 @@ import { Loading } from '@/app/components/Loading'
 import { X } from 'lucide-react'
 
 export default function EditProfilePage() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user?.id);
   const [ loading, setLoading ] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -97,14 +97,6 @@ export default function EditProfilePage() {
     }
   }
 
-  const handleLogout = async () => {
-    try {
-      await logout()
-    } catch (error) {
-      console.error(error)
-    }
-  };
-
   if (!userProfile || loading) {
     return <Loading />;
   }
@@ -116,7 +108,7 @@ export default function EditProfilePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header wallet_address={user.wallet_address} isLoggingOut={false} onLogout={handleLogout} />
+      <Header />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto max-w-2xl">
           <Card className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg shadow-lg shadow-blue-500/20">

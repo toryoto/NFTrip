@@ -1,7 +1,5 @@
 'use client'
 
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Award, Target, ChevronRight } from 'lucide-react';
@@ -9,9 +7,11 @@ import { Footer } from '../components/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import { NearestNFTSpots } from '../components/NearestNFTSpots';
-import { useRouter } from 'next/navigation';
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+
+
   // Mock data - replace with actual data fetching logic
   const userLevel = 5;
   const totalNFTs = 23;
@@ -21,29 +21,11 @@ export default function DashboardPage() {
     { id: 3, title: "Reach level 10", progress: 50 },
   ];
 
-  const { user, logout } = useAuth();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const router = useRouter()
-
-  const handleLogout = async () => {
-    try {
-      setIsLoggingOut(true);
-      await logout();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoggingOut(false);
-    }
-  }
-
-  if (!user) {
-    router.push('/');
-    return
-  }
+  if (!user) return
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header wallet_address={user?.wallet_address} isLoggingOut={isLoggingOut} onLogout={handleLogout} />
+      <Header />
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <NearestNFTSpots />
