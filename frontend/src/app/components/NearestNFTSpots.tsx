@@ -70,11 +70,7 @@ export const NearestNFTSpots: React.FC = () => {
       setProgress(0)
     }
   };
-
-  if (loading) {
-    return <Loading />;
-  }
-
+  
   return (
     <section>
       <div className="flex justify-between items-center mb-4">
