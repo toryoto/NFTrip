@@ -40,9 +40,11 @@ const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-800 bg-black/95 backdrop-blur supports-[backdrop-filter]:bg-black/60">
       <div className="container flex flex-wrap items-center justify-between py-4 gap-4">
-        <h1 className="text-3xl font-bold text-blue-400">
-          Find NFT Spots
-        </h1>
+        <Link href='/dashboard' className="flex items-center space-x-2">
+          <h1 className="text-3xl font-bold text-blue-400">
+            Find NFT Spots
+          </h1>
+        </Link>
         <div className="flex items-center space-x-4">
           <Link href={`/profile/${user.wallet_address}`} className="flex items-center space-x-2">
             <div className="text-sm font-medium text-gray-300">{sliceWalletAddress(user.wallet_address, 4, 3)}</div>
