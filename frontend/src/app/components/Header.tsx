@@ -7,9 +7,11 @@ import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth()
+  const { userProfile } = useUserProfile(user?.id);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter()
 
@@ -46,9 +48,10 @@ const Header: React.FC = () => {
             <div className="text-sm font-medium text-gray-300">{sliceWalletAddress(user.wallet_address, 4, 3)}</div>
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
               <Image
-                src="/images/no-user-icon.png"
+                src={ userProfile?.avatar_url || "/images/no-user-icon.png"}
                 alt="User Avatar"
-                style={{ objectFit: 'contain' }}
+                style={{ objectFit: 'cover' }}
+                className="transition-opacity duration-300 group-hover:opacity-50"
                 fill
                 sizes="128px"
               />
