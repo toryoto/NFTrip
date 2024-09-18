@@ -19,7 +19,7 @@ import { X } from 'lucide-react'
 
 export default function EditProfilePage() {
   const { user } = useAuth()
-  const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user?.id);
+  const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user.id);
   const [ loading, setLoading ] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const router = useRouter()
@@ -86,7 +86,7 @@ export default function EditProfilePage() {
         };
         await updateProfile(updatedProfile);
         
-        router.push(`/profile/${user?.wallet_address}`)
+        router.push(`/profile/${user.wallet_address}`)
       } else {
         console.error('User profile not found');
       }
@@ -99,11 +99,6 @@ export default function EditProfilePage() {
 
   if (!userProfile || loading) {
     return <Loading />;
-  }
-  
-  if (!user) {
-    router.push('/');
-    return
   }
 
   return (

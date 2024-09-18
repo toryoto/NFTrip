@@ -21,8 +21,6 @@ export default function DashboardPage() {
     { id: 3, title: "Reach level 10", progress: 50 },
   ];
 
-  if (!user) return
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <Header />

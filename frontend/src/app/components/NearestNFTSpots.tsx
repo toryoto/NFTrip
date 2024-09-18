@@ -48,7 +48,7 @@ export const NearestNFTSpots: React.FC = () => {
       console.log('NFT metadata generated:', NFTMetadataHash);
 
       setProgress(70);
-      const transactionHash = await mintNFT(user?.auth_type, location.id, NFTMetadataHash);
+      const transactionHash = await mintNFT(user.auth_type, location.id, NFTMetadataHash);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
 
       setProgress(100);

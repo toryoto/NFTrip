@@ -16,13 +16,11 @@ import { Loading } from '@/app/components/Loading'
 export default function UserProfilePage() {
   const { user } = useAuth();
   const router = useRouter();
-  const { userProfile } = useUserProfile(user?.id);
+  const { userProfile } = useUserProfile(user.id);
 
   if (!userProfile) {
     return <Loading />;
   }
-  
-  if (!user) return
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
