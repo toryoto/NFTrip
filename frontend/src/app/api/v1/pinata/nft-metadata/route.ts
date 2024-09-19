@@ -19,7 +19,14 @@ export async function POST(request: Request) {
         },
         {
           trait_type: "Minted Date",
-          value: new Date().toISOString()
+          value: new Date().toLocaleString('sv-SE', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).replace(',', '-')
         }
       ]
     };
