@@ -14,7 +14,6 @@ export default function DashboardPage() {
 
   // Mock data - replace with actual data fetching logic
   const userLevel = 5;
-  const totalNFTs = 23;
   const missions = [
     { id: 1, title: "Collect 3 NFTs in Shibuya", progress: 66 },
     { id: 2, title: "Visit 5 historical landmarks", progress: 40 },
@@ -38,7 +37,7 @@ export default function DashboardPage() {
                       <Award className="h-8 w-8 text-yellow-400" />
                       <div className="text-2xl font-bold text-white">Level {userLevel}</div>
                     </div>
-                    <div className="text-3xl font-bold text-blue-400">{totalNFTs} NFTs</div>
+                    <div className="text-3xl font-bold text-blue-400">{user?.total_nfts} NFTs</div>
                   </div>
                   <div>
                     <div className="flex justify-between mb-2">
