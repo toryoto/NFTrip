@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import TouristNFTABI from '../../abi/TouristNFT.json';
 import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
+import { supabase } from "@/lib/supabase";
 
 const CONTRACT_ADDRESS = '0xe075066926eAe97a438DC5680edFD7D3232168E8';
 
@@ -32,10 +33,34 @@ export function useSmartContractInteractions() {
       const contract = await getContract(method);
       const tx = await contract.mint(locationId, tokenURI);
       const receipt = await tx.wait();
+
+      await updateTotalNFTs(method);
       return receipt.transactionHash;
     } catch (error) {
       console.error("Mint process failed:", error);
       throw error;
+    }
+  };
+
+  const updateTotalNFTs = async (method: AuthMethod) => {
+    try {
+      const contract = await getContract(method);
+      const signer = await (await getProvider(method)).getSigner();
+      const myAddress = await signer.getAddress();
+
+      let balance = await contract.balanceOf(myAddress);
+      const balanceNumber = Number(balance); // BigInt を数値に変換
+      
+      const { error } = await supabase
+        .from('users')
+        .update({ total_nfts: balance })
+        .eq('wallet_address', myAddress);
+
+      if (error) {
+        console.error('Error updating total NFTs:', error);
+      }
+    } catch (error) {
+      console.error('Error fetching total NFTs:', error);
     }
   };
 
@@ -64,6 +89,6 @@ export function useSmartContractInteractions() {
   return {
     getAllLocationIds,
     mintNFT,
-    fetchMyNFTs
+    fetchMyNFTs,
   }
 }
