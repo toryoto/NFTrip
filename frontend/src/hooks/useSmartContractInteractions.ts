@@ -61,9 +61,22 @@ export function useSmartContractInteractions() {
     }
   };
 
+  const getNFTAmount = async (method: AuthMethod) => {
+    try {
+      const contract = await getContract(method);
+      const signer = await (await getProvider(method)).getSigner();
+      const myAddress = await signer.getAddress();
+      const balance = await contract.balanceOf(myAddress);
+      return balance;
+    } catch (error) {
+      console.error('Error fetching NFT amount:', error);
+    }
+  };
+
   return {
     getAllLocationIds,
     mintNFT,
-    fetchMyNFTs
+    fetchMyNFTs,
+    getNFTAmount
   }
 }

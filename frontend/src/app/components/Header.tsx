@@ -11,7 +11,7 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth()
-  const { userProfile } = useUserProfile(user.id);
+  const { userProfile } = useUserProfile(user?.id);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter()
 
