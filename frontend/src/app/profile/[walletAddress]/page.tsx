@@ -16,7 +16,7 @@ import { Loading } from '@/app/components/Loading'
 export default function UserProfilePage() {
   const { user } = useAuth();
   const router = useRouter();
-  const { userProfile } = useUserProfile(user.id);
+  const { userProfile } = useUserProfile(user?.id);
 
   if (!userProfile) {
     return <Loading />;
@@ -33,7 +33,7 @@ export default function UserProfilePage() {
                 <div className="relative w-32 h-32 rounded-full overflow-hidden">
                   <Image
                     src={userProfile.avatar_url || "/images/no-user-icon.png"}
-                    alt={user.wallet_address}
+                    alt={user?.wallet_address || "no wallet address"}
                     fill
                     sizes="200px"
                     style={{ objectFit: 'cover' }}
@@ -47,7 +47,7 @@ export default function UserProfilePage() {
                     <div className="flex gap-2">
                       <Button 
                         className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-                        onClick={() => router.push(`/profile/${user.wallet_address}/edit`)}  // 編集ページへのナビゲーション
+                        onClick={() => router.push(`/profile/${user?.wallet_address}/edit`)}  // 編集ページへのナビゲーション
                       >
                         <Edit className="mr-2 h-4 w-4" />
                         Edit Profile
