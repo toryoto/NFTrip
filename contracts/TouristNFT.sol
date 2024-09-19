@@ -64,6 +64,11 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     return super.tokenURI(tokenId);
   }
 
+  function burn(uint256 tokenId) public {
+    require(_isApprovedOrOwner(_msgSender(), tokenId), "Caller is not owner nor approved");
+    _burn(tokenId);
+  }
+
   function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
     super._burn(tokenId);
   }
