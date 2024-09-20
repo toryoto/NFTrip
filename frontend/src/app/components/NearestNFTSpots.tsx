@@ -54,7 +54,7 @@ export const NearestNFTSpots: React.FC = () => {
       setProgress(100);
       toast({
         title: "NFT Minted Successfully!",
-        description: `Your new NFT for ${location.name} has been minted.`,
+        description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
       })
 
       return transactionHash;
