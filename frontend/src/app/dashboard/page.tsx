@@ -1,8 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Award, Target, ChevronRight } from 'lucide-react';
+import { Target, ChevronRight } from 'lucide-react';
 import { Footer } from '../components/Footer';
-import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import { NearestNFTSpots } from '../components/NearestNFTSpots';
 import { UserProgressCard } from "../components/UserProgressCard";
