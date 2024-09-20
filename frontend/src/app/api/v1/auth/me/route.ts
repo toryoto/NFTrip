@@ -20,7 +20,7 @@ export async function GET() {
     const safeUser = {
       id: decoded.id,
       wallet_address: decoded.wallet_address,
-      auth_type: decoded.auth_type
+      auth_type: decoded.auth_type,
     };
 
     return NextResponse.json(safeUser);

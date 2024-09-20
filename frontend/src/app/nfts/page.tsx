@@ -9,16 +9,14 @@ import { Footer } from '../components/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import Header from '../components/Header';
 import { Loading } from '../components/Loading';
-import { NFT, NFTAttribute } from '../types/nft';
+import { NFT } from '../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
-import { useRouter } from 'next/navigation';
 
 export default function NFTGalleryPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { fetchMyNFTs } = useSmartContractInteractions();
-  const router = useRouter();
 
   const ipfsToHttp = (ipfsUrl: string) => {
     return `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${ipfsUrl}`;
@@ -33,9 +31,9 @@ export default function NFTGalleryPage() {
             setLoading(false)
             return null;
           }
+          console.log(2222,fetchedNFTs)
 
           const processedNFTs = await Promise.all(fetchedNFTs.map(async (uri) => {
-            console.log(uri)
             const response = await fetch(uri.replace('ipfs://', 'https://chocolate-secret-cat-833.mypinata.cloud/ipfs/'));
             const data = await response.json();
             return {
@@ -43,7 +41,6 @@ export default function NFTGalleryPage() {
               image: ipfsToHttp(data.image)
             };
           }));
-          console.log(processedNFTs)
           setNfts(processedNFTs);
         } catch (error) {
           console.error('Error fetching NFTs:', error);

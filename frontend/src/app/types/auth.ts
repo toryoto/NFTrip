@@ -5,6 +5,7 @@ export interface User {
   id: number;
   wallet_address: string;
   auth_type: AuthMethod;
+  total_nfts: number;
 }
 
 export interface UserProfile {

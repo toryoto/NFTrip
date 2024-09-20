@@ -42,7 +42,8 @@ export function useUserProfile(userId: number | undefined) {
 			const { error } = await supabase
 				.from('user_profiles')
 				.update(data)
-				.eq('id', userId)
+				.eq('user_id', userId)
+        .single()
 			
 			if (error) throw error;
 

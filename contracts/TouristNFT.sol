@@ -44,7 +44,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   function mint(uint256 locationId, string memory _tokenURI) public {
     require(locations[locationId].dailyMintLimit > 0, "Location does not exist");
     require(checkDailyLimit(locationId), "Daily mint limit reached for this location");
-    require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
+    //require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
 
     uint256 tokenId = _tokenIdCounter.current();
     _tokenIdCounter.increment();
@@ -62,6 +62,11 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
 
   function tokenURI(uint256 tokenId) public view virtual override(ERC721, ERC721URIStorage) returns (string memory) {
     return super.tokenURI(tokenId);
+  }
+
+  function burn(uint256 tokenId) public {
+    require(_isApprovedOrOwner(_msgSender(), tokenId), "Caller is not owner nor approved");
+    _burn(tokenId);
   }
 
   function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {

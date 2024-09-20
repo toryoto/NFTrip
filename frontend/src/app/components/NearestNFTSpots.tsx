@@ -15,6 +15,7 @@ import { getNFTImage } from '@/lib/getLocations';
 import { generateAndUploadNFTMetaData } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
+import { useUserData } from '@/hooks/useUserData';
 
 export const NearestNFTSpots: React.FC = () => {
   const { user } = useAuth();
@@ -24,6 +25,7 @@ export const NearestNFTSpots: React.FC = () => {
   const [isMintingLocation, setIsMintingLocation] = useState<number>();
   const [progress, setProgress] = useState(0)
   const { toast } = useToast()
+  const { refreshUserData } = useUserData();
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
     if (!user) {
@@ -54,8 +56,11 @@ export const NearestNFTSpots: React.FC = () => {
       setProgress(100);
       toast({
         title: "NFT Minted Successfully!",
-        description: `Your new NFT for ${location.name} has been minted.`,
+        description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
       })
+
+      // ユーザデータをリフレッシュ
+      refreshUserData();
 
       return transactionHash;
     } catch (error: any) {
@@ -94,6 +99,7 @@ export const NearestNFTSpots: React.FC = () => {
                 alt={location.name}
                 width={640}
                 height={360}
+                priority
                 className="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
