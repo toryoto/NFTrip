@@ -6,7 +6,7 @@ import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
 import { supabase } from "@/lib/supabase";
 
-const CONTRACT_ADDRESS = '0xb15C65F0280b03000487C37E47C9BF73970eD789';
+const CONTRACT_ADDRESS = '0x5e837921E12fDdB23b0766792366384B68Df6244';
 
 export function useSmartContractInteractions() {
   const { getProvider } = useAuth();
@@ -31,12 +31,20 @@ export function useSmartContractInteractions() {
   const mintNFT = async (method: AuthMethod, locationId: number, tokenURI: string) => {
     try {
       const contract = await getContract(method);
+
+      // イベントリスナーを設定
+      const eventPromise = listenForNFTMinted(contract);
+      
       const tx = await contract.mint(locationId, tokenURI);
-      const receipt = await tx.wait();
+      await tx.wait();
+
+      // イベントからトランザクションハッシュを取得
+      const transactionHash = await eventPromise;
 
       // ミント後のユーザのNFT総数をオンチェーンから取得してDBを更新
       await updateTotalNFTs(method);
-      return receipt.transactionHash;
+
+      return transactionHash;
     } catch (error) {
       console.error("Mint process failed:", error);
       throw error;
@@ -80,13 +88,23 @@ export function useSmartContractInteractions() {
         const tokenURI = await contract.tokenURI(tokenId);
         nfts.push(tokenURI);
       }
-
       return nfts;
     } catch (error) {
       console.error('Error fetching NFTs:', error);
     }
   };
 
+  const listenForNFTMinted = (contract: ethers.Contract): Promise<string> => {
+    return new Promise((resolve) => {
+      const listener = (...args: any[]) => {
+        const event = args[args.length - 1];
+        contract.off("NFTMinted", listener);
+        resolve(event.log.transactionHash);
+      };
+  
+      contract.on("NFTMinted", listener);
+    });
+  };
 
   async function burnAllNFTs(method: AuthMethod) {
     try {
