@@ -44,7 +44,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   function mint(uint256 locationId, string memory _tokenURI) public {
     require(locations[locationId].dailyMintLimit > 0, "Location does not exist");
     require(checkDailyLimit(locationId), "Daily mint limit reached for this location");
-    require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
+    //require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
 
     uint256 tokenId = _tokenIdCounter.current();
     _tokenIdCounter.increment();
