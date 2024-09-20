@@ -15,6 +15,7 @@ import { getNFTImage } from '@/lib/getLocations';
 import { generateAndUploadNFTMetaData } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
+import { useUserData } from '@/hooks/useUserData';
 
 export const NearestNFTSpots: React.FC = () => {
   const { user } = useAuth();
@@ -24,6 +25,7 @@ export const NearestNFTSpots: React.FC = () => {
   const [isMintingLocation, setIsMintingLocation] = useState<number>();
   const [progress, setProgress] = useState(0)
   const { toast } = useToast()
+  const { refreshUserData } = useUserData();
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
     if (!user) {
@@ -56,6 +58,9 @@ export const NearestNFTSpots: React.FC = () => {
         title: "NFT Minted Successfully!",
         description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
       })
+
+      // ユーザデータをリフレッシュ
+      refreshUserData();
 
       return transactionHash;
     } catch (error: any) {
