@@ -16,9 +16,8 @@ import { useRouter } from 'next/navigation';
 export default function NFTGalleryPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { fetchMyNFTs } = useSmartContractInteractions();
-  const router = useRouter();
 
   const ipfsToHttp = (ipfsUrl: string) => {
     return `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${ipfsUrl}`;
@@ -35,8 +34,7 @@ export default function NFTGalleryPage() {
           }
 
           const processedNFTs = await Promise.all(fetchedNFTs.map(async (uri) => {
-            console.log(uri)
-            const response = await fetch(uri.replace('ipfs://', 'https://chocolate-secret-cat-833.mypinata.cloud/ipfs/'));
+            const response = await fetch(uri.replace('ipfs://', 'https://ipfs.io/ipfs/'));
             const data = await response.json();
             return {
               ...data,
