@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     if (error) throw error;
 
     // JWTトークンの生成
-    const token = jwt.sign({ id: data.id, wallet_address, auth_type, total_nfts: data.total_nfts }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: data.id, wallet_address, auth_type }, JWT_SECRET, { expiresIn: '1d' });
 
     // cookieをセット
     cookies().set('auth_token', token, {

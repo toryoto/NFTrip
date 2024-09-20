@@ -21,7 +21,6 @@ export async function GET() {
       id: decoded.id,
       wallet_address: decoded.wallet_address,
       auth_type: decoded.auth_type,
-      total_nfts: decoded.total_nfts
     };
 
     return NextResponse.json(safeUser);
