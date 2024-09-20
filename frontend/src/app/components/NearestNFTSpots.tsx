@@ -94,6 +94,7 @@ export const NearestNFTSpots: React.FC = () => {
                 alt={location.name}
                 width={640}
                 height={360}
+                priority
                 className="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
