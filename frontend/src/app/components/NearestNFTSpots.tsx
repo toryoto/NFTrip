@@ -15,7 +15,8 @@ import { getNFTImage } from '@/lib/getLocations';
 import { generateAndUploadNFTMetaData } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
-import { useUserData } from '@/hooks/useUserData';
+import { useRouter } from 'next/navigation';
+import { updateUserData } from '@/app/actions/totalNFTs';
 
 export const NearestNFTSpots: React.FC = () => {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ export const NearestNFTSpots: React.FC = () => {
   const [isMintingLocation, setIsMintingLocation] = useState<number>();
   const [progress, setProgress] = useState(0)
   const { toast } = useToast()
-  const { updateUserData } = useUserData();
+  const router = useRouter();
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
     if (!user) {
@@ -60,8 +61,8 @@ export const NearestNFTSpots: React.FC = () => {
         description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
       })
 
-      // オンチェーンから取得したユーザのNFT総数をDBに更新
-      updateUserData(balanceNumber);
+      // オンチェーンから取得したユーザのNFT総数Server Actionを使用してDBに更新
+      await updateUserData(balanceNumber);
 
       return transactionHash;
     } catch (error: any) {
