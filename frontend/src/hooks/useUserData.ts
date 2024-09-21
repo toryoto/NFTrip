@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../app/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 
@@ -11,23 +11,15 @@ export function useUserData() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      fetchUserData();
-    } else {
-      setUserData(null);
-      setLoading(false);
-    }
-  }, [user]);
-
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
+    if (!user) return;
+    
     setLoading(true);
-		// API化してもいいかも
     try {
       const { data, error } = await supabase
         .from('users')
         .select('total_nfts')
-        .eq('id', user!.id)
+        .eq('id', user.id)
         .single();
 
       if (error) throw error;
@@ -39,13 +31,39 @@ export function useUserData() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  const refreshUserData = () => {
+  useEffect(() => {
     if (user) {
       fetchUserData();
+    } else {
+      setUserData(null);
+      setLoading(false);
+    }
+  }, [user, fetchUserData]);
+
+  const updateUserData = async (newTotalNFTs: number) => {
+    if (!user) return;
+
+    try {
+      console.log('newTotalNFTs:', newTotalNFTs);
+      console.log('updateUserDataが呼ばれました');
+      const { error } = await supabase
+        .from('users')
+        .update({ total_nfts: newTotalNFTs })
+        .eq('id', user.id);
+
+      if (error) throw error;
+
+      setUserData(prevData => {
+        const newData = { ...prevData, total_nfts: newTotalNFTs };
+        return newData;
+      });
+
+    } catch (error) {
+      console.error('Error updating user data:', error);
     }
   };
 
-  return { userData, loading, refreshUserData };
+  return { userData, loading, fetchUserData, updateUserData };
 }

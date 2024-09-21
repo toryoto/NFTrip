@@ -25,7 +25,7 @@ export const NearestNFTSpots: React.FC = () => {
   const [isMintingLocation, setIsMintingLocation] = useState<number>();
   const [progress, setProgress] = useState(0)
   const { toast } = useToast()
-  const { refreshUserData } = useUserData();
+  const { updateUserData } = useUserData();
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
     if (!user) {
@@ -50,7 +50,8 @@ export const NearestNFTSpots: React.FC = () => {
       console.log('NFT metadata generated:', NFTMetadataHash);
 
       setProgress(70);
-      const transactionHash = await mintNFT(user.auth_type, location.id, NFTMetadataHash);
+      // ミント処理のトランザクションハッシュとミント後のユーザのNFT総数を取得
+      const { transactionHash, balanceNumber } = await mintNFT(user.auth_type, location.id, NFTMetadataHash);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
 
       setProgress(100);
@@ -59,8 +60,8 @@ export const NearestNFTSpots: React.FC = () => {
         description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
       })
 
-      // ユーザデータをリフレッシュ
-      refreshUserData();
+      // オンチェーンから取得したユーザのNFT総数をDBに更新
+      updateUserData(balanceNumber);
 
       return transactionHash;
     } catch (error: any) {
