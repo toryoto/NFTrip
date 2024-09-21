@@ -15,18 +15,16 @@ import { getNFTImage } from '@/lib/getLocations';
 import { generateAndUploadNFTMetaData } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import { updateUserData } from '@/app/actions/totalNFTs';
 
 export const NearestNFTSpots: React.FC = () => {
   const { user } = useAuth();
   const { mintNFT } = useSmartContractInteractions();
-  const { nearestLocations, loading } = useLocations()
-  const [isMinting, setIsMinting] = useState(false)
+  const { nearestLocations, loading } = useLocations();
+  const [isMinting, setIsMinting] = useState(false);
   const [isMintingLocation, setIsMintingLocation] = useState<number>();
-  const [progress, setProgress] = useState(0)
-  const { toast } = useToast()
-  const router = useRouter();
+  const [progress, setProgress] = useState(0);
+  const { toast } = useToast();
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
     if (!user) {
