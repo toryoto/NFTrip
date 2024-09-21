@@ -41,35 +41,15 @@ export function useSmartContractInteractions() {
       // イベントからトランザクションハッシュを取得
       const transactionHash = await eventPromise;
 
-      // ミント後のユーザのNFT総数をオンチェーンから取得してDBを更新
-      await updateTotalNFTs(method);
+      const signer = await (await getProvider(method)).getSigner();
+      const myAddress = await signer.getAddress();
+      const balance = await contract.balanceOf(myAddress);
+      const balanceNumber = Number(balance);
 
-      return transactionHash;
+      return { transactionHash, balanceNumber };
     } catch (error) {
       console.error("Mint process failed:", error);
       throw error;
-    }
-  };
-
-  const updateTotalNFTs = async (method: AuthMethod) => {
-    try {
-      const contract = await getContract(method);
-      const signer = await (await getProvider(method)).getSigner();
-      const myAddress = await signer.getAddress();
-
-      const balance = await contract.balanceOf(myAddress);
-      const balanceNumber = Number(balance);
-      
-      const { error } = await supabase
-        .from('users')
-        .update({ total_nfts: balanceNumber })
-        .eq('wallet_address', myAddress);
-
-      if (error) {
-        console.error('Error updating total NFTs:', error);
-      }
-    } catch (error) {
-      console.error('Error fetching total NFTs:', error);
     }
   };
 
