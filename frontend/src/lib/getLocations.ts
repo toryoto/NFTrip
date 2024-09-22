@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { Location, LocationImage,LocationWithThumbnailAndDistance } from '../app/types/location'
 
+// Supabaseから全ての観光地情報を取得する関数
 export async function getLocations(): Promise<(Location & { thumbnail: string | null })[]> {
   // Supabaseから観光地情報を取得
   const { data: locations, error: locationsError } = await supabase
@@ -22,6 +23,7 @@ export async function getLocations(): Promise<(Location & { thumbnail: string | 
   }))
 }
 
+// 引数のslugに紐づく観光地情報を取得する関数
 export async function getLocationBySlug(slug: string) {
   const { data: location, error } = await supabase
     .from('locations')
@@ -53,6 +55,7 @@ export async function getLocationBySlug(slug: string) {
   }
 };
 
+// 引数のユーザの緯度経度に紐づく最寄りの観光地情報を取得する関数
 export async function getNearestLocations(user_lat: number, user_lon: number, max_results: number): Promise<LocationWithThumbnailAndDistance[]> {
   const { data: locations, error } = await supabase.rpc('get_nearest_locations', {
     user_lat, user_lon, max_results
@@ -70,6 +73,7 @@ export async function getNearestLocations(user_lat: number, user_lon: number, ma
   }));
 }
 
+// 引数の観光地idに紐づく画像を取得する関数
 async function getLocationImagesMap(locationIds?: number[]): Promise<Map<number, string | null>> {
   let query = supabase
     .from('location_images')
