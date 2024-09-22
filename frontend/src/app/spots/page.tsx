@@ -7,9 +7,11 @@ import { Footer } from '../components/Footer'
 import Header from '../components/Header'
 import { Loading } from '../components/Loading'
 import { useLocations } from '@/hooks/useLocations'
+import { useRouter } from 'next/navigation'
 
 export default function TouristSpots() {
   const { locations, loading, distances } = useLocations()
+  const router = useRouter()
 
   if (loading) {
     return <Loading />;
@@ -21,7 +23,7 @@ export default function TouristSpots() {
       <main className="flex-1 py-8 px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {locations.map((location) => (
-            <Card key={location.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
+            <Card key={location.id} onClick={() => router.push(`/spots/${location.slug}`)} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
               <div className="relative h-48 overflow-hidden">
                 <Image
                   src={location.thumbnail || '/images/default-thumbnail.jpg'}
