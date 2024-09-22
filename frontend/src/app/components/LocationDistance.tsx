@@ -11,7 +11,6 @@ export const LocationDistance: React.FC<{ lat: number, lon: number }> = ({ lat, 
 		if (lat1 === null || lon1 === null) {
 			return 0
 		}
-		console.log(lat1, lon1, lat2, lon2)
 		const R = 6371 // Earth's radius in km
 		const dLat = (lat2 - lat1) * Math.PI / 180
 		const dLon = (lon2 - lon1) * Math.PI / 180
