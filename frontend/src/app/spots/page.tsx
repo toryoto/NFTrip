@@ -16,7 +16,7 @@ export default async function TouristSpots() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {locations.map((location) => (
             <Link href={`/spots/${location.slug}`} key={location.id}>
-              <Card key={location.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
+              <Card className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
                 <div className="relative h-48 overflow-hidden">
                   <Image
                     src={location.thumbnail || '/images/default-thumbnail.jpg'}
