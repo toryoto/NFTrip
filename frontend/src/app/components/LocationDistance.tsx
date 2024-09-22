@@ -25,7 +25,7 @@ export const LocationDistance: React.FC<{ lat: number, lon: number }> = ({ lat, 
 	}
 
   return (
-		<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-200">
+		<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-green-400">
 			<MapPin className="h-4 w-4 mr-1 text-green-400" />
 			{calculateDistance(userLocation.lat, userLocation.lon, lat, lon)} km
 		</span>
