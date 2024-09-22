@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
@@ -20,11 +20,22 @@ import { updateUserData } from '@/app/actions/totalNFTs';
 export const NearestNFTSpots: React.FC = () => {
   const { user } = useAuth();
   const { mintNFT } = useSmartContractInteractions();
-  const { nearestLocations, loading } = useLocations();
+  const { userLocation, fetchNearestLocations } = useLocations();
+  const [nearestLocations, setNearestLocations] = useState<LocationWithThumbnailAndDistance[]>([]);
   const [isMinting, setIsMinting] = useState(false);
   const [isMintingLocation, setIsMintingLocation] = useState<number>();
   const [progress, setProgress] = useState(0);
   const { toast } = useToast();
+
+  useEffect(() =>  {
+    const fetchLocations = async () => {
+      const locations: LocationWithThumbnailAndDistance[] | undefined = await fetchNearestLocations()
+      if (locations) {
+        setNearestLocations(locations)
+      }
+    }
+    fetchLocations()
+  }, [userLocation])
 
   const handleMintNFT = async (location: LocationWithThumbnailAndDistance) => {
     if (!user) {
@@ -75,10 +86,6 @@ export const NearestNFTSpots: React.FC = () => {
       setProgress(0)
     }
   };
-
-  if (loading) {
-    return <Loading />;
-  }
 
   return (
     <section>
