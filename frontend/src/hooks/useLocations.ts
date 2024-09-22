@@ -4,8 +4,6 @@ import { LocationWithThumbnailAndDistance } from "@/app/types/location";
 
 export const useLocations = (nearestCount: number = 3) => {
   const [userLocation, setUserLocation] = useState<{ lat: number | null; lon: number | null }>({ lat: null, lon: null })
-  const [nearestLocations, setNearestLocations] = useState<LocationWithThumbnailAndDistance[]>([]);
-  const [loading, setLoading] = useState(true);
 
   // ユーザの位置情報を監視
   useEffect(() => {
@@ -55,22 +53,16 @@ export const useLocations = (nearestCount: number = 3) => {
   }, []);
 
   // 最寄りの場所を取得
-  useEffect(() => {
-    const fetchNearestLocations = async () => {
-      if (userLocation.lat !== null && userLocation.lon !== null) {
-        setLoading(true);
-        try {
-          const fetchedNearestLocations = await getNearestLocations(userLocation.lat, userLocation.lon, nearestCount);
-          setNearestLocations(fetchedNearestLocations);
-        } catch (error) {
-          console.error('Failed to fetch nearest locations:', error);
-        } finally {
-          setLoading(false);
-        }
+  const fetchNearestLocations = async () => {
+    if (userLocation.lat !== null && userLocation.lon !== null) {
+      try {
+        const fetchedNearestLocations = await getNearestLocations(userLocation.lat, userLocation.lon, nearestCount);
+        return fetchedNearestLocations;
+      } catch (error) {
+        console.error('Failed to fetch nearest locations:', error);
       }
-    };
-    fetchNearestLocations();
-  }, [userLocation.lat, userLocation.lon, nearestCount]);
+    }
+  };
 
-  return { userLocation, nearestLocations, loading };
+  return { userLocation, fetchNearestLocations };
 }
