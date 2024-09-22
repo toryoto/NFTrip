@@ -6,6 +6,8 @@ import Header from '../../components/Header'
 import { getLocationBySlug } from '@/lib/getLocations'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { LocationDistance } from '@/app/components/LocationDistance'
+import { Suspense } from 'react'
 
 export default async function TouristSpotDetail({ params }: { params: { slug: string } }) {
   const location = await getLocationBySlug(params.slug);
@@ -39,6 +41,14 @@ export default async function TouristSpotDetail({ params }: { params: { slug: st
                   <Mail className="h-4 w-4 mr-1" />
                   {location.postal_code}
                 </span>
+								<Suspense fallback={
+									<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-200">
+									<MapPin className="h-4 w-4 mr-1" />
+									 Loading...
+								</span>
+								}>
+									<LocationDistance lat={location.latitude} lon={location.longitude} />
+								</Suspense>
               </div>
             </div>
           </div>

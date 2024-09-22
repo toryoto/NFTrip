@@ -26,7 +26,6 @@ function getUserIdFromToken(): string | null {
 
 // SupabaseからユーザーのNFT総数を取得する関数
 export async function getUserData() {
-	console.log('getUserData called')
   const userId = getUserIdFromToken()
   if (!userId) {
     throw new Error('Unauthorized')
@@ -50,7 +49,6 @@ export async function getUserData() {
 
 // ユーザーのNFT総数を更新する関数(呼ばれるたびにdashboardのユーザーNFT総数を再検証)
 export async function updateUserData(newTotalNFTs: number) {
-	console.log('updateUserData called with:', newTotalNFTs)
   const userId = getUserIdFromToken()
   if (!userId) {
     throw new Error('Unauthorized')
