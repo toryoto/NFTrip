@@ -14,11 +14,44 @@ export async function getLocations(): Promise<(Location & { thumbnail: string | 
 
   const imageMap = await getLocationImagesMap()
 
+  console.log(locations)
+
   return locations.map((location: Location) => ({
     ...location,
     thumbnail: imageMap.get(location.id) || null
   }))
 }
+
+export async function getLocationBySlug(slug: string) {
+  const { data: location, error } = await supabase
+    .from('locations')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    console.error('Error fetching location:', error)
+    return null
+  }
+  
+  const { data: locationImage, error: locationImagesError } = await supabase
+    .from('location_images')
+    .select('*')
+    .eq('location_id', location.id)
+    .eq('image_type', 'thumbnail')
+    .eq('is_primary', true)
+    .single();
+
+  if (locationImagesError) {
+    console.error('Error fetching location images:', locationImagesError)
+    return null
+  }
+
+  return {
+    ...location,
+    thumbnail: locationImage.image_hash ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${locationImage.image_hash}` : null
+  }
+};
 
 export async function getNearestLocations(user_lat: number, user_lon: number, max_results: number): Promise<LocationWithThumbnailAndDistance[]> {
   const { data: locations, error } = await supabase.rpc('get_nearest_locations', {
