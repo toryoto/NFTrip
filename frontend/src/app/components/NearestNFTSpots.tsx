@@ -92,42 +92,44 @@ export const NearestNFTSpots: React.FC = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {nearestLocations.map((location) => (
-          <Card key={location.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
-            <div className="relative h-48 overflow-hidden">
-              <Image
-                src={location.thumbnail || '/images/default-thumbnail.jpg'}
-                alt={location.name}
-                width={640}
-                height={360}
-                priority
-                className="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
-            </div>
-            <CardContent className="p-4 relative">
-              <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{location.name}</h3>
-              <div className="flex items-center text-green-400 mb-2">
-                <MapPin className="h-4 w-4 mr-1 text-green-400" />
-                <span>{location.distance.toFixed(2)} km</span>
+          <Link href={`/spots/${location.slug}`} key={location.id} className="group">
+            <Card key={location.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src={location.thumbnail || '/images/default-thumbnail.jpg'}
+                  alt={location.name}
+                  width={640}
+                  height={360}
+                  priority
+                  className="object-cover w-full h-48 transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
               </div>
-              <Button 
-                onClick={() => handleMintNFT(location)}
-                disabled={isMinting}
-                className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-              >
-                {(isMinting && isMintingLocation == location.id) ? 'Minting...' : 'GET NFT!'}
-              </Button>
-              {isMinting && (isMintingLocation == location.id) && (
-                <div className="mt-2">
-                  <Progress value={progress} className="h-2 bg-gray-700 [&>div[role=progressbar]]:bg-blue-500" />
-                  <p className="text-sm text-gray-400 mt-1">{progress}% Complete</p>
+              <CardContent className="p-4 relative">
+                <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{location.name}</h3>
+                <div className="flex items-center text-green-400 mb-2">
+                  <MapPin className="h-4 w-4 mr-1 text-green-400" />
+                  <span>{location.distance.toFixed(2)} km</span>
                 </div>
-              )}
-              <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Info className="h-4 w-4 text-white" />
-              </div>
-            </CardContent>
-          </Card>
+                <Button 
+                  onClick={() => handleMintNFT(location)}
+                  disabled={isMinting}
+                  className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+                >
+                  {(isMinting && isMintingLocation == location.id) ? 'Minting...' : 'GET NFT!'}
+                </Button>
+                {isMinting && (isMintingLocation == location.id) && (
+                  <div className="mt-2">
+                    <Progress value={progress} className="h-2 bg-gray-700 [&>div[role=progressbar]]:bg-blue-500" />
+                    <p className="text-sm text-gray-400 mt-1">{progress}% Complete</p>
+                  </div>
+                )}
+                <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Info className="h-4 w-4 text-white" />
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </section>
