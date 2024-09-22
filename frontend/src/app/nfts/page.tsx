@@ -30,8 +30,7 @@ export default function NFTGalleryPage() {
           if (!fetchedNFTs) {
             setLoading(false)
             return null;
-          }
-          console.log(2222,fetchedNFTs)
+          };
 
           const processedNFTs = await Promise.all(fetchedNFTs.map(async (uri) => {
             const response = await fetch(uri.replace('ipfs://', 'https://chocolate-secret-cat-833.mypinata.cloud/ipfs/'));
