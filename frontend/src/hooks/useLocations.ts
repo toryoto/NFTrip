@@ -31,6 +31,19 @@ export const useLocations = (nearestCount: number = 3) => {
       intervalId = setInterval(updateUserLocation, 10000);
     };
 
+    // ページが非表示になった時に位置情報の取得を停止
+    const handleVisibilityChange = () => {
+      if (document.hidden && intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      } else {
+        startInterval();
+      }
+    };
+
+    // handleVisibilityChangeをイベントリスナーとして登録
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     // アクセスした時にユーザの位置情報を取得
     updateUserLocation();
     // 10秒おきにユーザの位置情報を取得
@@ -38,6 +51,8 @@ export const useLocations = (nearestCount: number = 3) => {
 
     return () => {
       if (intervalId) clearInterval(intervalId);
+      // handleVisibilityChangeをイベントリスナーとして登録したので、解除
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, []);
 
