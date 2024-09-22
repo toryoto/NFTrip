@@ -83,7 +83,7 @@ export const NearestNFTSpots: React.FC = () => {
   return (
     <section>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-blue-400">Nearest NFT Spots</h2>
+        <h2 className="text-2xl font-bold text-blue-400">近くのNFTスポット</h2>
         <Link href="/spots" passHref>
           <Button variant="outline" className="text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white">
             View All Spots
