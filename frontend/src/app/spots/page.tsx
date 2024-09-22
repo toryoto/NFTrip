@@ -10,12 +10,9 @@ import { useAuth } from '../contexts/AuthContext'
 import Header from '../components/Header'
 import { Loading } from '../components/Loading'
 import { useLocations } from '@/hooks/useLocations'
-import { useRouter } from 'next/navigation'
 
 export default function TouristSpots() {
-  const { user } = useAuth()
   const { locations, loading, distances } = useLocations()
-  const router = useRouter()
 
   if (loading) {
     return <Loading />;
