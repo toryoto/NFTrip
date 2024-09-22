@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { Location, LocationImage,LocationWithThumbnailAndDistance } from '../app/types/location'
 
+// Supabaseから全ての観光地情報を取得する関数
 export async function getLocations(): Promise<(Location & { thumbnail: string | null })[]> {
   // Supabaseから観光地情報を取得
   const { data: locations, error: locationsError } = await supabase
@@ -14,12 +15,47 @@ export async function getLocations(): Promise<(Location & { thumbnail: string | 
 
   const imageMap = await getLocationImagesMap()
 
+  console.log(locations)
+
   return locations.map((location: Location) => ({
     ...location,
     thumbnail: imageMap.get(location.id) || null
   }))
 }
 
+// 引数のslugに紐づく観光地情報を取得する関数
+export async function getLocationBySlug(slug: string) {
+  const { data: location, error } = await supabase
+    .from('locations')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+
+  if (error) {
+    console.error('Error fetching location:', error)
+    return null
+  }
+  
+  const { data: locationImage, error: locationImagesError } = await supabase
+    .from('location_images')
+    .select('*')
+    .eq('location_id', location.id)
+    .eq('image_type', 'thumbnail')
+    .eq('is_primary', true)
+    .single();
+
+  if (locationImagesError) {
+    console.error('Error fetching location images:', locationImagesError)
+    return null
+  }
+
+  return {
+    ...location,
+    thumbnail: locationImage.image_hash ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${locationImage.image_hash}` : null
+  }
+};
+
+// 引数のユーザの緯度経度に紐づく最寄りの観光地情報を取得する関数
 export async function getNearestLocations(user_lat: number, user_lon: number, max_results: number): Promise<LocationWithThumbnailAndDistance[]> {
   const { data: locations, error } = await supabase.rpc('get_nearest_locations', {
     user_lat, user_lon, max_results
@@ -37,6 +73,7 @@ export async function getNearestLocations(user_lat: number, user_lon: number, ma
   }));
 }
 
+// 引数の観光地idに紐づく画像を取得する関数
 async function getLocationImagesMap(locationIds?: number[]): Promise<Map<number, string | null>> {
   let query = supabase
     .from('location_images')

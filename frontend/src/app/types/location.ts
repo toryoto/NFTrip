@@ -1,6 +1,7 @@
 export type Location = {
   id: number
   name: string
+  slug: string
   description: string
   address: string
   postal_code: string
