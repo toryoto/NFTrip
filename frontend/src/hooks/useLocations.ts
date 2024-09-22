@@ -11,18 +11,49 @@ export const useLocations = (nearestCount: number = 3) => {
 
   // ユーザの位置情報を監視
   useEffect(() => {
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setUserLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude
-        });
-      },
-      (error) => console.error('Geolocation error:', error),
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
+    let intervalId: NodeJS.Timeout | null  = null;
 
-    return () => navigator.geolocation.clearWatch(watchId);
+    // ユーザの位置情報を取得する処理
+    const updateUserLocation = () => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          });
+        },
+        (error) => console.error('Geolocation error:', error),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      );
+    };
+
+    const startInterval = () => {
+      intervalId = setInterval(updateUserLocation, 10000);
+    };
+
+    // ページが非表示になった時に位置情報の取得を停止
+    const handleVisibilityChange = () => {
+      if (document.hidden && intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      } else {
+        startInterval();
+      }
+    };
+
+    // handleVisibilityChangeをイベントリスナーとして登録
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // アクセスした時にユーザの位置情報を取得
+    updateUserLocation();
+    // 10秒おきにユーザの位置情報を取得
+    startInterval();
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+      // handleVisibilityChangeをイベントリスナーとして登録したので、解除
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
   }, []);
 
   // 全ての観光地を取得
