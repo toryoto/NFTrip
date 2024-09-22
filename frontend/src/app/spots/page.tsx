@@ -1,12 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Info } from 'lucide-react'
 import { Footer } from '../components/Footer'
-import { useAuth } from '../contexts/AuthContext'
 import Header from '../components/Header'
 import { Loading } from '../components/Loading'
 import { useLocations } from '@/hooks/useLocations'
