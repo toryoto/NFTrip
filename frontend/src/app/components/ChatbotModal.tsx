@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ export default function ChatbotModal() {
   const [input, setInput] = useState('')
 	const { user } = useAuth();
   const { userProfile } = useUserProfile(user?.id);
+	const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,6 +41,10 @@ export default function ChatbotModal() {
       setMessages(prev => [...prev, { role: 'assistant', content: `あなたの質問「${input}」についての回答です。この観光地の詳細情報をお伝えします。` }])
     }, 1000)
   }
+
+	useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   return (
     <div>
@@ -80,6 +85,7 @@ export default function ChatbotModal() {
 								</div>
 							))}
 						</div>
+						<div ref={messagesEndRef} />
           </ScrollArea>
           <form onSubmit={handleSend} className="mt-4 flex items-center">
             <Input
