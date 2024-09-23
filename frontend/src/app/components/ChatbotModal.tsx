@@ -10,6 +10,11 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import Image from "next/image"
+import Link from 'next/link';
+import { useAuth } from '@/app/contexts/AuthContext'
+import { useUserProfile } from '@/hooks/useUserProfile'
+
 
 const initialMessages = [
   { role: 'assistant', content: 'こんにちは！この観光地について何か質問はありますか？' },
@@ -19,6 +24,8 @@ export default function ChatbotModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState(initialMessages)
   const [input, setInput] = useState('')
+	const { user } = useAuth();
+  const { userProfile } = useUserProfile(user?.id);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,20 +53,33 @@ export default function ChatbotModal() {
             <DialogTitle>AIチャットアシスタント</DialogTitle>
           </DialogHeader>
           <ScrollArea className="mt-4 border-t border-gray-700 h-[60vh] pr-4">
-            <div className="pt-4"> {/* Added padding-top here */}
-              {messages.map((message, index) => (
-                <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-                  <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full ${message.role === 'user' ? 'bg-blue-500' : 'bg-green-500'} ${message.role === 'user' ? 'ml-2' : 'mr-2'}`}>
-                      {message.role === 'user' ? '👤' : '🤖'}
-                    </div>
-                    <div className={`max-w-xs px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-right' : 'bg-gray-700'}`}>
-                      {message.content}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+						<div className="pt-4">
+							{messages.map((message, index) => (
+								<div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+									<div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+										{message.role === 'user' ? (
+											<Link href={`/profile/${user?.wallet_address}`} className="relative w-10 h-10 rounded-full overflow-hidden ml-2">
+												<Image
+													src={userProfile?.avatar_url || "/images/no-user-icon.png"}
+													alt="User Avatar"
+													style={{ objectFit: 'cover' }}
+													className="transition-opacity duration-300 group-hover:opacity-50"
+													fill
+													sizes="40px"
+												/>
+											</Link>
+										) : (
+											<div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 mr-2">
+												🤖
+											</div>
+										)}
+										<div className={`max-w-xs px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
+											{message.content}
+										</div>
+									</div>
+								</div>
+							))}
+						</div>
           </ScrollArea>
           <form onSubmit={handleSend} className="mt-4 flex items-center">
             <Input
