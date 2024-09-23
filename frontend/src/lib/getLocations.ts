@@ -15,8 +15,6 @@ export async function getLocations(): Promise<(Location & { thumbnail: string | 
 
   const imageMap = await getLocationImagesMap()
 
-  console.log(locations)
-
   return locations.map((location: Location) => ({
     ...location,
     thumbnail: imageMap.get(location.id) || null
