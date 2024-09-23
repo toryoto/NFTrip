@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { LocationDistance } from '@/app/components/LocationDistance'
 import { Suspense } from 'react'
+import ChatbotModal from '@/app/components/ChatbotModal'
 
 export default async function TouristSpotDetail({ params }: { params: { slug: string } }) {
   const location = await getLocationBySlug(params.slug);
@@ -59,6 +60,7 @@ export default async function TouristSpotDetail({ params }: { params: { slug: st
             <div className="text-sm text-gray-400">
               Last updated: {new Date().toLocaleDateString()}
             </div>
+            <ChatbotModal />
             <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white">
               GET NFT!
             </Button>
