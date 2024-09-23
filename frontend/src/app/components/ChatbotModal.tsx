@@ -15,15 +15,16 @@ import Link from 'next/link';
 import { useAuth } from '@/app/contexts/AuthContext'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { getChatResponse } from "../actions/chat"
+import { ChatMessage } from "../types/chat"
 
 
-const initialMessages = [
+const initialMessages: ChatMessage[] = [
   { role: 'assistant', content: 'こんにちは！この観光地について何か質問はありますか？' },
 ]
 
 export default function ChatbotModal() {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState(initialMessages)
+  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
   const [input, setInput] = useState('')
 	const { user } = useAuth();
   const { userProfile } = useUserProfile(user?.id);
@@ -33,7 +34,7 @@ export default function ChatbotModal() {
     e.preventDefault()
     if (!input.trim()) return
 
-    const userMessage = { role: 'user', content: input }
+    const userMessage: ChatMessage = { role: 'user', content: input }
     setMessages(prev => [...prev, userMessage])
     setInput('')
 
