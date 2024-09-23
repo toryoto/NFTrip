@@ -14,6 +14,7 @@ import Image from "next/image"
 import Link from 'next/link';
 import { useAuth } from '@/app/contexts/AuthContext'
 import { useUserProfile } from '@/hooks/useUserProfile'
+import { getChatResponse } from "../actions/chat"
 
 
 const initialMessages = [
@@ -36,10 +37,17 @@ export default function ChatbotModal() {
     setMessages(prev => [...prev, userMessage])
     setInput('')
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'assistant', content: `あなたの質問「${input}」についての回答です。この観光地の詳細情報をお伝えします。` }])
-    }, 1000)
+		try {
+			const aiResponse = await getChatResponse([...messages, userMessage]);
+			if (aiResponse) {
+				setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+			} else {
+				throw Error;
+			}
+		} catch (error) {
+			console.error('Error getting AI response:', error)
+    	setMessages(prev => [...prev, { role: 'assistant', content: 'すみません、エラーが発生しました。もう一度お試しください。' }])
+		}
   }
 
 	useEffect(() => {
