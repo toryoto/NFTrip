@@ -17,6 +17,10 @@ export type LocationImage = {
   is_primary: boolean
 }
 
+export interface LocationWithThumbnail extends Location {
+  thumbnail: string | null;
+}
+
 export interface LocationWithThumbnailAndDistance extends Location {
   thumbnail: string | null;
   distance: number;
