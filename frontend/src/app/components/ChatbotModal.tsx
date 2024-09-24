@@ -16,19 +16,29 @@ import { useAuth } from '@/app/contexts/AuthContext'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import { getChatResponse } from "../actions/chat"
 import { ChatMessage } from "../types/chat"
+import { LocationWithThumbnail } from "../types/location"
 
+interface ChatbotModalProps {
+  location: LocationWithThumbnail;
+}
 
-const initialMessages: ChatMessage[] = [
-  { role: 'assistant', content: 'こんにちは！この観光地について何か質問はありますか？' },
-]
-
-export default function ChatbotModal() {
+export const ChatbotModal: React.FC<ChatbotModalProps> = ({location}) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<ChatMessage[]>(initialMessages)
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
 	const { user } = useAuth();
   const { userProfile } = useUserProfile(user?.id);
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    console.log(location.name)
+    const initialMessages: ChatMessage[] = [
+      { role: 'assistant', content: `こんにちは！${location.name}に関する情報を何でもわかりやすくお答えします！` },
+    ];
+    
+    setMessages(initialMessages);
+  }, [])
+  
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
