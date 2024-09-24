@@ -9,9 +9,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { LocationDistance } from '@/app/components/LocationDistance'
 import { Suspense } from 'react'
 import ChatbotModal from '@/app/components/ChatbotModal'
+import { LocationWithThumbnail } from '@/app/types/location'
 
 export default async function TouristSpotDetail({ params }: { params: { slug: string } }) {
-  const location = await getLocationBySlug(params.slug);
+  const location: LocationWithThumbnail = await getLocationBySlug(params.slug);
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -48,7 +49,7 @@ export default async function TouristSpotDetail({ params }: { params: { slug: st
 									 Loading...
 								</span>
 								}>
-									<LocationDistance lat={location.latitude} lon={location.longitude} />
+									<LocationDistance {...location} />
 								</Suspense>
               </div>
             </div>
