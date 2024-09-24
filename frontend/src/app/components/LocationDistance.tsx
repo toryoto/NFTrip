@@ -8,7 +8,7 @@ import { LocationWithThumbnail } from '../types/location'
 
 export const LocationDistance: React.FC<LocationWithThumbnail> = ({ ...location }) => {
   const { userLocation } = useLocations();
-	const [distance, setDistance] = useState<number>(0);
+	const [distance, setDistance] = useState<number>();
 
 	useEffect(() => {
 		const calculatedDistance = calculateDistance(userLocation.lat, userLocation.lon, location.latitude, location.longitude);
