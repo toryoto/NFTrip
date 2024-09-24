@@ -60,7 +60,7 @@ export default async function TouristSpotDetail({ params }: { params: { slug: st
             <div className="text-sm text-gray-400">
               Last updated: {new Date().toLocaleDateString()}
             </div>
-            <ChatbotModal />
+            <ChatbotModal location={location} />
           </CardFooter>
         </Card>
       </main>
