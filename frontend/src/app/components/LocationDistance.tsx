@@ -3,7 +3,6 @@
 import { MapPin } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useLocations } from '@/hooks/useLocations'
-import { Button } from '@/components/ui/button'
 import MintNFTButton from './mintNFTButton'
 import { LocationWithThumbnail } from '../types/location'
 

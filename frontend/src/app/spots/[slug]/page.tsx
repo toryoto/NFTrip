@@ -4,7 +4,6 @@ import { ArrowLeft, MapPin, Mail } from 'lucide-react'
 import { Footer } from '../../components/Footer'
 import Header from '../../components/Header'
 import { getLocationBySlug } from '@/lib/getLocations'
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { LocationDistance } from '@/app/components/LocationDistance'
 import { Suspense } from 'react'
