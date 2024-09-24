@@ -30,9 +30,15 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
   const { userProfile } = useUserProfile(user?.id);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
+    `${location.name}の歴史について教えてください。`,
+    `${location.name}のおすすめの観光スポットは？`,
+    `${location.name}で開かれるイベントはありますか？`
+  ]);
+
   useEffect(() => {
     const initialMessages: ChatMessage[] = [
-      { role: 'assistant', content: `こんにちは！${location.name}に関する情報を何でもわかりやすくお答えします！` },
+      { role: 'assistant', content: `こんにちは！${location.name}に関する情報を何でもわかりやすくお答えします！下のおすすめの質問をクリックするか、自由に質問を入力してください。` },
     ];
     
     setMessages(initialMessages);
@@ -42,7 +48,16 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
     e.preventDefault()
     if (!input.trim()) return
 
-    const userMessage: ChatMessage = { role: 'user', content: input }
+    await sendMessage(input);
+  }
+
+  const handleSuggestedQuestion = async (question: string) => {
+    await sendMessage(question);
+    setSuggestedQuestions(prev => prev.filter(q => q !== question));
+  }
+
+  const sendMessage = async (message: string) => {
+    const userMessage: ChatMessage = { role: 'user', content: message }
     setMessages(prev => [...prev, userMessage])
     setInput('')
 
@@ -74,48 +89,68 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
           <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>AIチャットアシスタント</DialogTitle>
           </DialogHeader>
-          <ScrollArea className="mt-4 border-t border-gray-700 h-[60vh] pr-4">
-            <div className="pt-4">
-              {messages.map((message, index) => (
-                <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-                  <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                    {message.role === 'user' ? (
-                      <Link href={`/profile/${user?.wallet_address}`} className="relative w-10 h-10 rounded-full overflow-hidden ml-2">
-                        <Image
-                          src={userProfile?.avatar_url || "/images/no-user-icon.png"}
-                          alt="User Avatar"
-                          style={{ objectFit: 'cover' }}
-                          className="transition-opacity duration-300 group-hover:opacity-50"
-                          fill
-                          sizes="40px"
-                        />
-                      </Link>
-                    ) : (
-                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 mr-2">
-                        🤖
+          <div className="flex flex-col h-[70vh]">
+            <ScrollArea className="flex-grow border-t border-gray-700 pr-4">
+              <div className="pt-4">
+                {messages.map((message, index) => (
+                  <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+                    <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                      {message.role === 'user' ? (
+                        <Link href={`/profile/${user?.wallet_address}`} className="relative w-10 h-10 rounded-full overflow-hidden ml-2">
+                          <Image
+                            src={userProfile?.avatar_url || "/images/no-user-icon.png"}
+                            alt="User Avatar"
+                            style={{ objectFit: 'cover' }}
+                            className="transition-opacity duration-300 group-hover:opacity-50"
+                            fill
+                            sizes="40px"
+                          />
+                        </Link>
+                      ) : (
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 mr-2">
+                          🤖
+                        </div>
+                      )}
+                      <div className={`max-w-xs px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
+                        {message.content}
                       </div>
-                    )}
-                    <div className={`max-w-xs px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
-                      {message.content}
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            <div ref={messagesEndRef} />
-          </ScrollArea>
-          <form onSubmit={handleSend} className="mt-4 flex items-center">
-            <Input
-              type="text"
-              placeholder="メッセージを入力..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="flex-grow mr-2 bg-gray-700 text-white"
-            />
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
-              送信
-            </Button>
-          </form>
+                ))}
+              </div>
+              <div ref={messagesEndRef} />
+            </ScrollArea>
+            {suggestedQuestions.length > 0 && (
+              <div className="mt-4 mb-2">
+                <p className="text-sm text-gray-400 mb-2">おすすめの質問:</p>
+                <ScrollArea className="h-20">
+                  <div className="flex flex-wrap gap-2">
+                    {suggestedQuestions.map((question, index) => (
+                      <Button
+                        key={index}
+                        onClick={() => handleSuggestedQuestion(question)}
+                        className="bg-gray-700 hover:bg-gray-600 text-white text-sm"
+                      >
+                        {question}
+                      </Button>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            )}
+            <form onSubmit={handleSend} className="mt-2 flex items-center">
+              <Input
+                type="text"
+                placeholder="メッセージを入力..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                className="flex-grow mr-2 bg-gray-700 text-white"
+              />
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+                送信
+              </Button>
+            </form>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
