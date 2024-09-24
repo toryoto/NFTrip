@@ -22,13 +22,13 @@ interface ChatbotModalProps {
   location: LocationWithThumbnail;
 }
 
-export const ChatbotModal: React.FC<ChatbotModalProps> = ({location}) => {
+export default function ChatbotModal({ location }: ChatbotModalProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
-	const { user } = useAuth();
+  const { user } = useAuth();
   const { userProfile } = useUserProfile(user?.id);
-	const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     console.log(location.name)
@@ -39,7 +39,6 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({location}) => {
     setMessages(initialMessages);
   }, [])
   
-
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim()) return
@@ -48,20 +47,20 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({location}) => {
     setMessages(prev => [...prev, userMessage])
     setInput('')
 
-		try {
-			const aiResponse = await getChatResponse([...messages, userMessage]);
-			if (aiResponse) {
-				setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
-			} else {
-				throw Error;
-			}
-		} catch (error) {
-			console.error('Error getting AI response:', error)
-    	setMessages(prev => [...prev, { role: 'assistant', content: 'すみません、エラーが発生しました。もう一度お試しください。' }])
-		}
+    try {
+      const aiResponse = await getChatResponse([...messages, userMessage]);
+      if (aiResponse) {
+        setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+      } else {
+        throw Error;
+      }
+    } catch (error) {
+      console.error('Error getting AI response:', error)
+      setMessages(prev => [...prev, { role: 'assistant', content: 'すみません、エラーが発生しました。もう一度お試しください。' }])
+    }
   }
 
-	useEffect(() => {
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
@@ -77,34 +76,34 @@ export const ChatbotModal: React.FC<ChatbotModalProps> = ({location}) => {
             <DialogTitle>AIチャットアシスタント</DialogTitle>
           </DialogHeader>
           <ScrollArea className="mt-4 border-t border-gray-700 h-[60vh] pr-4">
-						<div className="pt-4">
-							{messages.map((message, index) => (
-								<div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-									<div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
-										{message.role === 'user' ? (
-											<Link href={`/profile/${user?.wallet_address}`} className="relative w-10 h-10 rounded-full overflow-hidden ml-2">
-												<Image
-													src={userProfile?.avatar_url || "/images/no-user-icon.png"}
-													alt="User Avatar"
-													style={{ objectFit: 'cover' }}
-													className="transition-opacity duration-300 group-hover:opacity-50"
-													fill
-													sizes="40px"
-												/>
-											</Link>
-										) : (
-											<div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 mr-2">
-												🤖
-											</div>
-										)}
-										<div className={`max-w-xs px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
-											{message.content}
-										</div>
-									</div>
-								</div>
-							))}
-						</div>
-						<div ref={messagesEndRef} />
+            <div className="pt-4">
+              {messages.map((message, index) => (
+                <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+                  <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                    {message.role === 'user' ? (
+                      <Link href={`/profile/${user?.wallet_address}`} className="relative w-10 h-10 rounded-full overflow-hidden ml-2">
+                        <Image
+                          src={userProfile?.avatar_url || "/images/no-user-icon.png"}
+                          alt="User Avatar"
+                          style={{ objectFit: 'cover' }}
+                          className="transition-opacity duration-300 group-hover:opacity-50"
+                          fill
+                          sizes="40px"
+                        />
+                      </Link>
+                    ) : (
+                      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 mr-2">
+                        🤖
+                      </div>
+                    )}
+                    <div className={`max-w-xs px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
+                      {message.content}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div ref={messagesEndRef} />
           </ScrollArea>
           <form onSubmit={handleSend} className="mt-4 flex items-center">
             <Input
