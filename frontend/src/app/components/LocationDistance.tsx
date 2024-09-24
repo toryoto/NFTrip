@@ -1,12 +1,20 @@
 'use client'
 
 import { MapPin } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocations } from '@/hooks/useLocations'
 import { Button } from '@/components/ui/button'
+import MintNFTButton from './mintNFTButton'
+import { LocationWithThumbnail } from '../types/location'
 
-export const LocationDistance: React.FC<{ lat: number; lon: number }> = ({ lat, lon }) => {
-  const { userLocation } = useLocations()
+export const LocationDistance: React.FC<LocationWithThumbnail> = ({ ...location }) => {
+  const { userLocation } = useLocations();
+	const [distance, setDistance] = useState<number>(0);
+
+	useEffect(() => {
+		const calculatedDistance = calculateDistance(userLocation.lat, userLocation.lon, location.latitude, location.longitude);
+		setDistance(calculatedDistance);
+	}, [userLocation]);
 
   const calculateDistance = (lat1: number | null, lon1: number | null, lat2: number, lon2: number): number => {
     if (lat1 === null || lon1 === null) {
@@ -28,11 +36,9 @@ export const LocationDistance: React.FC<{ lat: number; lon: number }> = ({ lat, 
     <>
       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-green-400">
         <MapPin className="h-4 w-4 mr-1" />
-        {calculateDistance(userLocation.lat, userLocation.lon, lat, lon)} km
+        {distance} km
       </span>
-      <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-xs text-white">
-        GET NFT!
-      </Button>
+			{distance !== undefined && <MintNFTButton location={{ ...location, distance }} />}
     </>
   )
 }
