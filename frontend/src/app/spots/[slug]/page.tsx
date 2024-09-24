@@ -61,9 +61,6 @@ export default async function TouristSpotDetail({ params }: { params: { slug: st
               Last updated: {new Date().toLocaleDateString()}
             </div>
             <ChatbotModal />
-            <Button size="lg" className="bg-green-600 hover:bg-green-700 text-white">
-              GET NFT!
-            </Button>
           </CardFooter>
         </Card>
       </main>
