@@ -19,7 +19,6 @@ export default function MintNFTButton({ location }: MintNFTButtonProps) {
   const { user } = useAuth();
   const { mintNFT } = useSmartContractInteractions();
   const [isMinting, setIsMinting] = useState(false);
-  const [progress, setProgress] = useState(0);
   const { toast } = useToast();
 
   const handleMintNFT = async () => {
@@ -29,25 +28,20 @@ export default function MintNFTButton({ location }: MintNFTButtonProps) {
     }
 
     setIsMinting(true);
-    setProgress(0);
   
     try {
-      setProgress(10);
       const imageHash = await getNFTImage(location.id);
       console.log('NFT image prepared:', imageHash);
 
-      setProgress(40);
       const NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
       if (!NFTMetadataHash) {
         throw new Error('NFT metadata hash is undefined');
       }
       console.log('NFT metadata generated:', NFTMetadataHash);
 
-      setProgress(70);
       const { transactionHash, balanceNumber } = await mintNFT(user.auth_type, location.id, NFTMetadataHash);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
 
-      setProgress(100);
       toast({
         title: "NFT Minted Successfully!",
         description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
@@ -65,7 +59,6 @@ export default function MintNFTButton({ location }: MintNFTButtonProps) {
       })
     } finally {
       setIsMinting(false)
-      setProgress(0)
     }
   };
 
@@ -78,12 +71,6 @@ export default function MintNFTButton({ location }: MintNFTButtonProps) {
       >
         {isMinting ? 'Minting...' : 'GET NFT!'}
       </Button>
-      {isMinting && (
-        <div className="mt-2">
-          <Progress value={progress} className="h-2 bg-gray-700 [&>div[role=progressbar]]:bg-blue-500" />
-          <p className="text-sm text-gray-400 mt-1">{progress}% Complete</p>
-        </div>
-      )}
     </>
   );
 }
