@@ -17,10 +17,10 @@ const privateKeyProvider = new EthereumPrivateKeyProvider({
   config: { chainConfig },
 });
 
-const clientId = "BI1gmjRIlXtNO8BQLmugsUxgcyHY6RetCH58wg9lV795Se6CS5q3wsuJkjJ9kZgcfznLTbbOosaIdjZhgpiK63Q";
+const clientId = "BKAnieLEEjFuAzLfWCGS-0A5nph8RHEFXRQITrU23VmIxW2yXj-P5n7chsHO0VimQ0K3EfM56297njL4NtjIyuA";
 
 export const web3auth = new Web3Auth({
   clientId,
-  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_DEVNET,
+  web3AuthNetwork: WEB3AUTH_NETWORK.SAPPHIRE_MAINNET,
   privateKeyProvider,
 });
