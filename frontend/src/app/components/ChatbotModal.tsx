@@ -85,7 +85,7 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] bg-gray-800 text-white">
+        <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] bg-gray-800 text-white">
           <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>AIチャットアシスタント</DialogTitle>
           </DialogHeader>
@@ -94,24 +94,24 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
               <div className="pt-4">
                 {messages.map((message, index) => (
                   <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-                    <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                    <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''} max-w-full`}>
                       {message.role === 'user' ? (
-                        <Link href={`/profile/${user?.wallet_address}`} className="relative w-10 h-10 rounded-full overflow-hidden ml-2">
+                        <Link href={`/profile/${user?.wallet_address}`} className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ml-2 flex-shrink-0">
                           <Image
                             src={userProfile?.avatar_url || "/images/no-user-icon.png"}
                             alt="User Avatar"
                             style={{ objectFit: 'cover' }}
                             className="transition-opacity duration-300 group-hover:opacity-50"
                             fill
-                            sizes="40px"
+                            sizes="(max-width: 640px) 32px, 40px"
                           />
                         </Link>
                       ) : (
-                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 mr-2">
+                        <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-500 mr-2 flex-shrink-0">
                           🤖
                         </div>
                       )}
-                      <div className={`max-w-xs px-4 py-2 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
+                      <div className={`max-w-[75%] px-3 py-2 rounded-lg text-sm sm:text-base ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
                         {message.content}
                       </div>
                     </div>
@@ -129,7 +129,7 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
                       <Button
                         key={index}
                         onClick={() => handleSuggestedQuestion(question)}
-                        className="bg-gray-700 hover:bg-gray-600 text-white text-sm"
+                        className="bg-gray-700 hover:bg-gray-600 text-white text-xs sm:text-sm"
                       >
                         {question}
                       </Button>
@@ -144,9 +144,9 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
                 placeholder="メッセージを入力..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="flex-grow mr-2 bg-gray-700 text-white"
+                className="flex-grow mr-2 bg-gray-700 text-white text-sm sm:text-base"
               />
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base">
                 送信
               </Button>
             </form>
