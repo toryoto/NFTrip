@@ -31,7 +31,6 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    console.log(location.name)
     const initialMessages: ChatMessage[] = [
       { role: 'assistant', content: `こんにちは！${location.name}に関する情報を何でもわかりやすくお答えします！` },
     ];
@@ -48,7 +47,7 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
     setInput('')
 
     try {
-      const aiResponse = await getChatResponse([...messages, userMessage]);
+      const aiResponse = await getChatResponse([...messages, userMessage], location);
       if (aiResponse) {
         setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
       } else {
