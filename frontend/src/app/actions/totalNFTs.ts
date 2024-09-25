@@ -33,9 +33,9 @@ export async function getUserData() {
 
   try {
     const { data, error } = await supabase
-      .from('users')
+      .from('user_profiles')
       .select('total_nfts')
-      .eq('id', userId)
+      .eq('user_id', userId)
       .single()
 
     if (error) throw error
@@ -56,9 +56,9 @@ export async function updateUserData(newTotalNFTs: number) {
 
   try {
     const { error } = await supabase
-      .from('users')
+      .from('user_profiles')
       .update({ total_nfts: newTotalNFTs })
-      .eq('id', userId)
+      .eq('user_id', userId)
 
     if (error) throw error
 
