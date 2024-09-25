@@ -1,8 +1,8 @@
 import { supabase } from './supabase'
-import { Location, LocationImage,LocationWithThumbnailAndDistance } from '../app/types/location'
+import { Location, LocationImage,LocationWithThumbnailAndDistance, LocationWithThumbnail } from '../app/types/location'
 
 // Supabaseから全ての観光地情報を取得する関数
-export async function getLocations(): Promise<(Location & { thumbnail: string | null })[]> {
+export async function getLocations(): Promise<LocationWithThumbnail[]> {
   // Supabaseから観光地情報を取得
   const { data: locations, error: locationsError } = await supabase
     .from('locations')
