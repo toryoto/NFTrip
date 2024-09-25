@@ -9,7 +9,7 @@ import { getNFTImage } from '@/lib/getLocations';
 import { generateAndUploadNFTMetaData } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
-import { updateUserData } from '@/app/actions/totalNFTs';
+import { updateUserData } from '@/app/actions/userProgress';
 
 interface MintNFTButtonProps {
   location: LocationWithThumbnailAndDistance;
