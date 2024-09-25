@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Award } from 'lucide-react';
-import { getUserData } from "../actions/totalNFTs";
+import { getUserData } from "../actions/userProgress";
 
 export async function UserProgressCard() {
 	const userLevel = 5;
