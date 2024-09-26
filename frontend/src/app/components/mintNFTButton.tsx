@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { LocationWithThumbnailAndDistance } from '../types/location';
 import { getNFTImage } from '@/lib/getLocations';
@@ -65,7 +64,10 @@ export default function MintNFTButton({ location }: MintNFTButtonProps) {
   return (
     <>
       <Button 
-        onClick={handleMintNFT}
+        onClick={(event) => {
+          event.preventDefault();
+          handleMintNFT();
+        }}
         disabled={isMinting}
         className="bg-blue-600 hover:bg-blue-700 text-xs text-white"
       >

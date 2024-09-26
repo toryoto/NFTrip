@@ -53,15 +53,17 @@ export const useLocations = (nearestCount: number = 3) => {
   }, []);
 
   // 最寄りの場所を取得
-  const fetchNearestLocations = async () => {
+  const fetchNearestLocations = async (): Promise<LocationWithThumbnailAndDistance[]> => {
     if (userLocation.lat !== null && userLocation.lon !== null) {
       try {
         const fetchedNearestLocations = await getNearestLocations(userLocation.lat, userLocation.lon, nearestCount);
         return fetchedNearestLocations;
       } catch (error) {
         console.error('Failed to fetch nearest locations:', error);
+        return [];
       }
     }
+    return [];
   };
 
   return { userLocation, fetchNearestLocations };
