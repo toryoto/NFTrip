@@ -16,7 +16,7 @@ export const NearestNFTSpots: React.FC = () => {
 
   useEffect(() =>  {
     const fetchLocations = async () => {
-      const locations: LocationWithThumbnailAndDistance[] | undefined = await fetchNearestLocations()
+      const locations: LocationWithThumbnailAndDistance[] = await fetchNearestLocations()
       if (locations) {
         setNearestLocations(locations)
       }
