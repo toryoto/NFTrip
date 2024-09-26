@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { LocationWithThumbnailAndDistance } from '../types/location';
 import { getNFTImage } from '@/lib/getLocations';
