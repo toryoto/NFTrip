@@ -64,7 +64,10 @@ export default function MintNFTButton({ location }: MintNFTButtonProps) {
   return (
     <>
       <Button 
-        onClick={handleMintNFT}
+        onClick={(event) => {
+          event.preventDefault();
+          handleMintNFT();
+        }}
         disabled={isMinting}
         className="bg-blue-600 hover:bg-blue-700 text-xs text-white"
       >
