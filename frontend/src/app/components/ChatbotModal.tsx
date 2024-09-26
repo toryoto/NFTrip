@@ -144,8 +144,7 @@ export default function ChatbotModal({ location }: ChatbotModalProps) {
                 placeholder="メッセージを入力..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="flex-grow mr-2 bg-gray-700 text-white text-sm sm:text-base"
-              />
+                className="flex-grow mr-2 bg-gray-700 text-white text-base sm:text-base"              />
               <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white text-sm sm:text-base">
                 送信
               </Button>
