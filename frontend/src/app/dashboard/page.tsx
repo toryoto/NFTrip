@@ -22,7 +22,6 @@ export default function DashboardPage() {
           <NearestNFTSpots />
 
           <section>
-            <h2 className="text-2xl font-bold text-blue-400 mb-4">あなたのレベル</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UserProgressCard />
 
