@@ -10,11 +10,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
 import { updateUserData } from '@/app/actions/userProgress';
 
-interface MintNFTButtonProps {
-  location: LocationWithThumbnailAndDistance;
-}
-
-export default function MintNFTButton({ location }: MintNFTButtonProps) {
+export default function MintNFTButton({ location }: {location: LocationWithThumbnailAndDistance}) {
   const { user } = useAuth();
   const { mintNFT } = useSmartContractInteractions();
   const [isMinting, setIsMinting] = useState(false);
