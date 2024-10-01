@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Award } from 'lucide-react';
 import { getUserData } from "../actions/userProgress";
+import Link from "next/link";
 
 export async function UserProgressCard() {
   const userData = await getUserData();
@@ -14,7 +15,7 @@ export async function UserProgressCard() {
             <Award className="h-8 w-8 text-yellow-400" />
             <div className="text-2xl font-bold text-white">レベル {userData.current_level}</div>
           </div>
-          <div className="text-3xl font-bold text-blue-400">{userData.total_nfts} NFTs</div>
+          <Link href={'/nfts'} className="text-3xl font-bold text-blue-400">{userData.total_nfts} NFTs</Link>
         </div>
         <div>
           <div className="flex justify-between mb-2">
