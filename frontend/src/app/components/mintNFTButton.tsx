@@ -23,12 +23,14 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
     }
 
     setIsMinting(true);
+
+    let NFTMetadataHash: string | undefined; 
   
     try {
       const imageHash = await getNFTImage(location.id);
       console.log('NFT image prepared:', imageHash);
 
-      const NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
+      NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
       if (!NFTMetadataHash) {
         throw new Error('NFT metadata hash is undefined');
       }
@@ -52,6 +54,11 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
         description: error.message || "An unexpected error occurred. Please try again.",
         variant: "destructive",
       })
+
+      // NFTメタデータが作成され、かつスマートコントラクトでのNFTミントに失敗した場合メタデータを削除する
+      if (NFTMetadataHash) {
+        await deleteNFTdata(NFTMetadataHash);
+      }
     } finally {
       setIsMinting(false)
     }
