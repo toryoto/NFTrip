@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     });
 
     if (response.data && response.data.IpfsHash) {
-      return NextResponse.json({ ipfsHash: `ipfs://${response.data.IpfsHash}` });
+      return NextResponse.json({ ipfsHash: response.data.IpfsHash });
     } else {
       throw new Error('Invalid response from Pinata: IpfsHash not found');
     }
