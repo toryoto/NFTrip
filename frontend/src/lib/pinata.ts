@@ -13,3 +13,17 @@ export async function generateAndUploadNFTMetaData(
     throw error;
   }
 }
+
+// NFTミント失敗時にあらかじめ作成されたNFTメタデータをPinata上から削除するAPIを叩くメソッド
+export async function deleteNFTdata(cid: string) {
+  try {
+    const response = await axios.delete(`/api/v1/pinata/nft-metadata/${cid}`, {
+      data: {cid}
+    });
+    console.groupCollapsed(response)
+    return response.data;
+  } catch (error) {
+    console.error('Error in deleteNFTdata:', error);
+    throw error;
+  }
+}
