@@ -8,11 +8,11 @@ import { cookies } from 'next/headers'
 const JWT_SECRET = process.env.JWT_SECRET!
 
 // ブラウザのCookieからユーザーのIDを取得する関数
-function getUserIdFromToken(): string | null {
+function getUserIdFromToken(): string {
   const token = cookies().get('auth_token')?.value
 
   if (!token) {
-    return null
+    throw new Error('Token not found')
   }
 
   try {
@@ -20,7 +20,7 @@ function getUserIdFromToken(): string | null {
     return decoded.id
   } catch (error) {
     console.error('Error decoding token:', error)
-    return null
+    throw new Error('Invalid token')
   }
 }
 
@@ -82,17 +82,14 @@ export async function getUserData() {
     return {...data, progress}
   } catch (error) {
     console.error('Error fetching user data:', error)
-    throw error
+    throw new Error('Unauthorized')
   }
 }
 
 // ユーザーのNFT総数を更新する関数(呼ばれるたびにdashboardのユーザーNFT総数を再検証)
 export async function updateUserData(newTotalNFTs: number) {
   const userId = getUserIdFromToken()
-  if (!userId) {
-    throw new Error('Unauthorized')
-  }
-
+  
   const xp = calculateXP(newTotalNFTs);
   const newLevel = calculateLevel(xp);
   const progress = calculateProgress(xp, newLevel);
@@ -114,6 +111,6 @@ export async function updateUserData(newTotalNFTs: number) {
     return { success: true }
   } catch (error) {
     console.error('Error updating user data:', error)
-    throw error
+    throw new Error('Unauthorized')
   }
 }
