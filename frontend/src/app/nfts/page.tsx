@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import { Loading } from '../components/Loading';
 import { NFT } from '../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
+import { toast } from '@/components/ui/use-toast';
 
 export default function NFTGalleryPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
@@ -43,6 +44,11 @@ export default function NFTGalleryPage() {
           setNfts(processedNFTs);
         } catch (error) {
           console.error('Error fetching NFTs:', error);
+          toast({
+            title: "Error",
+            description: "Failed to fetch your NFTs. Please try again later.",
+            variant: "destructive",
+          });
         } finally {
           setLoading(false);
         }
