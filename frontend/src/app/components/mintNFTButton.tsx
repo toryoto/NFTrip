@@ -49,11 +49,26 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
       return transactionHash;
     } catch (error: any) {
       console.error("NFT minting failed:", error);
-      toast({
-        title: "NFT Minting Failed",
-        description: error.message || "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      })
+      // NFTミントエラー時のメッセージをユーザに伝える
+      if (error?.info?.error?.message.includes("MetaMask Tx Signature: User denied transaction signature")) {
+        toast({
+          title: "トランザクションが拒否されました",
+          description: "トランザクションを拒否しました。ガス代が十分であることを確認してください。",
+          variant: "destructive",
+        });
+      } else if (error?.info?.error?.message.includes("insufficient funds for intrinsic transaction cost")) {
+        toast({
+          title: "ガス代不足",
+          description: "ガス代が不足しています。ウォレットに十分な資金があることを確認してください。",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "NFTのミントに失敗しました",
+          description: error.message || "予期しないエラーが発生しました。もう一度お試しください。",
+          variant: "destructive",
+        });
+      }
 
       // NFTメタデータが作成され、かつスマートコントラクトでのNFTミントに失敗した場合メタデータを削除する
       if (NFTMetadataHash) {
