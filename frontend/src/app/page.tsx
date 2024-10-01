@@ -1,14 +1,9 @@
-'use client'
-
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { ArrowRight, MapPin, Gift, Clock, GamepadIcon } from "lucide-react"
+import LandmarkSlideshow from './components/LandmarkSlideshow'
 
 export default function Home() {
-  const [currentImage, setCurrentImage] = useState(0)
   const images = [
     '/images/tokyo.png',
     '/images/fuji.png',
@@ -16,13 +11,6 @@ export default function Home() {
     '/images/kiyomizu.png',
     '/images/asakusa.png'
   ]
-  
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [])
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -46,56 +34,21 @@ export default function Home() {
 
       <main className="flex-1">
         <section className="relative h-screen w-full overflow-hidden">
-          <AnimatePresence initial={false}>
-            <motion.div
-              key={currentImage}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 1 }}
-              className="absolute inset-0 w-full h-full"
-            >
-              <Image
-                src={images[currentImage]}
-                alt={`Landmark ${currentImage + 1}`}
-                layout="fill"
-                objectFit="cover"
-                quality={100}
-                priority
-              />
-              <div className="absolute inset-0 bg-black/60" />
-            </motion.div>
-          </AnimatePresence>
+          <LandmarkSlideshow images={images} />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-5xl md:text-6xl font-bold mb-4"
-              >
+              <h2 className="text-5xl md:text-6xl font-bold mb-4">
                 日本の歴史をNFTで体験
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-xl md:text-2xl mb-8"
-              >
+              </h2>
+              <p className="text-xl md:text-2xl mb-8">
                 位置情報ゲームで街を探索し、ユニークなNFTを収集しよう
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-              >
-                <Link href="/login">
-                  <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
-                    今すぐ始める
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-              </motion.div>
+              </p>
+              <Link href="/login">
+                <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
+                  今すぐ始める
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
