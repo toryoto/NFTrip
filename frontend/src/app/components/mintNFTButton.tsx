@@ -56,7 +56,7 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
           description: "トランザクションを拒否しました。ガス代が十分であることを確認してください。",
           variant: "destructive",
         });
-      } else if (error?.info?.error?.message.includes("insufficient funds for intrinsic transaction cost")) {
+      } else if (error?.message.includes("insufficient funds for intrinsic transaction cost")) {
         toast({
           title: "ガス代不足",
           description: "ガス代が不足しています。ウォレットに十分な資金があることを確認してください。",
