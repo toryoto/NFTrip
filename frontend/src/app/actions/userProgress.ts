@@ -62,9 +62,6 @@ function calculateProgress(xp: number, level: number): number {
 // SupabaseからユーザーのNFT総数を取得する関数
 export async function getUserData() {
   const userId = getUserIdFromToken()
-  if (!userId) {
-    throw new Error('Unauthorized')
-  }
 
   try {
     const { data, error } = await supabase
