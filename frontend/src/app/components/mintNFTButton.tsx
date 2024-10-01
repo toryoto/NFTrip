@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { LocationWithThumbnailAndDistance } from '../types/location';
 import { getNFTImage } from '@/lib/getLocations';
-import { generateAndUploadNFTMetaData } from '@/lib/pinata';
+import { generateAndUploadNFTMetaData, deleteNFTdata } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
 import { updateUserData } from '@/app/actions/userProgress';
@@ -34,7 +34,7 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
       }
       console.log('NFT metadata generated:', NFTMetadataHash);
 
-      const { transactionHash, balanceNumber } = await mintNFT(user.auth_type, location.id, NFTMetadataHash);
+      const { transactionHash, balanceNumber } = await mintNFT(user.auth_type, location.id, `ipfs://${NFTMetadataHash}`);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
 
       toast({
