@@ -18,11 +18,7 @@ import { getChatResponse } from "../actions/chat"
 import { ChatMessage } from "../types/chat"
 import { LocationWithThumbnail } from "../types/location"
 
-interface ChatbotModalProps {
-  location: LocationWithThumbnail;
-}
-
-export default function ChatbotModal({ location }: ChatbotModalProps) {
+export default function ChatbotModal({ location }: { location: LocationWithThumbnail }) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
