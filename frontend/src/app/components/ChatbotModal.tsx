@@ -107,7 +107,7 @@ export default function ChatbotModal({ location }: { location: LocationWithThumb
                           🤖
                         </div>
                       )}
-                      <div className={`max-w-[75%] px-3 py-2 rounded-lg text-sm sm:text-base ${message.role === 'user' ? 'bg-blue-600 text-white text-right' : 'bg-gray-700 text-white'}`}>
+                      <div className={`max-w-[75%] px-3 py-2 rounded-lg text-sm sm:text-base ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white'} mx-1`}>
                         {message.content}
                       </div>
                     </div>
