@@ -10,25 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { motion, AnimatePresence } from "framer-motion"
-
-// Types based on the ER diagram
-type Quiz = {
-  id: number
-  question_text: string
-  options: QuizOption[]
-  explanation: QuizExplanation
-}
-
-type QuizOption = {
-  id: number
-  option_text: string
-  is_correct: boolean
-}
-
-type QuizExplanation = {
-  explanation_text: string
-  additional_resources: string
-}
+import { Quiz, QuizExplanation, QuizOption } from '../types/quiz'
 
 // Dummy data for 3 quizzes
 const dummyQuizzes: Quiz[] = [
