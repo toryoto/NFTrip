@@ -11,6 +11,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { motion, AnimatePresence } from "framer-motion"
 import { Quiz, QuizExplanation, QuizOption } from '../types/quiz'
+import { getLocationQuizzes } from '../actions/quiz'
 
 // Dummy data for 3 quizzes
 const dummyQuizzes: Quiz[] = [
@@ -24,7 +25,7 @@ const dummyQuizzes: Quiz[] = [
       { id: 4, option_text: "横浜", is_correct: false },
     ],
     explanation: {
-      explanation_text: "東京は日本の首都であり、最大の都市です。",
+      explanation_text: "雷門の大提灯は約700kgもの重さがあります。この巨大な提灯は、伝統的な技術と現代の工法を組み合わせて製作・管理されています。提灯の重量を支える構造や、風雨に耐える素材の選択など、伝統的な景観を維持しつつ安全性を確保する工夫が施されています。このような文化遺産の維持には多大な労力とコストがかかるため、観光客の皆さんには、入場料や寄付を通じて保全活動に協力していただくことが大切です。",
       additional_resources: "https://ja.wikipedia.org/wiki/東京都"
     }
   },
@@ -58,7 +59,7 @@ const dummyQuizzes: Quiz[] = [
   }
 ]
 
-export default function QuizModal() {
+export default function QuizModal({ locationId }: { locationId: number }) {
   const [isOpen, setIsOpen] = useState(false)
   const [quizzes] = useState<Quiz[]>(dummyQuizzes)
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({})
@@ -100,14 +101,23 @@ export default function QuizModal() {
     setCurrentQuestionIndex(0)
   }
 
+	const getQuizzes = () => {
+		const quizzes = getLocationQuizzes(locationId)
+		console.log(quizzes);
+	}
+
   const currentQuiz = quizzes[currentQuestionIndex]
 
   return (
     <div>
       <Button 
+				// onClick={(event) => {
+				// 	event.preventDefault()
+				// 	setIsOpen(true)
+				// }}
 				onClick={(event) => {
 					event.preventDefault()
-					setIsOpen(true)
+					getQuizzes()
 				}}
 				className="bg-blue-600 hover:bg-blue-700 text-white" >
         クイズに挑戦
