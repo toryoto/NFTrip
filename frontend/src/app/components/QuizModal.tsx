@@ -60,9 +60,9 @@ export default function QuizModal({ locationId }: { locationId: number }) {
 		setQuizzes(quizzes);
 	}
 
-  const handleAnswerChange = (quizId: number, optionId: number) => {
-    setUserAnswers(prev => ({ ...prev, [quizId]: optionId }))
-  }
+	const handleAnswerChange = (quizId: number, optionIndex: number) => {
+		setUserAnswers(prev => ({ ...prev, [quizId]: optionIndex + 1 }))
+	}
 
   const handleSubmit = async () => {
     if (currentQuestionIndex < quizzes.length - 1) {
@@ -130,22 +130,22 @@ export default function QuizModal({ locationId }: { locationId: number }) {
                   <div className="mb-8 p-4 bg-gray-700 rounded-lg">
                     <h3 className="text-lg font-semibold mb-4">{currentQuiz?.question_text}</h3>
                     <div className="space-y-2">
-                      {currentQuiz?.options.map(option => (
-                        <div key={option.id} className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-600 transition-colors">
-                          <input
-                            type="radio"
-                            id={`option-${currentQuiz.id}-${option.id}`}
-                            name={`quiz-${currentQuiz.id}`}
-                            value={option.id}
-                            checked={userAnswers[currentQuiz.id] === option.id}
-                            onChange={() => handleAnswerChange(currentQuiz.id, option.id)}
-                            className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                          />
-                          <label htmlFor={`option-${currentQuiz.id}-${option.id}`} className="flex-grow cursor-pointer">
-                            {option.option_text}
-                          </label>
-                        </div>
-                      ))}
+                      {currentQuiz?.options.map((option, index) => (
+												<div key={option.id} className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-600 transition-colors">
+													<input
+														type="radio"
+														id={`option-${currentQuiz.id}-${index + 1}`}
+														name={`quiz-${currentQuiz.id}`}
+														value={index + 1}
+														checked={userAnswers[currentQuiz.id] === index + 1}
+														onChange={() => handleAnswerChange(currentQuiz.id, index)}
+														className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+													/>
+													<label htmlFor={`option-${currentQuiz.id}-${index + 1}`} className="flex-grow cursor-pointer">
+														{option.option_text}
+													</label>
+												</div>
+											))}
                     </div>
                   </div>
                 ) : (
@@ -154,26 +154,26 @@ export default function QuizModal({ locationId }: { locationId: number }) {
                       <div key={quiz.id} className="mb-8 p-4 bg-gray-700 rounded-lg">
                         <h3 className="text-lg font-semibold mb-4">問題 {index + 1}: {quiz.question_text}</h3>
                         <div className="space-y-2">
-                          {quiz.options.map(option => (
-                            <div
-                              key={option.id}
-                              className={`p-2 rounded-md flex items-center justify-between ${
-                                answers[quiz.id].correct_option_id === option.id
-                                  ? 'bg-green-600'
-                                  : userAnswers[quiz.id] === option.id
-                                  ? 'bg-red-600'
-                                  : 'bg-gray-600'
-                              }`}
-                            >
-                              <span>{option.option_text}</span>
-                              {answers[quiz.id].correct_option_id === option.id && (
-                                <CheckCircle2 className="h-5 w-5 text-white" />
-                              )}
-                              {userAnswers[quiz.id] === option.id && answers[quiz.id].correct_option_id !== option.id && (
-                                <XCircle className="h-5 w-5 text-white" />
-                              )}
-                            </div>
-                          ))}
+												{quiz.options.map((option, index) => (
+													<div
+														key={option.id}
+														className={`p-2 rounded-md flex items-center justify-between ${
+															answers[quiz.id].correct_option_id === index + 1
+																? 'bg-green-600'
+																: userAnswers[quiz.id] === index + 1
+																? 'bg-red-600'
+																: 'bg-gray-600'
+														}`}
+													>
+														<span>{option.option_text}</span>
+														{answers[quiz.id].correct_option_id === index + 1 && (
+															<CheckCircle2 className="h-5 w-5 text-white" />
+														)}
+														{userAnswers[quiz.id] === index + 1 && answers[quiz.id].correct_option_id !== index + 1 && (
+															<XCircle className="h-5 w-5 text-white" />
+														)}
+													</div>
+												))}
                         </div>
                         {answers[quiz.id] && (
                           <div className="mt-4 p-3 bg-gray-600 rounded-md">
