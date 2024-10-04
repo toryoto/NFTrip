@@ -12,31 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle2, XCircle } from 'lucide-react'
 import { Quiz, QuizAnswers } from '../types/quiz'
-import { getLocationQuizzes } from '../actions/quiz'
-
-// Dummy function to simulate fetching answers
-const fetchAnswers = async (userAnswers: { [key: number]: number }): Promise<{ [key: number]: QuizAnswers }> => {
-  // Simulating API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  return {
-    1: {
-      correct_option_id: 1,
-      explanation_text: "東京は日本の首都であり、最大の都市です。",
-      additional_resources: "https://ja.wikipedia.org/wiki/東京都"
-    },
-    2: {
-      correct_option_id: 7,
-      explanation_text: "ヒュンダイは韓国の自動車メーカーで、日本のメーカーではありません。",
-      additional_resources: "https://ja.wikipedia.org/wiki/現代自動車"
-    },
-    3: {
-      correct_option_id: 9,
-      explanation_text: "富士山は日本最高峰で、標高は3,776.24メートルです。",
-      additional_resources: "https://ja.wikipedia.org/wiki/富士山"
-    }
-  };
-}
+import { getLocationQuizzes, getQuizAnswers } from '../actions/quiz'
 
 export default function QuizModal({ locationId }: { locationId: number }) {
   const [isOpen, setIsOpen] = useState(false)
@@ -60,16 +36,17 @@ export default function QuizModal({ locationId }: { locationId: number }) {
 		setQuizzes(quizzes);
 	}
 
-	const handleAnswerChange = (quizId: number, optionIndex: number) => {
-		setUserAnswers(prev => ({ ...prev, [quizId]: optionIndex + 1 }))
+	const handleAnswerChange = (quizId: number, optionId: number) => {
+		setUserAnswers(prev => ({ ...prev, [quizId]: optionId }))
 	}
 
   const handleSubmit = async () => {
     if (currentQuestionIndex < quizzes.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1)
     } else {
-      const fetchedAnswers = await fetchAnswers(userAnswers)
-      setAnswers(fetchedAnswers)
+			const fetchedAnswers = await getQuizAnswers(userAnswers)
+			console.log(fetchedAnswers)
+			setAnswers(fetchedAnswers)
       setShowResults(true)
     }
   }
@@ -137,8 +114,8 @@ export default function QuizModal({ locationId }: { locationId: number }) {
 														id={`option-${currentQuiz.id}-${index + 1}`}
 														name={`quiz-${currentQuiz.id}`}
 														value={index + 1}
-														checked={userAnswers[currentQuiz.id] === index + 1}
-														onChange={() => handleAnswerChange(currentQuiz.id, index)}
+														checked={userAnswers[currentQuiz.id] === option.id}
+														onChange={() => handleAnswerChange(currentQuiz.id, option.id)}
 														className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
 													/>
 													<label htmlFor={`option-${currentQuiz.id}-${index + 1}`} className="flex-grow cursor-pointer">
@@ -158,9 +135,9 @@ export default function QuizModal({ locationId }: { locationId: number }) {
 													<div
 														key={option.id}
 														className={`p-2 rounded-md flex items-center justify-between ${
-															answers[quiz.id].correct_option_id === index + 1
+															answers[quiz.id].correct_option_id === option.id
 																? 'bg-green-600'
-																: userAnswers[quiz.id] === index + 1
+																: userAnswers[quiz.id] === option.id
 																? 'bg-red-600'
 																: 'bg-gray-600'
 														}`}
