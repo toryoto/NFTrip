@@ -19,6 +19,7 @@ export default function QuizModal({ locationId }: { locationId: number }) {
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({})
   const [showResults, setShowResults] = useState(false)
+	// answersはquizIdをkeyにとり、QuizAnswers型をvalueに持つオブジェクト
   const [answers, setAnswers] = useState<{ [key: number]: QuizAnswers }>({})
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 

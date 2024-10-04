@@ -32,11 +32,11 @@ export async function getLocationQuizzes(locationId: number): Promise<Quiz[]> {
 }
 
 // ユーザの回答を受け取り、それぞれの問題のis_correct, explanation_textm, additional_resourcesをSupabaseから取得する
+// userAnswers {quizId: selectedOption}
 export async function getQuizAnswers(userAnswers: { [key: number]: number }): Promise<{ [key: number]: QuizAnswers }> {
-	console.log(userAnswers);
 
-	const results = await Promise.all(Object.entries(userAnswers).map(async ([quizId, optionId]) => {
-		// 問題ごとにquizzes_optionsテーブルから正解の選択肢を取得
+	const results = await Promise.all(Object.entries(userAnswers).map(async ([quizId]) => {
+		// クイズごとにquizzes_optionsテーブルから正解の選択肢のidを取得
 		const { data: optionData, error: optionError } = await supabase
 			.from('quizzes_options')
 			.select('id')
@@ -46,7 +46,7 @@ export async function getQuizAnswers(userAnswers: { [key: number]: number }): Pr
 
 		if (optionError) throw optionError;
 
-		// 全ての問題のquizzes_explanationsテーブルからexplanation_textとadditional_resourcesを取得
+		// quizzes_explanationsテーブルから全ての問題のqexplanation_textとadditional_resourcesを取得
 		const { data: explanationData, error: explanationError } = await supabase
 			.from('quizzes_explanations')
 			.select('explanation_text, additional_resources')
@@ -55,6 +55,7 @@ export async function getQuizAnswers(userAnswers: { [key: number]: number }): Pr
 
 		if (explanationError) throw explanationError;
 
+		// クイズごとに正解のoption
 		return {
 			[quizId]: {
 				correct_option_id: optionData.id,
@@ -64,6 +65,6 @@ export async function getQuizAnswers(userAnswers: { [key: number]: number }): Pr
 		};
 	}));
 
-	// 結果をオブジェクトに変換
+	// 複数のresults配列を1つのオブジェクトにまとめる
 	return results.reduce((acc, result) => ({ ...acc, ...result }), {});
 }
