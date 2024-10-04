@@ -155,9 +155,11 @@ export default function QuizModal({ locationId }: { locationId: number }) {
                         {answers[quiz.id] && (
                           <div className="mt-4 p-3 bg-gray-600 rounded-md">
                             <p className="text-sm font-semibold mb-2">
-                              {userAnswers[quiz.id] === answers[quiz.id].correct_option_id
-                                ? "正解です！"
-                                : "不正解です。"}
+                              <span className={`font-bold ${userAnswers[quiz.id] === answers[quiz.id].correct_option_id ? 'text-green-400' : 'text-red-400'}`}>
+                                {userAnswers[quiz.id] === answers[quiz.id].correct_option_id
+                                  ? "正解です！"
+                                  : "不正解です。"}
+                              </span>
                             </p>
                             <p className="text-sm">{answers[quiz.id].explanation_text}</p>
                             <a href={answers[quiz.id].additional_resources} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline text-sm mt-2 inline-block">
