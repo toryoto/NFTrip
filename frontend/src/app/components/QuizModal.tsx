@@ -110,9 +110,9 @@ export default function EnhancedQuizModal({ locationId, locationName }: { locati
               <div className="mb-6 space-y-2">
                 <div className="flex justify-between items-center text-sm font-medium">
                   <span>問題 {currentQuestionIndex + 1} / {quizzes.length}</span>
-                  <span>{Math.round((currentQuestionIndex + 1) / quizzes.length * 100)}% 完了</span>
+                  <span>{showResults ? 100 : Math.round(currentQuestionIndex / quizzes.length * 100)}% 完了</span>
                 </div>
-                <Progress value={(currentQuestionIndex + 1) / quizzes.length * 100} className="h-2 bg-gray-700" />
+                <Progress value={showResults ? 100 : (currentQuestionIndex / quizzes.length * 100)} className="h-2 bg-gray-700" />
               </div>
               <ScrollArea className="h-[60vh] pr-4">
                 <AnimatePresence mode="wait">
