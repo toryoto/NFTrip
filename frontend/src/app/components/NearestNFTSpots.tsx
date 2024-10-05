@@ -61,7 +61,7 @@ export const NearestNFTSpots: React.FC = () => {
                 </div>
               </Link>
               <div className="flex space-x-2 mt-4">
-                <QuizModal locationId={location.id} />
+                <QuizModal locationId={location.id} locationName={location.name} />
               </div>
               <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <Info className="h-4 w-4 text-white" />
