@@ -14,8 +14,10 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
 import { Quiz, QuizAnswers } from '../types/quiz'
 import { getLocationQuizzes, getQuizAnswers } from '../actions/quiz'
+import MintNFTButton from './mintNFTButton'
+import { LocationWithThumbnailAndDistance } from '../types/location'
 
-export default function QuizModal({ locationId, locationName }: { locationId: number, locationName: string }) {
+export default function QuizModal({ location }: { location: LocationWithThumbnailAndDistance }) {
   const [isOpen, setIsOpen] = useState(false)
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({})
@@ -35,7 +37,7 @@ export default function QuizModal({ locationId, locationName }: { locationId: nu
   }, [isOpen])
 
   const getQuizzes = async () => {
-    const quizzes = await getLocationQuizzes(locationId)
+    const quizzes = await getLocationQuizzes(location.id)
     setQuizzes(quizzes)
   }
 
@@ -83,7 +85,7 @@ export default function QuizModal({ locationId, locationName }: { locationId: nu
         <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-              {locationName}のクイズチャレンジ
+              {location.name}のクイズチャレンジ
             </DialogTitle>
             <p className="text-center text-lg mt-2 text-blue-300">全問正解でNFTをGET！</p>
           </DialogHeader>
@@ -155,16 +157,7 @@ export default function QuizModal({ locationId, locationName }: { locationId: nu
                           あなたのスコア: {score} / {quizzes.length}
                         </div>
                         {showNFTReward && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.5 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.5 }}
-                            className="p-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-xl mb-4"
-                          >
-                            <Award className="h-12 w-12 text-white mx-auto mb-2" />
-                            <h3 className="text-xl font-bold text-white mb-1">おめでとうございます！</h3>
-                            <p className="text-white text-sm">全問正解でNFTを獲得しました！</p>
-                          </motion.div>
+                          <MintNFTButton location={location} />
                         )}
                         <div className="max-h-[40vh] overflow-y-auto pr-2">
                           {quizzes.map((quiz, index) => (
