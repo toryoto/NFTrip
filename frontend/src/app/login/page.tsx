@@ -19,13 +19,14 @@ export default function LoginPage() {
     setIsMetamask(isMetamaskInstalled())
   }, [])
 
-  const handleLogin = async (method: 'metamask' | 'web3auth') => {
+  const handleLogin = async　 (method: 'metamask' | 'web3auth') => {
     try {
       setIsLoginLoading(true);
       await login(method);
       router.push('/dashboard');
     } catch (error) {
       console.error(`Error during ${method} login:`, error);
+    } finally {
       setIsLoginLoading(false);
     }
   }
