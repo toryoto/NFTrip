@@ -76,7 +76,7 @@ export default function EnhancedQuizModal({ locationId, locationName }: { locati
     <div>
       <Button onClick={() => setIsOpen(true)} className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg transform transition duration-500 hover:scale-105">
         <Sparkles className="mr-2 h-5 w-5" />
-        クイズに挑戦してNFTをGET
+        クイズに挑戦
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
