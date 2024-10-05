@@ -1,17 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { useAuth } from '../contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Loading } from '../components/Loading'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ExtendedWindow } from '../types/ethere'
 
 export default function LoginPage() {
   const { login } = useAuth();
   const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [isMetamask, setIsMetamask] = useState(false)
   const router = useRouter();
+
+  useEffect(() => {
+    setIsMetamask(isMetamaskInstalled())
+  }, [])
 
   const handleLogin = async (method: 'metamask' | 'web3auth') => {
     try {
@@ -22,6 +28,11 @@ export default function LoginPage() {
       console.error(`Error during ${method} login:`, error);
       setIsLoginLoading(false);
     }
+  }
+
+  const isMetamaskInstalled = () => {
+    const ethereum = (window as ExtendedWindow).ethereum; 
+    return ethereum !== undefined
   }
 
   if (isLoginLoading) {
