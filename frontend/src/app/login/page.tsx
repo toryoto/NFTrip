@@ -19,7 +19,7 @@ export default function LoginPage() {
     setIsMetamask(isMetamaskInstalled())
   }, [])
 
-  const handleLogin = async　 (method: 'metamask' | 'web3auth') => {
+  const handleLogin = async(method: 'metamask' | 'web3auth') => {
     try {
       setIsLoginLoading(true);
       await login(method);
