@@ -17,10 +17,13 @@ export type LocationImage = {
   is_primary: boolean
 }
 
+// 観光地一覧で必要なLocationとそのサムネイルの型
 export interface LocationWithThumbnail extends Location {
   thumbnail: string | null;
 }
 
+
+// NFT発行時などユーザとの距離が必要な際の型
 export interface LocationWithThumbnailAndDistance extends Location {
   thumbnail: string | null;
   distance: number;

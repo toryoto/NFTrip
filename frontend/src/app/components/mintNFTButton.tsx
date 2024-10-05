@@ -9,6 +9,8 @@ import { generateAndUploadNFTMetaData, deleteNFTdata } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
 import { updateUserData } from '@/app/actions/userProgress';
+import { motion } from 'framer-motion';
+import { Award } from 'lucide-react'
 
 export default function MintNFTButton({ location }: {location: LocationWithThumbnailAndDistance}) {
   const { user } = useAuth();
@@ -24,6 +26,11 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
 
     setIsMinting(true);
 
+    toast({
+      title: "NFT発行の準備地中です",
+      description: `${location.name}限定NFTの準備中です`,
+    })
+
     let NFTMetadataHash: string | undefined; 
   
     try {
@@ -36,12 +43,17 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
       }
       console.log('NFT metadata generated:', NFTMetadataHash);
 
+      toast({
+        title: "NFT発行を開始します。この処理には1分程度かかります。",
+        description: `あなたの${location.name}への訪問記録をブロックチェーン上に保存します`,
+      })
+
       const { transactionHash, balanceNumber } = await mintNFT(user.auth_type, location.id, `ipfs://${NFTMetadataHash}`);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
 
       toast({
-        title: "NFT Minted Successfully!",
-        description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
+        title: "NFTが正常に発行されました！",
+        description: `${location.name}に訪問した証明をぜひプロフィールから確認してください！`,
       })
 
       await updateUserData(balanceNumber);
@@ -87,9 +99,18 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
           handleMintNFT();
         }}
         disabled={isMinting}
-        className="bg-blue-600 hover:bg-blue-700 text-xs text-white"
+        className="w-full p-0 h-auto hover:no-underline"
       >
-        {isMinting ? 'Minting...' : 'GET NFT!'}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="w-full p-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-xl hover:bg-gradient-to-r hover:from-orange-500 hover:to-yellow-400"
+        >
+          <Award className="h-12 w-12 text-white mx-auto mb-2" />
+          <h3 className="text-xl font-bold text-white mb-1">おめでとうございます！</h3>
+          <p className="text-white text-sm mb-2">ここをクリックしてNFTをゲットしてください！</p>
+        </motion.div>
       </Button>
     </>
   );
