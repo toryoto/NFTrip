@@ -9,6 +9,7 @@ import { MapPin, Info } from 'lucide-react';
 import { useLocations } from '@/hooks/useLocations';
 import { LocationWithThumbnailAndDistance } from '../types/location';
 import MintNFTButton from './mintNFTButton';
+import QuizModal from './QuizModal';
 
 export const NearestNFTSpots: React.FC = () => {
   const { userLocation, fetchNearestLocations } = useLocations();
@@ -35,9 +36,10 @@ export const NearestNFTSpots: React.FC = () => {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {nearestLocations.map((location) => (
-          <Link href={`/spots/${location.slug}`} key={location.id} className="group">
-            <Card key={location.id} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
+      {nearestLocations.map((location) => (
+        <div key={location.id} className="group">
+          <Card className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
+            <Link href={`/spots/${location.slug}`} className="block">
               <div className="relative h-48 overflow-hidden">
                 <Image
                   src={location.thumbnail || '/images/default-thumbnail.jpg'}
@@ -49,20 +51,25 @@ export const NearestNFTSpots: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
               </div>
-              <CardContent className="p-4 relative">
+            </Link>
+            <CardContent className="p-4 relative">
+              <Link href={`/spots/${location.slug}`} className="block">
                 <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{location.name}</h3>
                 <div className="flex items-center text-green-400 mb-2">
                   <MapPin className="h-4 w-4 mr-1 text-green-400" />
                   <span>{location.distance.toFixed(2)} km</span>
                 </div>
-                <MintNFTButton location={location} />
-                <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Info className="h-4 w-4 text-white" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
+              </Link>
+              <div className="flex space-x-2 mt-4">
+                <QuizModal locationId={location.id} locationName={location.name} />
+              </div>
+              <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <Info className="h-4 w-4 text-white" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      ))}
       </div>
     </section>
   );
