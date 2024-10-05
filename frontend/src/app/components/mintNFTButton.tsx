@@ -9,6 +9,8 @@ import { generateAndUploadNFTMetaData, deleteNFTdata } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
 import { updateUserData } from '@/app/actions/userProgress';
+import { motion } from 'framer-motion';
+import { Award } from 'lucide-react'
 
 export default function MintNFTButton({ location }: {location: LocationWithThumbnailAndDistance}) {
   const { user } = useAuth();
@@ -81,16 +83,26 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
 
   return (
     <>
-      <Button 
-        onClick={(event) => {
-          event.preventDefault();
-          handleMintNFT();
-        }}
-        disabled={isMinting}
-        className="bg-blue-600 hover:bg-blue-700 text-xs text-white"
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+        className="p-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-xl mb-4"
       >
-        {isMinting ? 'Minting...' : 'GET NFT!'}
-      </Button>
+        <Award className="h-12 w-12 text-white mx-auto mb-2" />
+        <h3 className="text-xl font-bold text-white mb-1">おめでとうございます！</h3>
+        <p className="text-white text-sm">ここをクリックしてNFTをゲットしてください！</p>
+        <Button 
+          onClick={(event) => {
+            event.preventDefault();
+            handleMintNFT();
+          }}
+          disabled={isMinting}
+          className="bg-blue-600 hover:bg-blue-700 text-xs text-white"
+        >
+          {isMinting ? 'Minting...' : 'GET NFT!'}
+        </Button>
+      </motion.div>
     </>
   );
 }
