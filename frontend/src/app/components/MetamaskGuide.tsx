@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 
+// Propsで親コンポーネントの表示管理Stateをfalseにするメソッドを受け取る
 export const MetamaskGuide = ({ onClose }: { onClose: () => void }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
