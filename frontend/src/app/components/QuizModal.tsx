@@ -15,7 +15,7 @@ import { Progress } from "@/components/ui/progress"
 import { Quiz, QuizAnswers } from '../types/quiz'
 import { getLocationQuizzes, getQuizAnswers } from '../actions/quiz'
 
-export default function EnhancedQuizModal({ locationId, locationName }: { locationId: number, locationName: string }) {
+export default function QuizModal({ locationId, locationName }: { locationId: number, locationName: string }) {
   const [isOpen, setIsOpen] = useState(false)
   const [quizzes, setQuizzes] = useState<Quiz[]>([])
   const [userAnswers, setUserAnswers] = useState<{ [key: number]: number }>({})

@@ -8,7 +8,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Info } from 'lucide-react';
 import { useLocations } from '@/hooks/useLocations';
 import { LocationWithThumbnailAndDistance } from '../types/location';
-import MintNFTButton from './mintNFTButton';
 import QuizModal from './QuizModal';
 
 export const NearestNFTSpots: React.FC = () => {

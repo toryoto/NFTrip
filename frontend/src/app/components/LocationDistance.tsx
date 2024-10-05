@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocations } from '@/hooks/useLocations'
 import MintNFTButton from './mintNFTButton'
 import { LocationWithThumbnail } from '../types/location'
+import QuizModal from './QuizModal'
 
 export const LocationDistance: React.FC<LocationWithThumbnail> = ({ ...location }) => {
   const { userLocation } = useLocations();
@@ -37,7 +38,7 @@ export const LocationDistance: React.FC<LocationWithThumbnail> = ({ ...location 
         <MapPin className="h-4 w-4 mr-1" />
         {distance} km
       </span>
-			{distance !== undefined && <MintNFTButton location={{ ...location, distance }} />}
+			{distance !== undefined && <QuizModal locationId={location.id} locationName={location.name} />}
     </>
   )
 }
