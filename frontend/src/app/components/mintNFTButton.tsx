@@ -26,6 +26,11 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
 
     setIsMinting(true);
 
+    toast({
+      title: "NFT発行の準備地中です",
+      description: `${location.name}限定NFTの準備中です`,
+    })
+
     let NFTMetadataHash: string | undefined; 
   
     try {
@@ -38,12 +43,17 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
       }
       console.log('NFT metadata generated:', NFTMetadataHash);
 
+      toast({
+        title: "NFT発行を開始します。この処理には1分程度かかります。",
+        description: `あなたの${location.name}への訪問記録をブロックチェーン上に保存します`,
+      })
+
       const { transactionHash, balanceNumber } = await mintNFT(user.auth_type, location.id, `ipfs://${NFTMetadataHash}`);
       console.log('NFT minted successfully! Transaction hash:', transactionHash);
 
       toast({
-        title: "NFT Minted Successfully!",
-        description: `Your new NFT for ${location.name} has been minted with transaction hash: ${transactionHash}`,
+        title: "NFTが正常に発行されました！",
+        description: `${location.name}に訪問した証明をぜひプロフィールから確認してください！`,
       })
 
       await updateUserData(balanceNumber);
