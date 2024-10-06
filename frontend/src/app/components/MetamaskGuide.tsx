@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 export const MetamaskGuide = ({ onClose }: { onClose: () => void }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
-		{ title: "Metamakをインストールしてください", content: "Metamaskウォレットを所持しているブラウザのみがMetamask認証ができます。" },
+		{ title: "Metamaskをインストールしてください", content: "MetamaskをインストールしているブラウザのみがMetamask認証ができます。" },
     { title: "Metamaskとは？", content: "Metamaskは暗号通貨ウォレットであり、ブロックチェーンアプリへのゲートウェイです。" },
     { title: "なぜ必要なのか？", content: "私たちのNFTプラットフォームと安全にやり取りするために必要です。" },
     { title: "インストール方法", content: "metamask.ioにアクセスし、お使いのブラウザ向けのインストールガイドに従ってください。" }

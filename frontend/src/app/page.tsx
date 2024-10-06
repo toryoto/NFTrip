@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
-import { ArrowRight, MapPin, Gift, Clock, GamepadIcon } from "lucide-react"
+import { ArrowRight, MapPin, Gift, Cog, GamepadIcon } from "lucide-react"
 import LandmarkSlideshow from './components/LandmarkSlideshow'
+import { Footer } from './components/Footer'
 
 export default function Home() {
   const images = [
@@ -68,9 +69,9 @@ export default function Home() {
                 description="クイズに正解して、ユニークな観光地NFTを獲得しよう！"
               />
               <FeatureCard
-                icon={<Clock className="h-8 w-8" />}
-                title="時間分散"
-                description="混雑していない時間帯に訪れて、限定NFTをゲットしよう！"
+                icon={<Cog className="h-8 w-8" />}
+                title="チャットボット"
+                description="観光地について気になったことはなんでも聞いてみよう！"
               />
               <FeatureCard
                 icon={<GamepadIcon className="h-8 w-8" />}
@@ -89,22 +90,27 @@ export default function Home() {
                 <HowItWorksStep
                   number={1}
                   title="アプリにログイン"
-                  description="MetamaskかGoogleアカウントなどを使用したログインが可能です"
+                  description="MetamaskやGoogleアカウントなどを使用したログインが可能です"
                 />
                 <HowItWorksStep
                   number={2}
-                  title="スポットを探す"
+                  title="観光地を探す"
                   description="地図上で近くのNFTスポットを見つけ、そこに向かいます。"
                 />
                 <HowItWorksStep
                   number={3}
                   title="クイズに挑戦"
-                  description="スポットに到着したら、その場所に関するクイズに挑戦します。"
+                  description="観光地に到着したら、その場所に関するクイズに挑戦します。"
                 />
                 <HowItWorksStep
                   number={4}
                   title="NFTを獲得"
-                  description="クイズに正解すると、その場所のユニークなNFTを獲得できます。"
+                  description="クイズに正解すると、その観光地のユニークなNFTを獲得できます。このNFTはあなたの訪問歴をブロックチェーンに記録するものです。"
+                />
+                <HowItWorksStep
+                  number={4}
+                  title="観光地の歴史・文化学習"
+                  description="気になったことや観光地の歴史などは観光地ページのAIチャットボットになんでもお聞きください。"
                 />
               </ol>
             </div>
@@ -112,11 +118,7 @@ export default function Home() {
         </section>
       </main>
 
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto text-center">
-          <p>&copy; 2023 Find NFT Spots. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
