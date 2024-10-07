@@ -5,8 +5,9 @@ import { BrowserProvider } from 'ethers';
 import { User, AuthMethod, AuthContextType } from '../types/auth';
 import { ExtendedWindow } from '../types/ethere';
 import { Loading } from '../components/Loading';
-import { Web3Auth } from "@web3auth/modal";
 import { useRouter } from 'next/navigation';
+import { initWeb3Auth, getWeb3AuthAccountInfo } from '@/lib/web3auth';
+import { Web3Auth } from "@web3auth/modal";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -21,10 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(true);
 
       try {
-        const web3authModule = await import('@/lib/web3auth');
-        const web3authInstance = web3authModule.web3auth;
-
-        await web3authInstance.initModal();
+        const web3authInstance = await initWeb3Auth();
         setWeb3auth(web3authInstance);
 
         await checkAuth();
