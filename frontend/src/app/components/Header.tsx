@@ -6,14 +6,12 @@ import Link from 'next/link';
 import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
-import { useRouter } from 'next/navigation';
 import { useUserProfile } from '@/hooks/useUserProfile';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth()
   const { userProfile } = useUserProfile(user?.id);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const router = useRouter()
 
   const sliceWalletAddress = (str: string, startChars: number, endChars: number) => {
     if (str.length <= startChars + endChars) return str;
@@ -33,7 +31,6 @@ const Header: React.FC = () => {
   }
 
   if (!user) {
-    router.push('/');
     return
   }
 
