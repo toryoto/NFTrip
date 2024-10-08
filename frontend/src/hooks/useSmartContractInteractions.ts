@@ -5,6 +5,7 @@ import TouristNFTABI from '../../abi/TouristNFT.json';
 import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
 import { supabase } from "@/lib/supabase";
+import { getBiconomyProvider } from "@/lib/biconomy";
 
 const CONTRACT_ADDRESS = '0x5e837921E12fDdB23b0766792366384B68Df6244';
 
@@ -13,7 +14,7 @@ export function useSmartContractInteractions() {
 
   const getContract = async (method: AuthMethod) => {
     const provider = await getProvider(method);
-    const signer = await provider.getSigner();
+    const signer = provider.getSigner();
     return new ethers.Contract(CONTRACT_ADDRESS, TouristNFTABI.abi, signer);
   }
 
@@ -77,7 +78,7 @@ export function useSmartContractInteractions() {
   };
 
   const listenForNFTMinted = (contract: ethers.Contract): Promise<string> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       
       const listener = (...args: any[]) => {
         const event = args[args.length - 1];
