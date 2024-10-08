@@ -12,6 +12,11 @@ npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/Lock.ts
 ```
 
+## スマートコントラクトVerifyコマンド
+```
+npx hardhat verify --network sepolia CONTRACT_ADRESS
+```
+
 ## 概要
 NFTとゲーミフィケーションを使用した持続可能な観光地の促進
 
