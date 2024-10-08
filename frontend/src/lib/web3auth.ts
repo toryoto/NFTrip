@@ -3,6 +3,8 @@ import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from "@web3auth/base";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 import { ethers } from 'ethers';
 import { getRpcUrl } from "@/app/actions/rpcUrl";
+import { Biconomy } from "@biconomy/mexa";
+import { ExtendedWindow } from "@/app/types/ethere";
 
 // チェーン設定を関数として定義
 const getChainConfig = async () => ({
@@ -45,7 +47,7 @@ export const connectWeb3Auth = async (web3auth: Web3Auth) => {
   if (!web3authProvider) {
     throw new Error("Failed to connect to web3auth");
   }
-  return new ethers.BrowserProvider(web3authProvider);
+  return new ethers.providers.Web3Provider(web3authProvider);
 };
 
 // アカウント情報取得関数
@@ -56,11 +58,25 @@ export const getWeb3AuthAccountInfo = async (web3auth: Web3Auth) => {
     const signer = await ethersProvider.getSigner();
     const address = await signer.getAddress();
     const balance = await ethersProvider.getBalance(address);
-    const balanceInEther = ethers.formatEther(balance);
 
-    return { user, address, signer, balanceInEther };
+    return { user, address, signer };
   } catch (error) {
     console.error("Error getting account info:", error);
     throw error;
   }
 };
+
+// export const getBiconomyProvider = async () => {
+//   const ethereum = (window as ExtendedWindow).ethereum;
+//   if (!ethereum) {
+//     throw new Error("Ethereum provider is not available");
+//   }
+//   const biconomy = new Biconomy(ethereum, {
+//     apiKey: "YOUR_BICONOMY_API_KEY",
+//     debug: true,
+//     contractAddresses: []
+//   })
+
+//   const provider = new ethers.providers.Web3Provider(biconomy as unknown as ethers.providers.ExternalProvider);
+//   await biconomy.init();
+// }

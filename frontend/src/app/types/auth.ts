@@ -1,5 +1,5 @@
 export type AuthMethod = 'metamask' | 'web3auth';
-import { BrowserProvider } from 'ethers';
+import { ethers } from 'ethers';
 
 export interface User {
   id: number;
@@ -20,5 +20,5 @@ export interface AuthContextType {
   user: User | null;
   login: (method: AuthMethod) => Promise<void>;
   logout: () => Promise<void>;
-  getProvider: (method: AuthMethod) => Promise<BrowserProvider>
+  getProvider: (method: AuthMethod) => Promise<ethers.providers.Web3Provider>
 }

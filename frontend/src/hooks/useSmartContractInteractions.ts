@@ -41,10 +41,11 @@ export function useSmartContractInteractions() {
       // イベントからトランザクションハッシュを取得
       const transactionHash = await eventPromise;
 
-      const signer = await (await getProvider(method)).getSigner();
+      const provider = await getProvider(method);
+      const signer = provider.getSigner();
       const myAddress = await signer.getAddress();
       const balance = await contract.balanceOf(myAddress);
-      const balanceNumber = Number(balance);
+      const balanceNumber = balance.toNumber();
 
       return { transactionHash, balanceNumber };
     } catch (error) {
@@ -56,7 +57,8 @@ export function useSmartContractInteractions() {
   const fetchMyNFTs = async (method: AuthMethod) => {
     try {
       const contract = await getContract(method);
-      const signer = await (await getProvider(method)).getSigner();
+      const provider = await getProvider(method);
+      const signer = provider.getSigner();
       const myAddress = await signer.getAddress();
 
       let balance = BigInt(0);
@@ -76,20 +78,22 @@ export function useSmartContractInteractions() {
 
   const listenForNFTMinted = (contract: ethers.Contract): Promise<string> => {
     return new Promise((resolve) => {
+      
       const listener = (...args: any[]) => {
         const event = args[args.length - 1];
-        contract.off("NFTMinted", listener);
-        resolve(event.log.transactionHash);
+        resolve(event.transactionHash);
       };
   
       contract.on("NFTMinted", listener);
     });
   };
+  
 
   async function burnAllNFTs(method: AuthMethod) {
     try {
       const contract = await getContract(method);
-      const signer = await (await getProvider(method)).getSigner();
+      const provider = await getProvider(method);
+      const signer = provider.getSigner();
       const myAddress = await signer.getAddress();
   
       // ユーザーの現在のNFT残高を取得

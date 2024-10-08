@@ -1,5 +1,6 @@
-import { Eip1193Provider } from 'ethers';
+import { ethers } from 'ethers';
 
+// v5では、ExternalProviderを使用します
 export interface ExtendedWindow extends Window {
-  ethereum?: Eip1193Provider;
+  ethereum?: ethers.providers.ExternalProvider;
 }

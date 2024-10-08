@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { BrowserProvider } from 'ethers';
+import { ethers } from 'ethers';
 import { User, AuthMethod, AuthContextType } from '../types/auth';
 import { ExtendedWindow } from '../types/ethere';
 import { Loading } from '../components/Loading';
@@ -36,24 +36,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     initAuth();
   }, []);
 
-  const getProvider = async (method: AuthMethod): Promise<BrowserProvider> => {
+  const getProvider = async (method: AuthMethod): Promise<ethers.providers.Web3Provider> => {
     if (method === 'metamask') {
       const ethereum = (window as ExtendedWindow).ethereum;
       if (!ethereum) {
         throw new Error('MetaMask not detected');
       }
-      await ethereum.request({ method: 'eth_requestAccounts' });
-      return new BrowserProvider(ethereum);
+      await ethereum.request?.({ method: 'eth_requestAccounts' });
+      return new ethers.providers.Web3Provider(ethereum);
     } else {
       if (!web3auth) {
         throw new Error('Web3Auth not initialized');
       }
       const web3authProvider = await web3auth.connect();
-      return new BrowserProvider(web3authProvider as any);
+      return new ethers.providers.Web3Provider(web3authProvider as any);
     }
   };
 
-  const getAddress = async (provider: BrowserProvider): Promise<string> => {
+  const getAddress = async (provider: ethers.providers.Web3Provider): Promise<string> => {
     const signer = await provider.getSigner();
     return await signer.getAddress();
   };
