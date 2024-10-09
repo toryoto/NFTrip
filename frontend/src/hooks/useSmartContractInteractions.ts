@@ -5,7 +5,6 @@ import TouristNFTABI from '../../abi/TouristNFT.json';
 import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
 import { supabase } from "@/lib/supabase";
-import { getBiconomyProvider } from "@/lib/biconomy";
 
 const CONTRACT_ADDRESS = '0x5e837921E12fDdB23b0766792366384B68Df6244';
 
