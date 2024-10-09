@@ -8,6 +8,16 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 export async function POST(req: Request) {
   const { wallet_address, auth_type } = await req.json();
   try {
+    const { data: existingUser, error: selectError } = await supabase
+      .from('users')
+      .select('id')
+      .eq('wallet_address', wallet_address)
+      .single();
+
+    if (selectError && selectError.code !== 'PGRST116') throw selectError;
+
+    const isNewUser = !existingUser;
+
     const { data, error } = await supabase
       .from('users')
       .upsert({ wallet_address, auth_type }, { onConflict: 'wallet_address' })
@@ -28,7 +38,7 @@ export async function POST(req: Request) {
       path: '/',
     });
 
-    const response = NextResponse.json({ user: data }, { status: 200 });
+    const response = NextResponse.json({ user: data, isNewUser }, { status: 200 });
     return response;
   } catch (error) {
     console.error('Error during login:', error);
