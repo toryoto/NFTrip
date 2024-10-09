@@ -15,7 +15,7 @@ const nextConfig = {
       },
     ],
     domains: ['hbdlgkqiqnzkdlzrcihg.supabase.co'],
-  },
+  }
 };
 
 export default nextConfig;

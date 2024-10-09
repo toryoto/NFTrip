@@ -45,7 +45,7 @@ export const connectWeb3Auth = async (web3auth: Web3Auth) => {
   if (!web3authProvider) {
     throw new Error("Failed to connect to web3auth");
   }
-  return new ethers.BrowserProvider(web3authProvider);
+  return new ethers.providers.Web3Provider(web3authProvider);
 };
 
 // アカウント情報取得関数
@@ -56,9 +56,8 @@ export const getWeb3AuthAccountInfo = async (web3auth: Web3Auth) => {
     const signer = await ethersProvider.getSigner();
     const address = await signer.getAddress();
     const balance = await ethersProvider.getBalance(address);
-    const balanceInEther = ethers.formatEther(balance);
 
-    return { user, address, signer, balanceInEther };
+    return { user, address, signer };
   } catch (error) {
     console.error("Error getting account info:", error);
     throw error;
