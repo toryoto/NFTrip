@@ -78,12 +78,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('Login failed');
       }
 
-      const { user: newUser } = await response.json();
+      const { user: user, isNewUser } = await response.json();
 
-      setUser(newUser);
-      await setWeb3AuthUserProfile(newUser)
+      setUser(user);
+      if (isNewUser) await setWeb3AuthUserProfile(user)
 
-      return newUser;
+      return user;
     } catch (error) {
       await logout()
       console.error(`Error during ${method} login:`, error);
@@ -93,21 +93,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const setWeb3AuthUserProfile = async (user: User) => {
     try {
-      const { data: existingUser, error: fetchError } = await supabase
-        .from('user_profiles')
-        .select('name, email')
-        .eq('user_id', user.id)
-        .single();
-
-      if (fetchError) throw fetchError;
-      console.log(existingUser)
-
-      // nameとemailがnull以外の場合はreturn
-      if (existingUser && (existingUser.name !== null || existingUser.email !== null)) {
-        console.log("nameかemailがセットされてます")
-        return;
-      }
-
       const userInfo = await web3auth?.getUserInfo();
       if (userInfo) {
         console.log(userInfo)
@@ -136,8 +121,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
       const fileExtension = blob.type.split('/')[1];
       const fileName = `${String(userId)}_avatar.${fileExtension}`;
-
-      console.log(fileName)
   
       // blobをFileオブジェクトに変換
       const file = new File([blob], fileName, { type: blob.type });
@@ -151,7 +134,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return null;
       }
   
-      // 公開URLを取得
       const { data } = supabase.storage
         .from('avatars')
         .getPublicUrl(fileName);
