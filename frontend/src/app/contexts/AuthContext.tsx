@@ -9,8 +9,6 @@ import { useRouter } from 'next/navigation';
 import { initWeb3Auth, getWeb3AuthAccountInfo } from '@/lib/web3auth';
 import { Web3Auth } from "@web3auth/modal";
 
-import { getBiconomyProvider } from "@/lib/biconomy";
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
