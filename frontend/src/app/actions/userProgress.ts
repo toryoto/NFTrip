@@ -74,7 +74,7 @@ export async function getUserData() {
 
     const xp = calculateXP(data.total_nfts);
     const newLevel = calculateLevel(xp);
-    const progress = calculateProgress(xp, newLevel);
+    const progress = parseFloat(calculateProgress(xp, newLevel).toFixed(1));
 
     return {...data, progress}
   } catch (error) {
