@@ -16,6 +16,14 @@ const nextConfig = {
     ],
     domains: ['hbdlgkqiqnzkdlzrcihg.supabase.co'],
   },
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      net: false,
+      tls: false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
