@@ -4,22 +4,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Medal, Star } from 'lucide-react';
 import Image from 'next/image';
+import { useAuth } from "../contexts/AuthContext";
+import { getTopNFTHolders } from "@/lib/getNFTRanking";
 
-
-// Mock data for leaderboard
-const leaderboardData = [
-  { id: 1, name: "Satoshi", nftCount: 42, avatar: "/placeholder.svg?height=40&width=40" },
-  { id: 2, name: "Yuki", nftCount: 38, avatar: "/placeholder.svg?height=40&width=40" },
-  { id: 3, name: "Haru", nftCount: 35, avatar: "/placeholder.svg?height=40&width=40" },
-  { id: 4, name: "Ren", nftCount: 31, avatar: "/placeholder.svg?height=40&width=40" },
-  { id: 5, name: "Mei", nftCount: 29, avatar: "/placeholder.svg?height=40&width=40" },
-];
-
-// Mock current user data
-const currentUser = { id: 42, name: "You", nftCount: 15, rank: 28, avatar: "/placeholder.svg?height=40&width=40" };
-
+type userRanking = { rank: number; user_id: number; name: string; avatar_url: string; total_nfts: number; }[] | undefined;
 
 export const LeaderboardCard: React.FC = () => {
+	const { user } = useAuth();
+	const [userRanking, setUserRanking] = useState<userRanking>(undefined)
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -30,43 +22,50 @@ export const LeaderboardCard: React.FC = () => {
     }
   };
 
+	useEffect(() => {
+		if (user) {
+			getTopNFTHolders(user.id).then((data) => {
+				if (data !== null) {
+					setUserRanking(data.ranking)
+				}
+		})
+		}
+	});
+
   return (
     <Card className="bg-gray-800 border-gray-700 overflow-hidden">
       <CardContent className="p-6">
         <h3 className="text-2xl font-bold text-blue-400 mb-4">NFTリーダーボード</h3>
         <div className="space-y-4">
-          {leaderboardData.map((user, index) => (
+          {userRanking?.map((user, index) => (
             <div
-              key={user.id}
+              key={user.user_id}
               className="bg-gray-700 p-4 rounded-lg flex items-center justify-between"
             >
               <div className="flex items-center space-x-4">
                 <span className="font-bold text-lg">{index + 1}</span>
                 {getRankIcon(index + 1)}
-                <Image src={user.avatar} alt={user.name} width={40} height={40} className="rounded-full" />
-                <span className="font-medium">{user.name}</span>
+								<div className="relative w-8 h-8 rounded-full overflow-hidden">
+								<Image
+									src={ user.avatar_url || "/images/no-user-icon.png"}
+									alt="User Avatar"
+									style={{ objectFit: 'cover' }}
+									className="transition-opacity duration-300 group-hover:opacity-50"
+									fill
+									sizes="128px"
+								/>
+							</div>
+							<span className="font-medium text-white">{user.name}</span>
               </div>
               <div
                 className="font-bold text-blue-400"
               >
-                {user.nftCount} NFTs
+                {user.total_nfts} NFTs
               </div>
             </div>
           ))}
         </div>
-        {currentUser.rank > 5 && (
-          <div
-          className="mt-4 bg-gray-700 p-4 rounded-lg flex items-center justify-between border-t-2 border-blue-500"
-          >
-          <div className="flex items-center space-x-4">
-            <span className="font-bold text-lg">{currentUser.rank}</span>
-            <Star className="h-5 w-5 text-blue-400" />
-            <Image src={currentUser.avatar} alt={currentUser.name} width={40} height={40} className="rounded-full" />
-            <span className="font-medium">{currentUser.name}</span>
-          </div>
-          <div className="font-bold text-blue-400">{currentUser.nftCount} NFTs</div>
-        </div>
-        )}
+
       </CardContent>
     </Card>
   );
