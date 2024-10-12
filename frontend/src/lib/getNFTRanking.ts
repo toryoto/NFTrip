@@ -25,7 +25,7 @@ export async function getTopNFTHolders(userId: number) {
     const userRankData = rankedUsers.find(user => user.user_id === userId)
 
     if (!userRankData) {
-      console.warn(`User with ID ${userId} not found in ranked users.`) // デバッグ用警告
+      console.warn(`User with ID ${userId} not found in ranked users.`)
     }
 
     if (userRankData && !ranking.some(user => user.user_id === userId)) {
