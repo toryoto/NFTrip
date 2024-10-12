@@ -5,6 +5,7 @@ import { Footer } from '../components/Footer';
 import Header from '../components/Header';
 import { NearestNFTSpots } from '../components/NearestNFTSpots';
 import { UserProgressCard } from "../components/UserProgressCard";
+import { LeaderboardCard } from "../components/LeaderboardCard";
 
 export default function DashboardPage() {
   // Mock data - replace with actual data fetching logic
@@ -23,9 +24,13 @@ export default function DashboardPage() {
 
           <section>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <UserProgressCard />
+              <UserProgressCard />
 
-              <Card className="bg-gray-800 border-gray-700">
+              <div className="bg-gray-800 border-gray-700"> {/* 位置を変更 */}
+                <LeaderboardCard />
+              </div>
+
+              <Card className="bg-gray-800 border-gray-700"> {/* 位置を変更 */}
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold text-blue-400 mb-4">ミッション</h3>
                   <div className="space-y-4">
