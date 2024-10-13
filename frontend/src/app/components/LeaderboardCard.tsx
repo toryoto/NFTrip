@@ -31,7 +31,7 @@ export const LeaderboardCard: React.FC = () => {
 				}
 		})
 		}
-	});
+	}, [user]);
 
   return (
 		<Card className="bg-gray-800 border-gray-700 overflow-hidden">
