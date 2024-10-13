@@ -12,22 +12,41 @@ import { Loading } from '../../components/Loading';
 import { NFT } from '../../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { toast } from '@/components/ui/use-toast';
+import { useParams } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
 
 export default function NFTGalleryPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { id } = useParams();
   const { fetchMyNFTs } = useSmartContractInteractions();
 
   const ipfsToHttp = (ipfsUrl: string) => {
     return `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${ipfsUrl}`;
   };
 
+  const fetchWalletAddress = async () => {
+    const { data, error } = await supabase.from("users").select("wallet_address").eq("id", Number(id)).single();
+    if (error) {
+      console.error('Error fetching wallet address:', error);
+      return null;
+    }
+    return data.wallet_address;
+  };
+
   useEffect(() => {
     const fetchNFTs = async () => {
       if (user) {
         try {
-          const fetchedNFTs = await fetchMyNFTs(user.auth_type);
+          const wallet_address = await fetchWalletAddress()
+          if (!wallet_address) {
+            setLoading(false);
+            return;
+          }
+
+          // URLに基づくユーザごとのNFTを取得する
+          const fetchedNFTs = await fetchMyNFTs(user.auth_type, wallet_address);
           if (!fetchedNFTs) {
             setLoading(false)
             return null;
