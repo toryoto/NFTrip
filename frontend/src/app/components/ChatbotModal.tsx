@@ -92,7 +92,7 @@ export default function ChatbotModal({ location }: { location: LocationWithThumb
                   <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
                     <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''} max-w-full`}>
                       {message.role === 'user' ? (
-                        <Link href={`/profile/${user?.wallet_address}`} className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ml-2 flex-shrink-0">
+                        <Link href={`/profile/${user?.id}`} className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ml-2 flex-shrink-0">
                           <Image
                             src={userProfile?.avatar_url || "/images/no-user-icon.png"}
                             alt="User Avatar"

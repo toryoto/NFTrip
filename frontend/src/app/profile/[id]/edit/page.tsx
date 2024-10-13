@@ -93,7 +93,7 @@ export default function EditProfilePage() {
         };
         await updateProfile(updatedProfile);
         
-        router.push(`/profile/${user?.wallet_address}`)
+        router.push(`/profile/${user?.id}`)
       } else {
         console.error('User profile not found');
       }
