@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Medal, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from "../contexts/AuthContext";
-import { getTopNFTHolders, getWalletAddress } from "@/lib/getNFTRanking";
+import { getTopNFTHolders } from "@/lib/getNFTRanking";
 import Link from "next/link";
 
 type UserRanking = {
@@ -14,7 +14,6 @@ type UserRanking = {
   name: string;
   avatar_url: string;
   total_nfts: number;
-  wallet_address?: string;
 };
 
 export const LeaderboardCard: React.FC = () => {
@@ -35,14 +34,9 @@ export const LeaderboardCard: React.FC = () => {
     const fetchData = async () => {
       if (user) {
         const data = await getTopNFTHolders(user.id);
-        if (data !== null) {
-          const rankingWithWalletAddresses = await Promise.all(
-            data.ranking.map(async (user) => ({
-              ...user,
-              wallet_address: await getWalletAddress(user.user_id),
-            }))
-          );
-          setUserRanking(rankingWithWalletAddresses);
+        // 取得したデータをuserRankingにセット
+        if (data) {
+          setUserRanking(data.ranking);
         }
       }
     };
