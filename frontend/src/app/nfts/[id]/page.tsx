@@ -14,12 +14,14 @@ import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractio
 import { toast } from '@/components/ui/use-toast';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 export default function NFTGalleryPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { id } = useParams();
+  const { userProfile } = useUserProfile(Number(id));
   const { fetchMyNFTs } = useSmartContractInteractions();
 
   const ipfsToHttp = (ipfsUrl: string) => {
@@ -87,7 +89,7 @@ export default function NFTGalleryPage() {
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <section>
-            <h2 className="text-3xl font-bold text-blue-400 mb-6">Your NFT Collection</h2>
+            <h2 className="text-3xl font-bold text-blue-400 mb-6">{`${userProfile?.name} NFTコレクション`}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {nfts.map((nft, index) => (
                 <Card key={index} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">
