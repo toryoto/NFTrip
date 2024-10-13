@@ -5,29 +5,50 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
-import { Footer } from '../components/Footer';
-import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
-import { Loading } from '../components/Loading';
-import { NFT } from '../types/nft';
+import { Footer } from '../../components/Footer';
+import { useAuth } from '../../contexts/AuthContext';
+import Header from '../../components/Header';
+import { Loading } from '../../components/Loading';
+import { NFT } from '../../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { toast } from '@/components/ui/use-toast';
+import { useParams } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 export default function NFTGalleryPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { id } = useParams();
+  const { userProfile } = useUserProfile(Number(id));
   const { fetchMyNFTs } = useSmartContractInteractions();
 
   const ipfsToHttp = (ipfsUrl: string) => {
     return `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${ipfsUrl}`;
   };
 
+  const fetchWalletAddress = async () => {
+    const { data, error } = await supabase.from("users").select("wallet_address").eq("id", Number(id)).single();
+    if (error) {
+      console.error('Error fetching wallet address:', error);
+      return null;
+    }
+    return data.wallet_address;
+  };
+
   useEffect(() => {
     const fetchNFTs = async () => {
       if (user) {
         try {
-          const fetchedNFTs = await fetchMyNFTs(user.auth_type);
+          const wallet_address = await fetchWalletAddress()
+          if (!wallet_address) {
+            setLoading(false);
+            return;
+          }
+
+          // URLに基づくユーザごとのNFTを取得する
+          const fetchedNFTs = await fetchMyNFTs(user.auth_type, wallet_address);
           if (!fetchedNFTs) {
             setLoading(false)
             return null;
@@ -68,7 +89,7 @@ export default function NFTGalleryPage() {
       <main className="flex-1 py-8 px-4">
         <div className="container mx-auto space-y-8">
           <section>
-            <h2 className="text-3xl font-bold text-blue-400 mb-6">Your NFT Collection</h2>
+            <h2 className="text-3xl font-bold text-blue-400 mb-6">{`${userProfile?.name} NFTコレクション`}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {nfts.map((nft, index) => (
                 <Card key={index} className="bg-gray-800 border-gray-700 overflow-hidden rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group">

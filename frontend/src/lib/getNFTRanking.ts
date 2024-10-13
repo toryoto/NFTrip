@@ -39,21 +39,3 @@ export async function getTopNFTHolders(userId: number) {
     return null
   }
 }
-
-// user_idからウォレットアドレスを取得するメソッド
-export async function getWalletAddress(userId: number) {
-  try {
-    const { data, error } = await supabase
-      .from('users')
-      .select('wallet_address')
-      .eq('id', userId)
-      .single()
-
-    if (error) throw error;
-
-    return data.wallet_address;
-  } catch (error) {
-    console.error('Error fetching user wallet address:', error);
-    return null;
-  }
-}
