@@ -5,11 +5,11 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
-import { Footer } from '../components/Footer';
-import { useAuth } from '../contexts/AuthContext';
-import Header from '../components/Header';
-import { Loading } from '../components/Loading';
-import { NFT } from '../types/nft';
+import { Footer } from '../../components/Footer';
+import { useAuth } from '../../contexts/AuthContext';
+import Header from '../../components/Header';
+import { Loading } from '../../components/Loading';
+import { NFT } from '../../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { toast } from '@/components/ui/use-toast';
 
