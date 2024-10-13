@@ -12,7 +12,7 @@ type userRanking = { rank: number; user_id: number; name: string; avatar_url: st
 export const LeaderboardCard: React.FC = () => {
 	const { user } = useAuth();
 	const userId = user?.id
-	const [userRanking, setUserRanking] = useState<userRanking>(undefined)
+	const [userRanking, setUserRanking] = useState<userRanking>()
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
