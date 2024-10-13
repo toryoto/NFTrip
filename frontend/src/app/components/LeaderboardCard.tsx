@@ -5,14 +5,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Medal, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from "../contexts/AuthContext";
-import { getTopNFTHolders } from "@/lib/getNFTRanking";
+import { getTopNFTHolders, getWalletAddress } from "@/lib/getNFTRanking";
+import Link from "next/link";
 
-type userRanking = { rank: number; user_id: number; name: string; avatar_url: string; total_nfts: number; }[] | undefined;
+type UserRanking = {
+  rank: number;
+  user_id: number;
+  name: string;
+  avatar_url: string;
+  total_nfts: number;
+  wallet_address?: string;
+};
 
 export const LeaderboardCard: React.FC = () => {
 	const { user } = useAuth();
 	const userId = user?.id
-	const [userRanking, setUserRanking] = useState<userRanking>()
+	const [userRanking, setUserRanking] = useState<UserRanking[]>([]);
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -24,20 +32,28 @@ export const LeaderboardCard: React.FC = () => {
   };
 
 	useEffect(() => {
-		if (user) {
-			getTopNFTHolders(user.id).then((data) => {
-				if (data !== null) {
-					setUserRanking(data.ranking)
-				}
-		})
-		}
-	}, [user]);
+    const fetchData = async () => {
+      if (user) {
+        const data = await getTopNFTHolders(user.id);
+        if (data !== null) {
+          const rankingWithWalletAddresses = await Promise.all(
+            data.ranking.map(async (user) => ({
+              ...user,
+              wallet_address: await getWalletAddress(user.user_id),
+            }))
+          );
+          setUserRanking(rankingWithWalletAddresses);
+        }
+      }
+    };
+    fetchData();
+  }, [user]);
 
   return (
 		<Card className="bg-gray-800 border-gray-700 overflow-hidden">
-		<CardContent className="p-6">
-			<h3 className="text-2xl font-bold text-blue-400 mb-4">NFTリーダーボード</h3>
-			<div className="space-y-4">
+			<CardContent className="p-6">
+				<h3 className="text-2xl font-bold text-blue-400 mb-4">NFTリーダーボード</h3>
+				<div className="space-y-4">
 				{userRanking?.map((user, index) => (
 					<div
 						key={user.user_id}
@@ -58,7 +74,9 @@ export const LeaderboardCard: React.FC = () => {
 								sizes="128px"
 							/>
 						</div>
-						<span className="font-medium text-white">{user.name}</span>
+						<Link href={`/profile/${user.user_id}`}>
+							<p className="font-medium text-white">{user.name}</p>
+						</Link>
 						</div>
 						<div
 							className="font-bold text-blue-400"
@@ -68,8 +86,7 @@ export const LeaderboardCard: React.FC = () => {
 					</div>
 				))}
 			</div>
-
-		</CardContent>
-	</Card>
+			</CardContent>
+		</Card>
   );
 };
