@@ -79,7 +79,9 @@ export const LeaderboardCard: React.FC = () => {
 							<div
 								className="font-bold text-blue-400"
 							>
-								{user.total_nfts} NFTs
+								<Link href={`/nfts/${user.user_id}`}>
+									{user.total_nfts} NFTs
+								</Link>
 							</div>
 						</div>
 					</Link>
