@@ -58,7 +58,7 @@ export const LeaderboardCard: React.FC = () => {
 					<Link href={`/profile/${user.user_id}`} key={user.user_id} className="block">
 						<div
 							className={`p-4 rounded-lg flex items-center justify-between ${
-								user.user_id ===  userId? "mt-4 bg-gray-700 border-t-2 border-blue-500" : "bg-gray-700"
+								user.user_id ===  userId? "mt-4 bg-gray-700 border-2 border-blue-500" : "bg-gray-700"
 							}`}
 						>
 							<div className="flex items-center space-x-4">
