@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, Edit, Image as ImageIcon } from 'lucide-react'
@@ -16,11 +17,16 @@ import { Loading } from '@/app/components/Loading'
 export default function UserProfilePage() {
   const { user } = useAuth();
   const router = useRouter();
-  const { userProfile } = useUserProfile(user?.id);
+  const { id } = useParams();
+  const { userProfile } = useUserProfile(Number(id));
 
   if (!userProfile) {
     return <Loading />;
   }
+
+  // 自分のプロフィールかどうかを判別
+  // Editボタンの表示を制御
+  const isOwnProfile = (user?.id === Number(id));
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -33,7 +39,7 @@ export default function UserProfilePage() {
                 <div className="relative w-32 h-32 rounded-full overflow-hidden">
                   <Image
                     src={userProfile.avatar_url || "/images/no-user-icon.png"}
-                    alt={user?.wallet_address || "no wallet address"}
+                    alt={"user_avatar"}
                     fill
                     sizes="200px"
                     style={{ objectFit: 'cover' }}
@@ -45,19 +51,21 @@ export default function UserProfilePage() {
                   <div className="flex flex-col md:flex-row justify-between items-center mb-2 gap-4">
                     <h1 className="text-3xl font-bold text-blue-400">{userProfile.name || "No Name"}</h1>
                     <div className="flex gap-2">
-                      <Button 
-                        className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-                        onClick={() => router.push(`/profile/${user?.wallet_address}/edit`)}  // 編集ページへのナビゲーション
-                      >
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit Profile
-                      </Button>
-                      <Link href="/nfts" passHref>
+                      {isOwnProfile && (
+                        <Button 
+                          className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+                          onClick={() => router.push(`/profile/${id}/edit`)}
+                        >
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit Profile
+                        </Button>
+                      )}
+                      <Link href={`/nfts/${id}`} passHref>
                         <Button 
                           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
                         >
                           <ImageIcon className="mr-2 h-4 w-4" />
-                          My NFTs
+                          NFTs
                         </Button>
                       </Link>
                     </div>

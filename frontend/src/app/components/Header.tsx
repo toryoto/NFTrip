@@ -43,7 +43,7 @@ const Header: React.FC = () => {
           </h1>
         </Link>
         <div className="flex items-center space-x-4">
-          <Link href={`/profile/${user.wallet_address}`} className="flex items-center space-x-2">
+          <Link href={`/profile/${user.id}`} className="flex items-center space-x-2">
             <div className="text-sm font-medium text-gray-300">{sliceWalletAddress(user.wallet_address, 4, 3)}</div>
             <div className="relative w-8 h-8 rounded-full overflow-hidden">
               <Image
