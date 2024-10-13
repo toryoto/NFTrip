@@ -54,19 +54,16 @@ export function useSmartContractInteractions() {
     }
   };
 
-  const fetchMyNFTs = async (method: AuthMethod) => {
+  const fetchMyNFTs = async (method: AuthMethod, wallet_address: string) => {
     try {
       const contract = await getContract(method);
-      const provider = await getProvider(method);
-      const signer = provider.getSigner();
-      const myAddress = await signer.getAddress();
 
       let balance = BigInt(0);
-      balance = await contract.balanceOf(myAddress);
+      balance = await contract.balanceOf(wallet_address);
 
       const nfts = []
       for (let i = 0; i < balance; i++) {
-        const tokenId = await contract.tokenOfOwnerByIndex(myAddress, i);
+        const tokenId = await contract.tokenOfOwnerByIndex(wallet_address, i);
         const tokenURI = await contract.tokenURI(tokenId);
         nfts.push(tokenURI);
       }
