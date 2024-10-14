@@ -53,10 +53,10 @@ export const NearestNFTSpots: React.FC = () => {
             </Link>
             <CardContent className="p-4 relative flex-1 flex flex-col justify-between">
               <Link href={`/spots/${location.slug}`} className="block">
-                <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{location.name}</h3>
+                <h3 className="text-xl md:text-lg lg:text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300 truncate">{location.name}</h3>
                 <div className="flex items-center text-green-400 mb-2">
-                  <MapPin className="h-4 w-4 mr-1 text-green-400" />
-                  <span>{location.distance.toFixed(2)} km</span>
+                  <MapPin className="h-4 w-4 mr-1 text-green-400 flex-shrink-0" />
+                  <span className="truncate">{location.distance.toFixed(2)} km</span>
                 </div>
               </Link>
               <div className="flex space-x-2 mt-4">
