@@ -71,11 +71,10 @@ export const LeaderboardCard: React.FC = () => {
 							<p className="font-medium text-white">{user.name}</p>
 							</div>
 							<div
-								className="font-bold text-blue-400"
+								className="font-bold text-blue-400 cursor-pointer"
+								onClick={() => window.location.href = `/nfts/${user.user_id}`}
 							>
-								<Link href={`/nfts/${user.user_id}`}>
-									{user.total_nfts} NFTs
-								</Link>
+								{user.total_nfts} NFTs
 							</div>
 						</div>
 					</Link>
