@@ -40,8 +40,8 @@ export const LeaderboardCard: React.FC = async () => {
 							}`}
 						>
 							<div className="flex items-center space-x-4">
-								<span className="font-bold text-lg">{index + 1}</span>
-								{getRankIcon(index + 1)}
+								<span className="font-bold text-lg">{user.rank}</span>
+								{getRankIcon(user.rank)}
 								<div className="relative w-8 h-8 rounded-full overflow-hidden">
 								<Image
 									src={ user.avatar_url || "/images/no-user-icon.png"}
