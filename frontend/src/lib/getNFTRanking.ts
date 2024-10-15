@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 
+// NFT保持数トップ5とユーザのランキングを取得する
 export async function getTopNFTHolders(userId: number) {
   try {
     const { data: allUsersData, error: allUsersError } = await supabase
