@@ -11,6 +11,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { updateUserData } from '@/app/actions/userProgress';
 import { motion } from 'framer-motion';
 import { Award } from 'lucide-react'
+import { getTopNFTHolders } from '@/lib/getNFTRanking';
 
 export default function MintNFTButton({ location }: {location: LocationWithThumbnailAndDistance}) {
   const { user } = useAuth();
@@ -57,6 +58,7 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
       })
 
       await updateUserData(balanceNumber);
+      await getTopNFTHolders(user.id)
 
       return transactionHash;
     } catch (error: any) {

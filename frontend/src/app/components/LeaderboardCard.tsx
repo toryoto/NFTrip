@@ -1,12 +1,9 @@
-"use client"
-
-import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Medal, Star } from 'lucide-react';
 import Image from 'next/image';
-import { useAuth } from "../contexts/AuthContext";
 import { getTopNFTHolders } from "@/lib/getNFTRanking";
 import Link from "next/link";
+import { getUserIdFromToken } from "../actions/userProgress";
 
 type UserRanking = {
   rank: number;
@@ -16,10 +13,10 @@ type UserRanking = {
   total_nfts: number;
 };
 
-export const LeaderboardCard: React.FC = () => {
-	const { user } = useAuth();
-	const userId = user?.id
-	const [userRanking, setUserRanking] = useState<UserRanking[]>([]);
+export const LeaderboardCard: React.FC = async () => {
+	const userId = await getUserIdFromToken();
+  const data = await getTopNFTHolders(Number(userId));
+  const userRanking: UserRanking[] = data ? data.ranking : [];
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
@@ -30,19 +27,6 @@ export const LeaderboardCard: React.FC = () => {
     }
   };
 
-	useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        const data = await getTopNFTHolders(user.id);
-        // 取得したデータをuserRankingにセット
-        if (data) {
-          setUserRanking(data.ranking);
-        }
-      }
-    };
-    fetchData();
-  }, [user]);
-
 	return (
 		<Card className="bg-gray-800 border-gray-700 overflow-hidden">
 			<CardContent className="p-6">
@@ -52,12 +36,12 @@ export const LeaderboardCard: React.FC = () => {
 					<Link href={`/profile/${user.user_id}`} key={user.user_id} className="block">
 						<div
 							className={`p-4 rounded-lg flex items-center justify-between ${
-								user.user_id ===  userId? "mt-4 bg-gray-700 border-2 border-blue-500" : "bg-gray-700"
+								user.user_id ===  Number(userId)? "mt-4 bg-gray-700 border-2 border-blue-500" : "bg-gray-700"
 							}`}
 						>
 							<div className="flex items-center space-x-4">
-								<span className="font-bold text-lg">{index + 1}</span>
-								{getRankIcon(index + 1)}
+								<span className="font-bold text-lg">{user.rank}</span>
+								{getRankIcon(user.rank)}
 								<div className="relative w-8 h-8 rounded-full overflow-hidden">
 								<Image
 									src={ user.avatar_url || "/images/no-user-icon.png"}
@@ -70,12 +54,12 @@ export const LeaderboardCard: React.FC = () => {
 							</div>
 							<p className="font-medium text-white">{user.name}</p>
 							</div>
-							<div
+							<Link
+								href={`/nfts/${user.user_id}`}
 								className="font-bold text-blue-400 cursor-pointer"
-								onClick={() => window.location.href = `/nfts/${user.user_id}`}
 							>
 								{user.total_nfts} NFTs
-							</div>
+							</Link>
 						</div>
 					</Link>
 				))}

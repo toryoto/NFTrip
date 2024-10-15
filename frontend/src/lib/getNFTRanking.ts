@@ -1,5 +1,9 @@
-import { supabase } from '@/lib/supabase'
+'use server'
 
+import { supabase } from '@/lib/supabase'
+import { revalidatePath } from 'next/cache'
+
+// NFT保持数トップ5とユーザのランキングを取得する
 export async function getTopNFTHolders(userId: number) {
   try {
     const { data: allUsersData, error: allUsersError } = await supabase
@@ -32,6 +36,7 @@ export async function getTopNFTHolders(userId: number) {
       ranking.push(userRankData)
     }
 
+    revalidatePath('/dashboard')
     return { ranking }
 
   } catch (error: any) {

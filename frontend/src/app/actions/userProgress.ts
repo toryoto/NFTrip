@@ -8,7 +8,7 @@ import { cookies } from 'next/headers'
 const JWT_SECRET = process.env.JWT_SECRET!
 
 // ブラウザのCookieからユーザーのIDを取得する関数
-function getUserIdFromToken(): string {
+export async function getUserIdFromToken(): Promise<string> {
   const token = cookies().get('auth_token')?.value
 
   if (!token) {
@@ -61,7 +61,7 @@ function calculateProgress(xp: number, level: number): number {
 
 // SupabaseからユーザーのNFT総数を取得する関数
 export async function getUserData() {
-  const userId = getUserIdFromToken()
+  const userId = await getUserIdFromToken()
 
   try {
     const { data, error } = await supabase
@@ -85,7 +85,7 @@ export async function getUserData() {
 
 // ユーザーのNFT総数を更新する関数(呼ばれるたびにdashboardのユーザーNFT総数を再検証)
 export async function updateUserData(newTotalNFTs: number) {
-  const userId = getUserIdFromToken()
+  const userId = await getUserIdFromToken()
   
   const xp = calculateXP(newTotalNFTs);
   const newLevel = calculateLevel(xp);
