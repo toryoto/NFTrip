@@ -12,25 +12,39 @@ import { Droplet, AlertCircle, HelpCircle, Wallet } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { motion } from "framer-motion"
+import { useSepoliaFaucet } from '@/hooks/useSepoliaFaucet'
 
 export default function SepoliaFaucetPage() {
   const { user } = useAuth();
   const [address, setAddress] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
+  const { requestTokens } = useSepoliaFaucet() || {};
 
   useEffect(() => {
     if (user) setAddress(user.wallet_address)
   }, [user])
 
   const handleSubmit = async (e: React.FormEvent) => {
+    if (!user) {
+      console.log('Please authenticate first');
+      return;
+    }
+
     e.preventDefault()
     setIsLoading(true)
     setResult(null)
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      setResult({ success: true, message: 'テストトークンの送信に成功しました！' })
+      if (!requestTokens) {
+        throw new Error('requestTokens is undefined');
+      }
+
+      const { transactionHash } = await requestTokens(user.auth_type);
+      setResult({ 
+        success: true, 
+        message: `テストトークンの送信に成功しました！ NFTを獲得できます！ トランザクションハッシュ: ${transactionHash}` 
+      })
     } catch (error) {
       setResult({ success: false, message: 'トークンの送信に失敗しました。もう一度お試しください。' })
     } finally {
