@@ -40,10 +40,10 @@ export default function SepoliaFaucetPage() {
         throw new Error('requestTokens is undefined');
       }
 
-      const { transactionHash } = await requestTokens(user.auth_type);
+      await requestTokens(user.auth_type);
       setResult({ 
         success: true, 
-        message: `テストトークンの送信に成功しました！ NFTを獲得できます！ トランザクションハッシュ: ${transactionHash}` 
+        message: `テストトークンの送信に成功しました！ NFTを獲得できます！` 
       })
     } catch (error) {
       setResult({ success: false, message: 'トークンの送信に失敗しました。もう一度お試しください。' })

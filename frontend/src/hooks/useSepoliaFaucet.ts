@@ -25,26 +25,26 @@ export function useSepoliaFaucet() {
 			const tx = await contract.requestTokens();
       await tx.wait();
       // イベントリスナーを設定
-      const eventPromise = listenForSepoliaFaucet(contract);
+      // const eventPromise = listenForWithdrawal(contract);
 
 
       // イベントからトランザクションハッシュを取得
-      const transactionHash = await eventPromise;
+      // const transactionHash = await eventPromise;
 
-      return { transactionHash };
+      //return { transactionHash };
+      return
     } catch (error) {
-      console.error("Mint process failed:", error);
+      console.error("Faucet process failed:", error);
       throw error;
     }
   };
 
 
-  const listenForSepoliaFaucet = (contract: ethers.Contract): Promise<string> => {
+  const listenForWithdrawal = (contract: ethers.Contract): Promise<string> => {
     return new Promise((resolve, reject) => {
-      
-      const listener = (...args: any[]) => {
-        const event = args[args.length - 1];
+      const listener = (to: string, amount: ethers.BigNumber, event: ethers.Event) => {
         resolve(event.transactionHash);
+        contract.off("Withdrawal", listener);
       };
   
       contract.on("Withdrawal", listener);
