@@ -20,7 +20,7 @@ npx hardhat verify --network sepolia CONTRACT_ADRESS
 NFTとゲーミフィケーションを使用した持続可能な観光地の促進
 
 ## アーキテクチャ図
-<img src="dapps-architecture.png" width="500" alt="DApps Architecture Diagram">
+<img src="dapp-architecture.png" width="500" alt="DApps Architecture Diagram">
 
 ## ER図
 <img src="dapps-er-diagram.png" width="500" alt="DApps ER Diagram">
