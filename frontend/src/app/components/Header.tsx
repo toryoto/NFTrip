@@ -39,7 +39,7 @@ const Header: React.FC = () => {
       <div className="container flex flex-wrap items-center justify-between py-4 gap-4">
         <Link href='/dashboard' className="flex items-center space-x-2">
           <h1 className="text-3xl font-bold text-blue-400">
-            Find NFT Spots
+            NFTrip
           </h1>
         </Link>
         <div className="flex items-center space-x-4">

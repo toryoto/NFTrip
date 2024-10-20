@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
-import { ArrowRight, MapPin, Gift, Cog, GamepadIcon } from "lucide-react"
+import { ArrowRight, MapPin, Gift, Cog, GamepadIcon, ArrowLeft } from "lucide-react"
 import LandmarkSlideshow from './components/LandmarkSlideshow'
 import { Footer } from './components/Footer'
 
@@ -18,7 +18,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full bg-gray-900/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto flex items-center justify-between py-4">
           <Link href="/">
-            <h1 className="text-2xl font-bold text-white">Find NFT Spots</h1>
+            <h1 className="text-2xl font-bold text-white">NFTrip</h1>
           </Link>
           <nav className="hidden md:flex space-x-6">
             <NavLink href="#features">特徴</NavLink>
@@ -44,12 +44,20 @@ export default function Home() {
               <p className="text-xl md:text-2xl mb-8">
                 位置情報ゲームで街を探索し、ユニークなNFTを収集しよう
               </p>
-              <Link href="/login">
-                <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
-                  今すぐ始める
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <div className="flex justify-center space-x-4">
+                <Link href="/login">
+                  <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
+                    今すぐ始める
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="https://ryotos-organization.gitbook.io/nftrip" target="_blank" rel='noopener'>
+                  <Button size="lg" className="bg-green-600 text-white hover:bg-green-700">
+                    使い方
+                    <ArrowLeft className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
