@@ -1,12 +1,12 @@
 'use client'
 
 import { ethers } from "ethers";
-import TouristNFTABI from '../../abi/TouristNFT.json';
+import TouristNFTABI from '../../abi/NFTrip.json';
 import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
 import { supabase } from "@/lib/supabase";
 
-const CONTRACT_ADDRESS = '0x5e837921E12fDdB23b0766792366384B68Df6244';
+const CONTRACT_ADDRESS = '0xbe7EeFb23E7B970fcC05F061ba22A0E8dAd94518';
 
 export function useSmartContractInteractions() {
   const { getProvider } = useAuth();
