@@ -19,6 +19,9 @@ npx hardhat verify --network sepolia CONTRACT_ADRESS
 ## 概要
 NFTとゲーミフィケーションを使用した持続可能な観光地の促進
 
+## Docs
+https://ryotos-organization.gitbook.io/nftrip
+
 ## アーキテクチャ図
 <img src="dapp-architecture.png" width="500" alt="DApps Architecture Diagram">
 
