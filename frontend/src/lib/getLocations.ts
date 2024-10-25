@@ -3,13 +3,13 @@ import { Location, LocationImage,LocationWithThumbnailAndDistance, LocationWithT
 
 // Supabaseから全ての観光地情報を取得する関数
 export async function getLocations(): Promise<LocationWithThumbnail[]> {
-  // Supabaseから観光地情報を取得
   const { data: locations, error: locationsError } = await supabase
     .from('locations')
     .select('*')
+    .limit(100)
   
   if (locationsError) {
-    console.error('Error fetching locations:', locationsError)
+    console.error('Error:', locationsError)
     return []
   }
 
@@ -78,6 +78,7 @@ async function getLocationImagesMap(locationIds?: number[]): Promise<Map<number,
     .select('*')
     .eq('image_type', 'thumbnail')
     .eq('is_primary', true)
+    .order('id', { ascending: true })
 
   if (locationIds) {
     query = query.in('location_id', locationIds)
