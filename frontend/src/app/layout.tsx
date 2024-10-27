@@ -12,7 +12,7 @@ const AuthProviderClient = dynamic(
 )
 
 export const metadata: Metadata = {
-  title: "Find NFT Spots",
+  title: "NFTrip",
   description: "観光地を巡り、現地限定のNFTを収集する新感覚の旅アプリ。思い出と共にNFTを持ち帰ろう。",
 };
 
