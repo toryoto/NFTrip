@@ -76,6 +76,12 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
           description: "ガス代が不足しています。ウォレットに十分な資金があることを確認してください。",
           variant: "destructive",
         });
+      } else if (error?.message.includes("User has already minted for this location today")) {
+        toast({
+          title: "デイリーNFT Mint制限",
+          description: "NFT Mintは1日1回までです。後日また訪問してクイズに挑戦してください。",
+          variant: "destructive",
+        });
       } else {
         toast({
           title: "NFTのミントに失敗しました",
