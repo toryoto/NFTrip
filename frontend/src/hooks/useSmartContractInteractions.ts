@@ -54,7 +54,7 @@ export function useSmartContractInteractions() {
     }
   };
 
-  const fetchMyNFTs = async (method: AuthMethod, wallet_address: string) => {
+  const fetchAllNFTs = async (method: AuthMethod, wallet_address: string) => {
     try {
       const contract = await getContract(method);
 
@@ -144,7 +144,7 @@ export function useSmartContractInteractions() {
   return {
     getAllLocationIds,
     mintNFT,
-    fetchMyNFTs,
+    fetchAllNFTs,
     burnAllNFTs,
   }
 }
