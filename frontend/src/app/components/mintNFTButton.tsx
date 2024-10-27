@@ -38,7 +38,7 @@ export default function MintNFTButton({ location }: {location: LocationWithThumb
       const imageHash = await getNFTImage(location.id);
       console.log('NFT image prepared:', imageHash);
 
-      NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location);
+      NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location, user);
       if (!NFTMetadataHash) {
         throw new Error('NFT metadata hash is undefined');
       }

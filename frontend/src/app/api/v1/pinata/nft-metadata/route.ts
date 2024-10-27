@@ -7,12 +7,16 @@ const PINATA_API_URL = 'https://api.pinata.cloud';
 
 export async function POST(request: Request) {
   try {
-    const { imageHash, location } = await request.json();
+    const { imageHash, location, user } = await request.json();
     const metadata = {
-      name: `${location.name} Visit`,
-      description: `This NFT commemorates your visit to ${location.name} on ${new Date().toDateString()}.`,
-      image: imageHash,
+      name: `${location.name} 訪問記念`,
+      description: `${new Date().getMonth() + 1}月${new Date().getDate()}日の${location.name}への訪問を記念するNFTです。`,      external_url: "https://nftrip.vercel.app/",
+      image: `https://ipfs.io/ipfs/${imageHash}`,
       attributes: [
+        {
+          trait_type: "wallet_address",
+          value: user.wallet_address
+        },
         {
           trait_type: "Location",
           value: location.name

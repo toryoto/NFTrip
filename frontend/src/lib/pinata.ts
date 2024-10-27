@@ -1,12 +1,14 @@
+import { User } from '@/app/types/auth';
 import { LocationWithThumbnailAndDistance } from '@/app/types/location';
 import axios from 'axios';
 
 export async function generateAndUploadNFTMetaData(
   imageHash: string,
-  location: LocationWithThumbnailAndDistance
+  location: LocationWithThumbnailAndDistance,
+  user: User
 ): Promise<string> {
   try {
-    const response = await axios.post('/api/v1/pinata/nft-metadata', {imageHash, location});
+    const response = await axios.post('/api/v1/pinata/nft-metadata', {imageHash, location, user});
     return response.data.ipfsHash;
   } catch (error) {
     console.error('Error in generateAndUploadNFTMetaData:', error);
