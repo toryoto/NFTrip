@@ -9,7 +9,6 @@ import { generateAndUploadNFTMetaData, deleteNFTdata } from '@/lib/pinata';
 import { useToast } from "@/components/ui/use-toast"
 import { useAuth } from '../contexts/AuthContext';
 import { updateUserData } from '@/app/actions/userProgress';
-import { motion } from 'framer-motion';
 import { Award } from 'lucide-react'
 import { getTopNFTHolders } from '@/lib/getNFTRanking';
 import NFTMintingModal from './NFTMintingModal';
@@ -33,6 +32,8 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
 
     setIsMinting(true);
     setMintingStage('preparing');
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
     let NFTMetadataHash: string | undefined;
 
     try {
@@ -46,6 +47,7 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
         throw new Error('NFT metadata hash is undefined');
       }
       console.log('NFT metadata generated:', NFTMetadataHash);
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
       setMintingStage('minting');
       const { transactionHash, balanceNumber } = await mintNFT(
@@ -119,10 +121,7 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
         disabled={isMinting}
         className="w-full p-0 h-auto hover:no-underline group"
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+        <div
           className="w-full p-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-xl 
                      group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-yellow-400 
                      transition-all duration-300"
@@ -135,7 +134,7 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
           <p className="text-white/80 text-xs">
             このNFTは{location.name}への訪問とクイズクリアの証明として永続的に保存されます
           </p>
-        </motion.div>
+        </div>
       </Button>
     </>
   );
