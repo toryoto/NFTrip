@@ -57,14 +57,15 @@ export default function NFTGalleryPage() {
           return null;
         };
 
-        const processedNFTs = await Promise.all(fetchedNFTs.map(async (uri) => {
-          const response = await fetch(uri.replace('ipfs://', 'https://ipfs.io/ipfs/'));
+        const processedNFTs = await Promise.all(fetchedNFTs.map(async (nft) => {
+          const response = await fetch(nft.tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/'));
           const data = await response.json();
           console.log(data)
-          return data;
+          return { ...data, tokenId: nft.tokenId };
         }));
 
         setNfts(processedNFTs);
+        console.log(processedNFTs)
       } catch (error) {
         console.error('Error fetching NFTs:', error);
         toast({
@@ -119,9 +120,9 @@ export default function NFTGalleryPage() {
                     </div>
                     <Button 
                       className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-                      onClick={() => window.open(nft.image, '_blank')}
+                      onClick={() => window.open(`https://testnets.opensea.io/assets/sepolia/0xbe7EeFb23E7B970fcC05F061ba22A0E8dAd94518/${nft.tokenId}`, '_blank')}
                     >
-                      View Full Image
+                      Openseaで表示
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
                   </CardContent>

@@ -65,7 +65,7 @@ export function useSmartContractInteractions() {
       for (let i = 0; i < balance; i++) {
         const tokenId = await contract.tokenOfOwnerByIndex(wallet_address, i);
         const tokenURI = await contract.tokenURI(tokenId);
-        nfts.push(tokenURI);
+        nfts.push({ tokenId: tokenId.toNumber(), tokenURI });
       }
       return nfts;
     } catch (error) {
