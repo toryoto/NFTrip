@@ -59,12 +59,12 @@ const NFTMintingModal = ({ isOpen, stage, locationName }: { isOpen: boolean; sta
       <AlertDialogContent className="max-w-md p-6">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl text-center font-bold">
-            デジタル観光記念証の作成
+            観光記念NFTの作成
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center">
             {stage === 'complete' 
               ? '🎉 観光記念NFTの作成が完了しました！' 
-              : 'あなたの観光体験をNFTとして記録しています'}
+              : 'あなたの観光記念をNFTとして記録しています'}
           </AlertDialogDescription>
         </AlertDialogHeader>
 
