@@ -6,6 +6,7 @@ export async function getLocations(): Promise<LocationWithThumbnail[]> {
   const { data: locations, error: locationsError } = await supabase
     .from('locations')
     .select('*')
+    .order('created_at')
   
   if (locationsError) {
     console.error('Error:', locationsError)
