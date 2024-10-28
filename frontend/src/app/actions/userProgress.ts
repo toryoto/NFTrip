@@ -66,7 +66,7 @@ export async function getUserData() {
   try {
     const { data, error } = await supabase
       .from('user_profiles')
-      .select('total_nfts, current_level, level_progress')
+      .select('user_id,total_nfts, current_level, level_progress')
       .eq('user_id', userId)
       .single()
 
