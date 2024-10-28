@@ -106,15 +106,19 @@ export default function NFTGalleryPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
                   </div>
                   <CardContent className="p-4 relative">
-                    <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{nft.name}</h3>
-                    <p className="text-gray-400 mb-4 line-clamp-2">{nft.description}</p>
+                    <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300 whitespace-nowrap overflow-hidden text-ellipsis">{nft.name}</h3>
+                    <p className="text-gray-400 mb-4 line-clamp-2 overflow-hidden text-ellipsis min-h-[3rem]">{nft.description}</p>
                     <div className="space-y-2">
                       {nft.attributes.map((attr, attrIndex) => (
                         <div key={attrIndex} className="flex items-center text-sm">
                           {attr.trait_type === "Location" && <MapPin className="h-4 w-4 mr-2 text-green-400" />}
                           {attr.trait_type === "Minted Date" && <Calendar className="h-4 w-4 mr-2 text-yellow-400" />}
                           <span className="text-gray-400">{attr.trait_type}:</span>
-                          <span className="ml-2 text-white">{attr.value}</span>
+                          <span className="ml-2 text-white">
+                            {attr.trait_type === "wallet_address"
+                              ? `${attr.value.slice(0, 6)}...${attr.value.slice(-4)}` 
+                              : attr.value}
+                          </span>
                         </div>
                       ))}
                     </div>
