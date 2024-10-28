@@ -6,7 +6,6 @@ export async function getLocations(): Promise<LocationWithThumbnail[]> {
   const { data: locations, error: locationsError } = await supabase
     .from('locations')
     .select('*')
-    .limit(100)
   
   if (locationsError) {
     console.error('Error:', locationsError)

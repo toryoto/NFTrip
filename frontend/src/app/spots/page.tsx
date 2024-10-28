@@ -6,6 +6,8 @@ import Header from '../components/Header'
 import { getLocations } from '@/lib/getLocations'
 import Link from 'next/link'
 
+export const revalidate = 60
+
 export default async function TouristSpots() {
   const locations = await getLocations()
 
@@ -31,7 +33,7 @@ export default async function TouristSpots() {
                   <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{location.name}</h3>
                   <div className="flex items-center text-gray-400 mb-1">
                     <MapPin className="h-4 w-4 mr-1" />
-                    <span>{location.address}</span>
+                    <span>{location.address.length > 20 ? location.address.substring(0, 30) + '...' : location.address}</span>
                   </div>
                   <div className="text-sm text-gray-500 mb-2">{location.postal_code}</div>
                   <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
