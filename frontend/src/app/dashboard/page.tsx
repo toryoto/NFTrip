@@ -12,7 +12,6 @@ export default function DashboardPage() {
   const missions = [
     { id: 1, title: "Collect 3 NFTs in Shibuya", progress: 66 },
     { id: 2, title: "Visit 5 historical landmarks", progress: 40 },
-    { id: 3, title: "Reach level 10", progress: 50 },
   ];
 
   return (
@@ -24,34 +23,36 @@ export default function DashboardPage() {
 
           <section>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <UserProgressCard />
+              <div className="flex flex-col space-y-6">
+                <UserProgressCard />
 
-              <div className="bg-gray-800 border-gray-700">
-                <LeaderboardCard />
+                <Card className="bg-gray-800 border-gray-700 h-full">
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-semibold text-blue-400 mb-4">ミッション</h3>
+                    <div className="space-y-4">
+                      {missions.map((mission) => (
+                        <div key={mission.id} className="bg-gray-700 p-4 rounded-lg group hover:bg-gray-600 transition-colors duration-300">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center">
+                              <Target className="mr-2 h-5 w-5 text-blue-400" />
+                              <div className="text-sm font-medium text-white">{mission.title}</div>
+                            </div>
+                            <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors duration-300" />
+                          </div>
+                          <Progress value={mission.progress} className="h-2 bg-gray-600 [&>div[role=progressbar]]:bg-blue-500" />
+                          <div className="text-right mt-1">
+                            <span className="text-xs text-gray-400">{mission.progress}% Complete</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
-              <Card className="bg-gray-800 border-gray-700">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-blue-400 mb-4">ミッション</h3>
-                  <div className="space-y-4">
-                    {missions.map((mission) => (
-                      <div key={mission.id} className="bg-gray-700 p-4 rounded-lg group hover:bg-gray-600 transition-colors duration-300">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center">
-                            <Target className="mr-2 h-5 w-5 text-blue-400" />
-                            <div className="text-sm font-medium text-white">{mission.title}</div>
-                          </div>
-                          <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-400 transition-colors duration-300" />
-                        </div>
-                        <Progress value={mission.progress} className="h-2 bg-gray-600 [&>div[role=progressbar]]:bg-blue-500" />
-                        <div className="text-right mt-1">
-                          <span className="text-xs text-gray-400">{mission.progress}% Complete</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="bg-gray-800 border-gray-700 h-full">
+                <LeaderboardCard />
+              </div>
             </div>
           </section>
         </div>

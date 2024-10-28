@@ -15,7 +15,7 @@ export async function UserProgressCard() {
             <Award className="h-8 w-8 text-yellow-400" />
             <div className="text-2xl font-bold text-white">レベル {userData.current_level}</div>
           </div>
-          <Link href={'/nfts'} className="text-3xl font-bold text-blue-400">{userData.total_nfts} NFTs</Link>
+          <Link href={`/nfts/${userData.user_id}`} className="text-3xl font-bold text-blue-400">{userData.total_nfts} NFTs</Link>
         </div>
         <div>
           <div className="flex justify-between mb-2">
