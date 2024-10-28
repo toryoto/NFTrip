@@ -6,7 +6,7 @@ import Header from '../components/Header'
 import { getLocations } from '@/lib/getLocations'
 import Link from 'next/link'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export default async function TouristSpots() {
   const locations = await getLocations()
