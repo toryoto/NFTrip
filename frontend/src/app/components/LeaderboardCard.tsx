@@ -1,70 +1,66 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Trophy, Medal, Star } from 'lucide-react';
-import Image from 'next/image';
-import { getTopNFTHolders } from "@/lib/getNFTRanking";
-import Link from "next/link";
 import { getUserIdFromToken } from "../actions/userProgress";
+import { getTopNFTHolders } from "@/lib/getNFTRanking";
+import { Card, CardContent } from "@/components/ui/card"
+import { Trophy, Medal, Star } from 'lucide-react'
+import Image from 'next/image'
+import Link from "next/link"
 
-type UserRanking = {
-  rank: number;
-  user_id: number;
-  name: string;
-  avatar_url: string;
-  total_nfts: number;
-};
-
-export const LeaderboardCard: React.FC = async () => {
-	const userId = await getUserIdFromToken();
-  const data = await getTopNFTHolders(Number(userId));
-  const userRanking: UserRanking[] = data ? data.ranking : [];
+export async function LeaderboardCard() {
+  const userId = await getUserIdFromToken()
+  const data = await getTopNFTHolders(Number(userId))
+  const userRanking = data ? data.ranking : []
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
-      case 1: return <Trophy className="h-6 w-6 text-yellow-400" />;
-      case 2: return <Medal className="h-6 w-6 text-gray-400" />;
-      case 3: return <Medal className="h-6 w-6 text-amber-600" />;
-      default: return <Star className="h-5 w-5 text-blue-400" />;
+      case 1: return <Trophy className="h-6 w-6 text-yellow-400" />
+      case 2: return <Medal className="h-6 w-6 text-gray-400" />
+      case 3: return <Medal className="h-6 w-6 text-amber-600" />
+      default: return <Star className="h-5 w-5 text-blue-400" />
     }
-  };
+  }
 
-	return (
-		<Card className="bg-gray-800 border-gray-700 overflow-hidden">
-			<CardContent className="p-6">
-				<h3 className="text-2xl font-bold text-blue-400 mb-4">NFTリーダーボード</h3>
-				<div className="space-y-4">
-				{userRanking?.map((user, index) => (
-					<Link href={`/profile/${user.user_id}`} key={user.user_id} className="block">
-						<div
-							className={`p-4 rounded-lg flex items-center justify-between ${
-								user.user_id ===  Number(userId)? "mt-4 bg-gray-700 border-2 border-blue-500" : "bg-gray-700"
-							}`}
-						>
-							<div className="flex items-center space-x-4">
-								<span className="font-bold text-lg">{user.rank}</span>
-								{getRankIcon(user.rank)}
-								<div className="relative w-8 h-8 rounded-full overflow-hidden">
-								<Image
-									src={ user.avatar_url || "/images/no-user-icon.png"}
-									alt="User Avatar"
-									style={{ objectFit: 'cover' }}
-									className="transition-opacity duration-300 group-hover:opacity-50"
-									fill
-									sizes="128px"
-								/>
-							</div>
-							<p className="font-medium text-white">{user.name}</p>
-							</div>
-							<Link
-								href={`profile/${user.user_id}/nfts`}
-								className="font-bold text-blue-400 cursor-pointer"
-							>
-								{user.total_nfts} NFTs
-							</Link>
-						</div>
-					</Link>
-				))}
-			</div>
-			</CardContent>
-		</Card>
-  );
-};
+  return (
+    <Card className="bg-gray-800/50 backdrop-blur-sm border-gray-700/50 h-full">
+      <CardContent className="p-6">
+        <h3 className="text-xl font-bold text-white mb-6">NFTリーダーボード</h3>
+        <div className="space-y-3">
+          {userRanking?.map((user, index) => (
+            <Link 
+              href={`/profile/${user.user_id}`} 
+              key={user.user_id}
+              className="block transition-transform hover:translate-x-1"
+            >
+              <div className={`
+                p-4 rounded-lg flex items-center justify-between
+                ${user.user_id === Number(userId) 
+                  ? "bg-blue-500/10 border border-blue-500/20" 
+                  : "bg-gray-700/50"}
+              `}>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 min-w-[100px]">
+                    <span className="font-bold text-lg text-gray-400">#{user.rank}</span>
+                    {getRankIcon(user.rank)}
+                  </div>
+                  <div className="relative w-8 h-8">
+                    <Image
+                      src={user.avatar_url || "/images/no-user-icon.png"}
+                      alt={`${user.name}'s avatar`}
+                      className="rounded-full object-cover"
+                      fill
+                      sizes="32px"
+                    />
+                  </div>
+                  <span className="font-medium text-white">{user.name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold text-blue-400">{user.total_nfts}</span>
+                  <span className="text-sm text-gray-400">NFTs</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
