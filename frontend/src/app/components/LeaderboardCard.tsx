@@ -55,7 +55,7 @@ export const LeaderboardCard: React.FC = async () => {
 							<p className="font-medium text-white">{user.name}</p>
 							</div>
 							<Link
-								href={`/nfts/${user.user_id}`}
+								href={`profile/${user.user_id}/nfts`}
 								className="font-bold text-blue-400 cursor-pointer"
 							>
 								{user.total_nfts} NFTs

@@ -64,7 +64,7 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
 
       setTimeout(() => {
         setMintingStage(null);
-        window.location.href = `/nft/${user.id}`;
+        window.location.href = `profile/${user.id}nfts`;
       }, 5000);
 
       return transactionHash;

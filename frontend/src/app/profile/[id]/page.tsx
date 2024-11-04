@@ -60,7 +60,7 @@ export default function UserProfilePage() {
                           Edit Profile
                         </Button>
                       )}
-                      <Link href={`/nfts/${id}`} passHref>
+                      <Link href={`/profile/${id}/nfts`} passHref>
                         <Button 
                           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
                         >
