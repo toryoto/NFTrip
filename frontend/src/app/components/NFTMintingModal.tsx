@@ -52,7 +52,6 @@ const NFTMintingModal = ({ isOpen, stage, locationName }: { isOpen: boolean; sta
   ];
 
   const currentStageIndex = stages.findIndex(s => s.id === stage);
-  const currentStage = stages.find(s => s.id === stage);
 
   return (
     <AlertDialog open={isOpen}>

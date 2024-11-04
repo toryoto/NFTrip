@@ -60,10 +60,10 @@ export default function NFTGalleryPage() {
         const processedNFTs = await Promise.all(fetchedNFTs.map(async (nft) => {
           const response = await fetch(nft.tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/'));
           const data = await response.json();
-          console.log(data)
           return { ...data, tokenId: nft.tokenId };
         }));
 
+        processedNFTs.sort((firstNFT, secondNFT) => secondNFT.tokenId - firstNFT.tokenId);
         setNfts(processedNFTs);
         console.log(processedNFTs)
       } catch (error) {
