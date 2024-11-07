@@ -58,7 +58,7 @@ export default function NFTGalleryPage() {
         };
 
         const processedNFTs = await Promise.all(fetchedNFTs.map(async (nft) => {
-          const response = await fetch(nft.tokenURI.replace('ipfs://', 'https://ipfs.io/ipfs/'));
+          const response = await fetch(nft.tokenURI.replace('ipfs://', `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/`));
           const data = await response.json();
           return { ...data, tokenId: nft.tokenId };
         }));

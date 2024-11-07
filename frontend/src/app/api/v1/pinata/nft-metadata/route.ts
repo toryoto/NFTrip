@@ -9,7 +9,7 @@ export async function POST(request: Request) {
       name: `${location.name} 訪問記念`,
       description: `${new Date().getMonth() + 1}月${new Date().getDate()}日の${location.name}への訪問を記念するNFTです。`,
       external_url: "https://nftrip.vercel.app/",
-      image: `https://${process.env.PINATA_GATEWAY}/ipfs/${imageHash}`,
+      image: `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/${imageHash}`,
       attributes: [
         {
           trait_type: "wallet_address",
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     const pinata = new PinataSDK({
       pinataJwt: process.env.PINATA_JWT,
-      pinataGateway: process.env.PINATA_GATEWAY
+      pinataGateway: process.env.NEXT_PUBLIC_PINATA_GATEWAY
     });
 
     const upload = await pinata.upload.json(
