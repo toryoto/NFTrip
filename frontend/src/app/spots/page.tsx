@@ -4,10 +4,10 @@ import { MapPin, Info } from 'lucide-react'
 import { Footer } from '../components/Footer'
 import Header from '../components/Header'
 import { getLocations } from '@/lib/getLocations'
-import Link from 'next/link'
 
 export default async function TouristSpots() {
   const locations = await getLocations()
+  console.log(locations)
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
