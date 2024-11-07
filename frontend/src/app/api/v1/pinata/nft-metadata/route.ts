@@ -9,7 +9,7 @@ export async function POST(request: Request) {
       name: `${location.name} 訪問記念`,
       description: `${new Date().getMonth() + 1}月${new Date().getDate()}日の${location.name}への訪問を記念するNFTです。`,
       external_url: "https://nftrip.vercel.app/",
-      image: `https://ipfs.io/ipfs/${imageHash}`,
+      image: `https://${process.env.PINATA_GATEWAY}/ipfs/${imageHash}`,
       attributes: [
         {
           trait_type: "wallet_address",
@@ -21,14 +21,12 @@ export async function POST(request: Request) {
         },
         {
           trait_type: "Minted Date",
-          value: new Date().toLocaleString('sv-SE', {
+          value: new Date().toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          }).replace(',', '-')
+            timeZone: 'Asia/Tokyo'
+          }).replace(/\//g, '/')
         }
       ]
     };
