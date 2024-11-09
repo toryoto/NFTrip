@@ -18,7 +18,6 @@ export async function UserProgressCard() {
             </div>
             <div className="space-y-1">
               <div className="text-2xl font-bold text-white">レベル {userData.current_level}</div>
-              <div className="text-sm text-gray-400">次のレベルまで</div>
             </div>
           </div>
           <Link 
