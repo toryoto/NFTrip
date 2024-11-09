@@ -114,7 +114,7 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
         locationName={location.name}
       />
 
-      <Button 
+      <button 
         onClick={(event) => {
           event.preventDefault();
           handleMintNFT();
@@ -124,19 +124,19 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
       >
         <div
           className="w-full p-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-xl 
-                     group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-yellow-400 
-                     transition-all duration-300"
+                    group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-yellow-400 
+                    transition-all duration-300"
         >
-          <Award className="h-12 w-12 text-white mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
-          <h3 className="text-xl font-bold text-white mb-1">おめでとうございます！</h3>
-          <p className="text-white text-sm mb-2">
+          <Award className="h-8 w-8 sm:h-12 sm:w-12 text-white mx-auto mb-2 group-hover:scale-110 transition-transform duration-300" />
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-1">おめでとうございます！</h3>
+          <p className="text-white text-xs sm:text-sm mb-2">
             {isMinting ? 'NFTを作成中...' : 'ここをクリックしてNFTをゲットしてください！'}
           </p>
-          <p className="text-white/80 text-xs">
+          <p className="text-white/80 text-[10px] sm:text-xs">
             このNFTは{location.name}への訪問とクイズクリアの証明として永続的に保存されます
           </p>
         </div>
-      </Button>
+      </button>
     </>
   );
 }
