@@ -39,10 +39,10 @@ export default function Home() {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white">
               <h2 className="text-5xl md:text-6xl font-bold mb-4">
-                日本の歴史をNFTで体験
+                NFTrip
               </h2>
               <p className="text-xl md:text-2xl mb-8">
-                位置情報ゲームで街を探索し、ユニークなNFTを収集しよう
+                観光地の歴史・文化学習を通して限定NFTを獲得する
               </p>
               <div className="flex justify-center space-x-4">
                 <Link href="/login">
@@ -68,13 +68,13 @@ export default function Home() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard
                 icon={<MapPin className="h-8 w-8" />}
-                title="位置情報クイズ"
-                description="その場所に関連する社会・文化・歴史のクイズに挑戦しよう！"
+                title="観光地クイズ"
+                description="訪れている場所に関連する社会・文化・歴史のクイズに挑戦しよう！"
               />
               <FeatureCard
                 icon={<Gift className="h-8 w-8" />}
                 title="NFT報酬"
-                description="クイズに正解して、ユニークな観光地NFTを獲得しよう！"
+                description="クイズに全問正解して、ユニークな観光地NFTを獲得しよう！"
               />
               <FeatureCard
                 icon={<Cog className="h-8 w-8" />}
@@ -84,7 +84,7 @@ export default function Home() {
               <FeatureCard
                 icon={<GamepadIcon className="h-8 w-8" />}
                 title="ゲーミフィケーション"
-                description="レベルアップやミッションをクリアして、楽しみながら学ぼう！"
+                description="レベルアップやNFT数ランキングをモチベーションに楽しみながら学ぼう！"
               />
             </div>
           </div>
