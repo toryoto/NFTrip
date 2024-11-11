@@ -13,7 +13,7 @@ const AuthProviderClient = dynamic(
 
 export const metadata: Metadata = {
   title: "NFTrip",
-  description: "観光地を巡り、現地限定のNFTを収集する新感覚の旅アプリ。思い出と共にNFTを持ち帰ろう。",
+  description: "観光地を巡り、現地限定のNFTを収集する新感覚の旅アプリ。思い出をブロックチェーンに刻もう",
 };
 
 export default function RootLayout({
@@ -23,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/icon/nftrip-icon.svg" type="image/svg+xml" />
+      </head>
       <body className={inter.className}>
         <AuthProviderClient>
           {children}
