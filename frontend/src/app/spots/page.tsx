@@ -47,9 +47,6 @@ export default async function TouristSpots() {
                 </a>
               </div>
               <div className="text-sm text-gray-500 mb-2">{location.postal_code}</div>
-              <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Info className="h-4 w-4 text-white" />
-              </div>
             </CardContent>
           </Card>
         ))}
