@@ -30,7 +30,7 @@ export default function LoginPage() {
     try {
       setIsLoginLoading(true);
       await login(method);
-      router.push('/dashboard');
+      await router.push('/dashboard');
     } catch (error) {
       console.error(`Error during ${method} login:`, error);
     } finally {
