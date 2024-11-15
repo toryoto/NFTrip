@@ -6,10 +6,9 @@ Try running some of the following tasks:
 
 ```shell
 npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
+npx hardhat test "test/,,,"
+npx hardhat run scripts/,,,, --network sepolia
+
 ```
 
 ## スマートコントラクトVerifyコマンド
@@ -20,8 +19,11 @@ npx hardhat verify --network sepolia CONTRACT_ADRESS
 ## 概要
 NFTとゲーミフィケーションを使用した持続可能な観光地の促進
 
+## Docs
+https://ryotos-organization.gitbook.io/nftrip
+
 ## アーキテクチャ図
-<img src="dapps-architecture.png" width="500" alt="DApps Architecture Diagram">
+<img src="dapp-architecture.png" width="500" alt="DApps Architecture Diagram">
 
 ## ER図
 <img src="dapps-er-diagram.png" width="500" alt="DApps ER Diagram">

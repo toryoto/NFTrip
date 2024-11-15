@@ -1,48 +1,51 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
+import { PinataSDK } from "pinata-web3";
 
-const PINATA_API_KEY = process.env.PINATA_API_KEY;
-const PINATA_SECRET_API_KEY = process.env.PINATA_SECRET_API_KEY;
-const PINATA_API_URL = 'https://api.pinata.cloud';
 
 export async function POST(request: Request) {
   try {
-    const { imageHash, location } = await request.json();
+    const { imageHash, location, user } = await request.json();
     const metadata = {
-      name: `${location.name} Visit`,
-      description: `This NFT commemorates your visit to ${location.name} on ${new Date().toDateString()}.`,
-      image: imageHash,
+      name: `${location.name} 訪問記念`,
+      description: `${new Date().getMonth() + 1}月${new Date().getDate()}日の${location.name}への訪問を記念するNFTです。`,
+      external_url: "https://nftrip.vercel.app/",
+      image: `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/${imageHash}`,
       attributes: [
+        {
+          trait_type: "wallet_address",
+          value: user.wallet_address
+        },
         {
           trait_type: "Location",
           value: location.name
         },
         {
           trait_type: "Minted Date",
-          value: new Date().toLocaleString('sv-SE', {
+          value: new Date().toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-          }).replace(',', '-')
+            timeZone: 'Asia/Tokyo'
+          }).replace(/\//g, '/')
         }
       ]
     };
 
-    const response = await axios.post(`${PINATA_API_URL}/pinning/pinJSONToIPFS`, metadata, {
-      headers: {
-        pinata_api_key: PINATA_API_KEY,
-        pinata_secret_api_key: PINATA_SECRET_API_KEY,
-      },
+    const pinata = new PinataSDK({
+      pinataJwt: process.env.PINATA_JWT,
+      pinataGateway: process.env.NEXT_PUBLIC_PINATA_GATEWAY
     });
 
-    if (response.data && response.data.IpfsHash) {
-      return NextResponse.json({ ipfsHash: response.data.IpfsHash });
-    } else {
-      throw new Error('Invalid response from Pinata: IpfsHash not found');
-    }
+    const upload = await pinata.upload.json(
+      metadata,
+      {
+        metadata: {
+          name: `${user.id}_${location.name}_metadata.json`
+        }
+      }
+    );
+
+    return NextResponse.json({ ipfsHash: upload.IpfsHash });
   } catch (error) {
     console.error('Error in Pinata NFT Metadata API route:', error);
     return NextResponse.json({ error: 'An error occurred while processing your request' }, { status: 500 });

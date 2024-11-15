@@ -88,31 +88,31 @@ export default function ChatbotModal({ location }: { location: LocationWithThumb
           <div className="flex flex-col h-[70vh]">
             <ScrollArea className="flex-grow border-t border-gray-700 pr-4">
               <div className="pt-4">
-                {messages.map((message, index) => (
-                  <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
-                    <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''} max-w-full`}>
-                      {message.role === 'user' ? (
-                        <Link href={`/profile/${user?.id}`} className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ml-2 flex-shrink-0">
-                          <Image
-                            src={userProfile?.avatar_url || "/images/no-user-icon.png"}
-                            alt="User Avatar"
-                            style={{ objectFit: 'cover' }}
-                            className="transition-opacity duration-300 group-hover:opacity-50"
-                            fill
-                            sizes="(max-width: 640px) 32px, 40px"
-                          />
-                        </Link>
-                      ) : (
-                        <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-500 mr-2 flex-shrink-0">
-                          🤖
-                        </div>
-                      )}
-                      <div className={`max-w-[75%] px-3 py-2 rounded-lg text-sm sm:text-base ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white'} mx-1`}>
-                        {message.content}
+              {messages.map((message, index) => (
+                <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-4`}>
+                  <div className={`flex items-end ${message.role === 'user' ? 'flex-row-reverse' : ''} max-w-full`}>
+                    {message.role === 'user' ? (
+                      <Link href={`/profile/${user?.id}`} className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ml-2 flex-shrink-0">
+                        <Image
+                          src={userProfile?.avatar_url || "/images/no-user-icon.png"}
+                          alt="User Avatar"
+                          style={{ objectFit: 'cover' }}
+                          className="transition-opacity duration-300 group-hover:opacity-50"
+                          fill
+                          sizes="(max-width: 640px) 32px, 40px"
+                        />
+                      </Link>
+                    ) : (
+                      <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-500 mr-2 flex-shrink-0">
+                        🤖
                       </div>
+                    )}
+                    <div className={`max-w-[75%] px-3 py-2 rounded-lg text-sm sm:text-base ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white'} mx-1`}>
+                      <div dangerouslySetInnerHTML={{ __html: message.content }} />
                     </div>
                   </div>
-                ))}
+                </div>
+              ))}
               </div>
               <div ref={messagesEndRef} />
             </ScrollArea>

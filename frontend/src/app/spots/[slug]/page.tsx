@@ -34,10 +34,15 @@ export default async function TouristSpotDetail({ params }: { params: { slug: st
             <div className="absolute bottom-0 left-0 p-6">
               <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">{location.name}</h1>
               <div className="flex flex-wrap items-center text-gray-300 gap-4">
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-200">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-blue-400 hover:text-blue-300 transition-colors duration-300"
+                >
                   <MapPin className="h-4 w-4 mr-1" />
                   {location.address}
-                </span>
+                </a>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-200">
                   <Mail className="h-4 w-4 mr-1" />
                   {location.postal_code}

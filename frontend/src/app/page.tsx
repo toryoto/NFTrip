@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
-import { ArrowRight, MapPin, Gift, Cog, GamepadIcon } from "lucide-react"
+import { ArrowRight, MapPin, Gift, Cog, GamepadIcon, ArrowLeft } from "lucide-react"
 import LandmarkSlideshow from './components/LandmarkSlideshow'
 import { Footer } from './components/Footer'
 
@@ -18,7 +18,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full bg-gray-900/80 backdrop-blur-md shadow-sm">
         <div className="container mx-auto flex items-center justify-between py-4">
           <Link href="/">
-            <h1 className="text-2xl font-bold text-white">Find NFT Spots</h1>
+            <h1 className="text-2xl font-bold text-white">NFTrip</h1>
           </Link>
           <nav className="hidden md:flex space-x-6">
             <NavLink href="#features">特徴</NavLink>
@@ -39,17 +39,25 @@ export default function Home() {
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white">
               <h2 className="text-5xl md:text-6xl font-bold mb-4">
-                日本の歴史をNFTで体験
+                NFTrip
               </h2>
               <p className="text-xl md:text-2xl mb-8">
-                位置情報ゲームで街を探索し、ユニークなNFTを収集しよう
+                観光地の歴史・文化学習を通して限定NFTを獲得する
               </p>
-              <Link href="/login">
-                <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
-                  今すぐ始める
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <div className="flex justify-center space-x-4">
+                <Link href="/login">
+                  <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
+                    今すぐ始める
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="https://ryotos-organization.gitbook.io/nftrip" target="_blank" rel='noopener'>
+                  <Button size="lg" className="bg-green-600 text-white hover:bg-green-700">
+                    使い方
+                    <ArrowLeft className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
@@ -60,13 +68,13 @@ export default function Home() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard
                 icon={<MapPin className="h-8 w-8" />}
-                title="位置情報クイズ"
-                description="その場所に関連する社会・文化・歴史のクイズに挑戦しよう！"
+                title="観光地クイズ"
+                description="訪れている場所に関連する社会・文化・歴史のクイズに挑戦しよう！"
               />
               <FeatureCard
                 icon={<Gift className="h-8 w-8" />}
                 title="NFT報酬"
-                description="クイズに正解して、ユニークな観光地NFTを獲得しよう！"
+                description="クイズに全問正解して、ユニークな観光地NFTを獲得しよう！"
               />
               <FeatureCard
                 icon={<Cog className="h-8 w-8" />}
@@ -76,7 +84,7 @@ export default function Home() {
               <FeatureCard
                 icon={<GamepadIcon className="h-8 w-8" />}
                 title="ゲーミフィケーション"
-                description="レベルアップやミッションをクリアして、楽しみながら学ぼう！"
+                description="レベルアップやNFT数ランキングをモチベーションに楽しみながら学ぼう！"
               />
             </div>
           </div>

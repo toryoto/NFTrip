@@ -30,7 +30,7 @@ export default function LoginPage() {
     try {
       setIsLoginLoading(true);
       await login(method);
-      router.push('/dashboard');
+      await router.push('/dashboard');
     } catch (error) {
       console.error(`Error during ${method} login:`, error);
     } finally {
@@ -52,11 +52,11 @@ export default function LoginPage() {
       {showMetamaskGuide && <MetamaskGuide onClose={() => setShowMetamaskGuide(false)} />}
       <Card className="w-full max-w-md bg-gray-800 border-gray-700">
         <CardHeader>
-          <CardTitle className="text-2xl text-blue-400 text-center">Login to Find NFT Spots</CardTitle>
+          <CardTitle className="text-2xl text-blue-400 text-center">NFTripにログイン</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-center text-gray-300 mb-6">
-            Choose your preferred method to login and start your NFT adventure!
+            好きな方法でログインして、NFTの世界に飛び込もう！
           </p>
           <Button
             onClick={() => handleLogin('metamask')}

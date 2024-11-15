@@ -26,10 +26,10 @@ export const NearestNFTSpots: React.FC = () => {
 
   return (
     <section>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-blue-400">近くのNFTスポット</h2>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        <h2 className="text-xl md:text-2xl font-bold text-blue-400 mb-2 md:mb-0">近くのNFTスポット</h2>
         <Link href="/spots" passHref>
-          <Button variant="outline" className="text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white">
+          <Button size="sm" variant="outline" className="text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white">
             View All Spots
           </Button>
         </Link>
@@ -61,9 +61,6 @@ export const NearestNFTSpots: React.FC = () => {
               </Link>
               <div className="flex space-x-2 mt-4">
                 <QuizModal location={location} />
-              </div>
-              <div className="absolute top-4 right-4 bg-blue-500 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Info className="h-4 w-4 text-white" />
               </div>
             </CardContent>
           </Card>

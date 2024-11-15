@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract NFTrip is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIdCounter;
 
@@ -24,7 +24,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   event NFTMinted(uint256 tokenId, uint256 locationId, address recipient, uint256 timestamp, string tokenURI);
   event LocationAdded(uint256 locationId, uint256 dailyMintLimit);
 
-  constructor() ERC721("TouristNFT", "TNFT") {}
+  constructor() ERC721("NFTrip", "NFTR") {}
 
   function addLocation(uint256 locationId, uint256 dailyMintLimit) public onlyOwner {
     require(locations[locationId].dailyMintLimit == 0, "Location already exists");
@@ -34,7 +34,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   }
 
   function initializeLocations() public onlyOwner {
-    for(uint256 i = 1; i <= 10; i++) {
+    for(uint256 i = 1; i <= 30; i++) {
       if (locations[i].dailyMintLimit == 0) {
         addLocation(i, 10);
       }
@@ -44,7 +44,7 @@ contract TouristNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
   function mint(uint256 locationId, string memory _tokenURI) public {
     require(locations[locationId].dailyMintLimit > 0, "Location does not exist");
     require(checkDailyLimit(locationId), "Daily mint limit reached for this location");
-    //require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
+    require(checkUserDailyLimit(locationId, msg.sender), "User has already minted for this location today");
 
     uint256 tokenId = _tokenIdCounter.current();
     _tokenIdCounter.increment();

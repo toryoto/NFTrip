@@ -1,12 +1,12 @@
 'use client'
 
 import { ethers } from "ethers";
-import TouristNFTABI from '../../abi/TouristNFT.json';
+import TouristNFTABI from '../../abi/NFTrip.json';
 import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
 import { supabase } from "@/lib/supabase";
 
-const CONTRACT_ADDRESS = '0x5e837921E12fDdB23b0766792366384B68Df6244';
+const CONTRACT_ADDRESS = '0xbe7EeFb23E7B970fcC05F061ba22A0E8dAd94518';
 
 export function useSmartContractInteractions() {
   const { getProvider } = useAuth();
@@ -54,7 +54,7 @@ export function useSmartContractInteractions() {
     }
   };
 
-  const fetchMyNFTs = async (method: AuthMethod, wallet_address: string) => {
+  const fetchAllNFTs = async (method: AuthMethod, wallet_address: string) => {
     try {
       const contract = await getContract(method);
 
@@ -65,7 +65,7 @@ export function useSmartContractInteractions() {
       for (let i = 0; i < balance; i++) {
         const tokenId = await contract.tokenOfOwnerByIndex(wallet_address, i);
         const tokenURI = await contract.tokenURI(tokenId);
-        nfts.push(tokenURI);
+        nfts.push({ tokenId: tokenId.toNumber(), tokenURI });
       }
       return nfts;
     } catch (error) {
@@ -144,7 +144,7 @@ export function useSmartContractInteractions() {
   return {
     getAllLocationIds,
     mintNFT,
-    fetchMyNFTs,
+    fetchAllNFTs,
     burnAllNFTs,
   }
 }

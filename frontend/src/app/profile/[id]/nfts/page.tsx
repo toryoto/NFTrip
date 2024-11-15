@@ -5,31 +5,31 @@ import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Calendar, ExternalLink } from 'lucide-react';
-import { Footer } from '../../components/Footer';
-import { useAuth } from '../../contexts/AuthContext';
-import Header from '../../components/Header';
-import { Loading } from '../../components/Loading';
-import { NFT } from '../../types/nft';
+import { Footer } from '../../../components/Footer';
+import Header from '../../../components/Header';
+import { Loading } from '../../../components/Loading';
+import { NFT } from '../../../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
 import { toast } from '@/components/ui/use-toast';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 export default function NFTGalleryPage() {
+  const { user } = useAuth();
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
   const { id } = useParams();
   const { userProfile } = useUserProfile(Number(id));
-  const { fetchMyNFTs } = useSmartContractInteractions();
-
-  const ipfsToHttp = (ipfsUrl: string) => {
-    return `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${ipfsUrl}`;
-  };
+  const { fetchAllNFTs } = useSmartContractInteractions();
 
   const fetchWalletAddress = async () => {
-    const { data, error } = await supabase.from("users").select("wallet_address").eq("id", Number(id)).single();
+    const { data, error } = await supabase
+      .from("users")
+      .select("wallet_address")
+      .eq("id", Number(id))
+      .single();
     if (error) {
       console.error('Error fetching wallet address:', error);
       return null;
@@ -39,45 +39,47 @@ export default function NFTGalleryPage() {
 
   useEffect(() => {
     const fetchNFTs = async () => {
-      if (user) {
-        try {
-          const wallet_address = await fetchWalletAddress()
-          if (!wallet_address) {
-            setLoading(false);
-            return;
-          }
+      if (!user?.auth_type) {
+        return;
+      }
 
-          // URLに基づくユーザごとのNFTを取得する
-          const fetchedNFTs = await fetchMyNFTs(user.auth_type, wallet_address);
-          if (!fetchedNFTs) {
-            setLoading(false)
-            return null;
-          };
-
-          const processedNFTs = await Promise.all(fetchedNFTs.map(async (uri) => {
-            const response = await fetch(uri.replace('ipfs://', 'https://chocolate-secret-cat-833.mypinata.cloud/ipfs/'));
-            const data = await response.json();
-            return {
-              ...data,
-              image: ipfsToHttp(data.image)
-            };
-          }));
-          setNfts(processedNFTs);
-        } catch (error) {
-          console.error('Error fetching NFTs:', error);
-          toast({
-            title: "Error",
-            description: "Failed to fetch your NFTs. Please try again later.",
-            variant: "destructive",
-          });
-        } finally {
+      try {
+        const wallet_address = await fetchWalletAddress()
+        if (!wallet_address) {
           setLoading(false);
+          return;
         }
+
+        // URLに基づくユーザごとのNFTを取得する
+        const fetchedNFTs = await fetchAllNFTs(user.auth_type, wallet_address);
+        if (!fetchedNFTs) {
+          setLoading(false)
+          return null;
+        };
+
+        const processedNFTs = await Promise.all(fetchedNFTs.map(async (nft) => {
+          const response = await fetch(nft.tokenURI.replace('ipfs://', `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/`));
+          const data = await response.json();
+          return { ...data, tokenId: nft.tokenId };
+        }));
+
+        processedNFTs.sort((firstNFT, secondNFT) => secondNFT.tokenId - firstNFT.tokenId);
+        setNfts(processedNFTs);
+        console.log(processedNFTs)
+      } catch (error) {
+        console.error('Error fetching NFTs:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch your NFTs. Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchNFTs();
-  }, [user]);
+  }, []);
 
   if (loading) {
     return <Loading />;
@@ -104,23 +106,27 @@ export default function NFTGalleryPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300" />
                   </div>
                   <CardContent className="p-4 relative">
-                    <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{nft.name}</h3>
-                    <p className="text-gray-400 mb-4 line-clamp-2">{nft.description}</p>
+                    <h3 className="text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300 whitespace-nowrap overflow-hidden text-ellipsis">{nft.name}</h3>
+                    <p className="text-gray-400 mb-4 line-clamp-2 overflow-hidden text-ellipsis min-h-[3rem]">{nft.description}</p>
                     <div className="space-y-2">
                       {nft.attributes.map((attr, attrIndex) => (
                         <div key={attrIndex} className="flex items-center text-sm">
                           {attr.trait_type === "Location" && <MapPin className="h-4 w-4 mr-2 text-green-400" />}
                           {attr.trait_type === "Minted Date" && <Calendar className="h-4 w-4 mr-2 text-yellow-400" />}
                           <span className="text-gray-400">{attr.trait_type}:</span>
-                          <span className="ml-2 text-white">{attr.value}</span>
+                          <span className="ml-2 text-white">
+                            {attr.trait_type === "wallet_address"
+                              ? `${attr.value.slice(0, 6)}...${attr.value.slice(-4)}` 
+                              : attr.value}
+                          </span>
                         </div>
                       ))}
                     </div>
                     <Button 
                       className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-                      onClick={() => window.open(nft.image, '_blank')}
+                      onClick={() => window.open(`https://testnets.opensea.io/assets/sepolia/0xbe7EeFb23E7B970fcC05F061ba22A0E8dAd94518/${nft.tokenId}`, '_blank')}
                     >
-                      View Full Image
+                      Openseaで表示
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
                   </CardContent>

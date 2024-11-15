@@ -3,21 +3,35 @@ import { Location, LocationImage,LocationWithThumbnailAndDistance, LocationWithT
 
 // Supabaseから全ての観光地情報を取得する関数
 export async function getLocations(): Promise<LocationWithThumbnail[]> {
-  // Supabaseから観光地情報を取得
-  const { data: locations, error: locationsError } = await supabase
+  const { data, error } = await supabase
     .from('locations')
-    .select('*')
-  
-  if (locationsError) {
-    console.error('Error fetching locations:', locationsError)
+    .select(`
+      *,
+      location_images!inner(
+        image_hash
+      )
+    `)
+    .eq('location_images.image_type', 'thumbnail')
+    .eq('location_images.is_primary', true)
+    .limit(100)
+
+  if (error) {
+    console.error('Error fetching locations:', error)
     return []
   }
 
-  const imageMap = await getLocationImagesMap()
-
-  return locations.map((location: Location) => ({
-    ...location,
-    thumbnail: imageMap.get(location.id) || null
+  return data.map((row: any) => ({
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    description: row.description,
+    address: row.address,
+    postal_code: row.postal_code,
+    latitude: row.latitude,
+    longitude: row.longitude,
+    thumbnail: row.location_images?.[0]?.image_hash
+      ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${row.location_images[0].image_hash}`
+      : null
   }))
 }
 
@@ -53,47 +67,55 @@ export async function getLocationBySlug(slug: string) {
   }
 };
 
-// 引数のユーザの緯度経度に紐づく最寄りの観光地情報を取得する関数
-export async function getNearestLocations(user_lat: number, user_lon: number, max_results: number): Promise<LocationWithThumbnailAndDistance[]> {
-  const { data: locations, error } = await supabase.rpc('get_nearest_locations', {
-    user_lat, user_lon, max_results
-  });
+export async function getNearestLocations(
+  user_lat: number, 
+  user_lon: number, 
+  max_results: number
+): Promise<LocationWithThumbnailAndDistance[]> {
+  const { data: nearestLocations, error: nearestError } = await supabase
+    .rpc('get_nearest_locations', {
+      user_lat,
+      user_lon,
+      max_results
+    })
 
-  if (error) throw error;
+  if (nearestError) {
+    console.error('Error fetching nearest locations:', nearestError)
+    throw nearestError
+  }
 
-  const locationIds = locations.map((loc: Location) => loc.id);
-
-  const imageMap = await getLocationImagesMap(locationIds);
-
-  return locations.map((location: Location) => ({
-    ...location,
-    thumbnail: imageMap.get(location.id) || null
-  }));
-}
-
-// 引数の観光地idに紐づく画像を取得する関数
-async function getLocationImagesMap(locationIds?: number[]): Promise<Map<number, string | null>> {
-  let query = supabase
+  // 取得した場所IDに基づいて画像情報を取得
+  const locationIds = nearestLocations.map((location: LocationWithThumbnailAndDistance) => location.id)
+  
+  const { data: locationImages, error: imagesError } = await supabase
     .from('location_images')
     .select('*')
+    .in('location_id', locationIds)
     .eq('image_type', 'thumbnail')
     .eq('is_primary', true)
 
-  if (locationIds) {
-    query = query.in('location_id', locationIds)
-  }
-  
-  const { data: images, error } = await query
-
-  if (error) {
-    console.error('Error fetching images:', error)
-    return new Map()
+  if (imagesError) {
+    console.error('Error fetching location images:', imagesError)
+    throw imagesError
   }
 
-  return new Map(images.map((img: LocationImage) => [
-    img.location_id, 
-    img.image_hash ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${img.image_hash}` : null
-  ]))
+  return nearestLocations.map((location: LocationWithThumbnailAndDistance) => {
+    const locationImage = locationImages.find(img => img.location_id === location.id)
+    return {
+      id: location.id,
+      name: location.name,
+      slug: location.slug,
+      description: location.description,
+      address: location.address,
+      postal_code: location.postal_code,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      distance: location.distance,
+      thumbnail: locationImage?.image_hash
+        ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${locationImage.image_hash}`
+        : null
+    }
+  })
 }
 
 // 引数の観光地idに紐づくNFT画像を取得する関数
