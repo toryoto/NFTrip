@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { LogOut, Menu, X } from 'lucide-react';
+import { LogOut, Menu, X, Droplet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProfile } from '@/hooks/useUserProfile';
@@ -45,10 +45,10 @@ const Header: React.FC = () => {
         </Link>
         <div className="hidden sm:flex items-center space-x-4">
           <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
-          <LogoutButton isLoggingOut={isLoggingOut} handleLogout={handleLogout} />
+          <FaucetLink />
         </div>
         <div className="sm:hidden">
-        <Button
+          <Button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             variant="ghost"
             size="icon"
@@ -61,8 +61,13 @@ const Header: React.FC = () => {
       {isMenuOpen && (
         <div className="sm:hidden bg-gray-900 py-4 border-t border-gray-800">
           <div className="container space-y-4">
-            <div className="flex items-center justify-between bg-gray-800 p-3 rounded-lg">
-              <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-gray-800 p-3 rounded-lg">
+                <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
+              </div>
+              <div className="bg-gray-800 p-3 rounded-lg">
+                <FaucetLink />
+              </div>
             </div>
             <LogoutButton isLoggingOut={isLoggingOut} handleLogout={handleLogout} />
           </div>
@@ -87,6 +92,18 @@ const UserInfo: React.FC<{ user: any; userProfile: any; sliceWalletAddress: (str
     <div>
       <div className="text-sm font-medium text-white">{sliceWalletAddress(user.wallet_address, 4, 3)}</div>
       <div className="text-xs text-gray-400">View Profile</div>
+    </div>
+  </Link>
+);
+
+const FaucetLink: React.FC = () => (
+  <Link href="/faucet/sepolia" className="flex items-center space-x-3 sm:bg-transparent sm:p-0 rounded-lg">
+    <div className="relative w-10 h-10 rounded-full overflow-hidden bg-blue-500 flex items-center justify-center">
+      <Droplet className="w-6 h-6 text-white" />
+    </div>
+    <div>
+      <div className="text-sm font-medium text-white">Faucet</div>
+      <div className="text-xs text-gray-400">Get Sepolia ETH</div>
     </div>
   </Link>
 );
