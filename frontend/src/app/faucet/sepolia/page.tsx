@@ -40,28 +40,30 @@ export default function SepoliaFaucetPage() {
         throw new Error('requestTokens is undefined');
       }
 
-      await requestTokens(user.auth_type);
+      const transactionHash = await requestTokens(user.auth_type);
+      console.log(transactionHash);
       setResult({ 
         success: true, 
-        message: `テストトークンの送信に成功しました！ NFTを獲得できます！` 
+        message: `テストトークンの送信に成功しました！ NFTripを楽しんでください！` 
       })
-    } catch (error) {
-      setResult({ success: false, message: 'トークンの送信に失敗しました。もう一度お試しください。' })
+    } catch (error: any) {
+      if (error.message.includes('Faucet is empty')) {
+        setResult({ success: false, message: 'Faucetが空です。開発者に連絡をしてください。' })
+      } else if (error.message.includes('Must wait 2 days between withdrawals')) {
+        setResult({ success: false, message: 'Faucetは2日に1回使用できます。時間をおいて試してください。' })
+      } else {
+        setResult({ success: false, message: 'トークンの送信に失敗しました。もう一度お試しください。' })
+      }
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <Header />
       <main className="flex-1 py-12 px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="container mx-auto max-w-lg"
-        >
+        <div className="container mx-auto max-w-lg">
           <Card className="bg-gray-800/50 backdrop-blur-md border-gray-700 overflow-hidden rounded-lg shadow-lg shadow-blue-500/20">
             <CardHeader>
               <motion.div
@@ -140,15 +142,15 @@ export default function SepoliaFaucetPage() {
               )}
               <div className="mt-6 text-sm text-gray-400 bg-gray-800/30 p-4 rounded-lg">
                 <p className="font-semibold mb-2">注意事項:</p>
-                <ul className="list-disc list-inside space-y-1">
-                  <li>テストトークンは2日に1回、0.05 ETHまで取得できます。</li>
+                <ul className="list-disc list-inside space-y-1 md:whitespace-nowrap">
+                  <li>テストトークンは2日に1回、0.01 ETHまで取得できます。</li>
                   <li>これらのトークンは実際の価値を持ちません。</li>
                   <li>テストネットでの開発やテストにのみ使用してください。</li>
                 </ul>
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </main>
       <Footer />
     </div>

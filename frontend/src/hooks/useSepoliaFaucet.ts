@@ -24,15 +24,10 @@ export function useSepoliaFaucet() {
 
 			const tx = await contract.requestTokens();
       await tx.wait();
-      // イベントリスナーを設定
-      // const eventPromise = listenForWithdrawal(contract);
 
+      const receipt = await tx.wait();
 
-      // イベントからトランザクションハッシュを取得
-      // const transactionHash = await eventPromise;
-
-      //return { transactionHash };
-      return
+      return receipt.transactionHash;
     } catch (error) {
       console.error("Faucet process failed:", error);
       throw error;
