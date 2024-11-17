@@ -67,7 +67,6 @@ export async function POST(request: NextRequest) {
         originalSender: forwardRequest.from
       }
     });
-
   } catch (error) {
     console.error("Gasless transaction failed:", error);
     return NextResponse.json(
