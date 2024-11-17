@@ -81,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { user: user, isNewUser } = await response.json();
 
       setUser(user);
-      if (isNewUser) await setWeb3AuthUserProfile(user)
+      if (isNewUser && method === 'web3auth') await setWeb3AuthUserProfile(user)
 
       return user;
     } catch (error) {

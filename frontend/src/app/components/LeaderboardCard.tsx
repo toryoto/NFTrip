@@ -60,8 +60,7 @@ export async function LeaderboardCard() {
                     className="sm:hidden font-medium text-sm text-white"
                     title={user.name}
                   >
-                    {user.name.slice(0, 5)}{user.name.length > 5 ? '...' : ''}
-                  </span>
+                  {user.name ? user.name.slice(0, 5) : 'No Name'}{user.name && user.name.length > 5 ? '...' : ''}                  </span>
                 </div>
                 <div className="flex items-center gap-1 sm:gap-2">
                   <span className="text-lg sm:text-xl font-bold text-blue-400">{user.total_nfts}</span>
