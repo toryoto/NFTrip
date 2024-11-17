@@ -76,6 +76,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-2.0359
-0.149739340
