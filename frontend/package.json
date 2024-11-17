@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-lambda": "^3.693.0",
     "@biconomy/mexa": "^3.0.6",
+    "@openzeppelin/defender-sdk": "^1.15.2",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-label": "^2.1.0",
@@ -23,6 +25,7 @@
     "@web3auth/ethereum-provider": "^8.12.4",
     "@web3auth/modal": "^8.12.4",
     "@web3auth/openlogin-adapter": "^8.12.4",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
