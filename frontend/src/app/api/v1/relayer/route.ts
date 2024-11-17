@@ -1,39 +1,81 @@
 import { NextRequest, NextResponse } from 'next/server';
 const { Defender } = require('@openzeppelin/defender-sdk');
 import { ethers } from 'ethers';
-import SepoliaFaucet  from '../../../../../abi/SepoliaFaucet.json';
+import SepoliaFaucet from '../../../../../abi/SepoliaFaucet.json';
+import MinimalForwarder from '../../../../../abi/MinimalForwarder.json';
 
-const FAUCET_ADDRESS = '0x3dA5c533d839e7a03B1D1a674456dBCf52759d88';
-const credentials = { relayerApiKey: process.env.RELAYER_API_KEY, relayerApiSecret: process.env.RELAYER_SECRET_KEY };
-
+const FORWARDER_ADDRESS = '0x56823B1E1eFcb375774AE955cCE6B1960F083C70';
 
 export async function POST(request: NextRequest) {
   try {
+    // リクエストボディの取得
+    const body = await request.json();
+    const { request: forwardRequest, signature } = body;
+
+		const credentials = {
+			relayerApiKey: process.env.RELAYER_API_KEY,
+			relayerApiSecret: process.env.RELAYER_SECRET_KEY
+		};
+
     const client = new Defender(credentials);
-		console.log(2222, client)
     const provider = client.relaySigner.getProvider();
     const signer = await client.relaySigner.getSigner(provider, {
       speed: 'fast',
       validUntil: Math.floor(Date.now() / 1000) + 3600
     });
 
-
-    const faucetContract = new ethers.Contract(
-      FAUCET_ADDRESS,
-      SepoliaFaucet.abi,
-      signer,
+    // MinimalForwarderコントラクトのインスタンス化
+    const forwarder = new ethers.Contract(
+      FORWARDER_ADDRESS,
+      MinimalForwarder.abi,
+      signer
     );
-    
-    const tx = await faucetContract.requestTokens();
-    console.log(`Transaction hash: ${tx.hash}`);
+
+    // 署名の検証
+    const valid = await forwarder.verify(forwardRequest, signature);
+    if (!valid) {
+      throw new Error('Invalid signature');
+    }
+
+    // メタトランザクションの実行
+    const tx = await forwarder.execute(forwardRequest, signature);
+    console.log(`Meta transaction hash: ${tx.hash}`);
 
     const receipt = await tx.wait();
-		console.log(receipt)
-    console.log(`Transaction confirmed in block ${receipt.blockNumber}`);
 
-    return NextResponse.json({ success: true, receipt });
+    const faucetInterface = new ethers.utils.Interface(SepoliaFaucet.abi);
+    const events = receipt.logs
+      .map((log: ethers.providers.Log) => {
+        try {
+          return faucetInterface.parseLog(log);
+        } catch (e) {
+          return null;
+        }
+      })
+			.filter((event: ethers.utils.LogDescription | null) => event !== null);
+
+    return NextResponse.json({
+      success: true,
+      receipt: {
+        ...receipt,
+        events,
+        originalSender: forwardRequest.from
+      },
+      metaTxInfo: {
+        relayer: receipt.from,
+        forwarder: receipt.to,
+        originalSender: forwardRequest.from
+      }
+    });
+
   } catch (error) {
     console.error("Gasless transaction failed:", error);
-    return NextResponse.json({ success: false, error: (error as Error).message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: (error as Error).message }, 
+      { status: 500 }
+    );
   }
 }
+
+2.0359
+0.149739340
