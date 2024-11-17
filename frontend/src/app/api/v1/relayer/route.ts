@@ -6,6 +6,16 @@ import MinimalForwarder from '../../../../../abi/MinimalForwarder.json';
 
 const FORWARDER_ADDRESS = '0x56823B1E1eFcb375774AE955cCE6B1960F083C70';
 
+async function decodeRevertReason(trace: string): Promise<string> {
+  if (trace.startsWith('0x08c379a0')) {
+    // データ部分を切り出し
+    const data = '0x' + trace.slice(10);
+    const [error] = ethers.utils.defaultAbiCoder.decode(['string'], data);
+    return error;
+  }
+  return 'Unknown error';
+}
+
 export async function POST(request: NextRequest) {
   try {
     // リクエストボディの取得
@@ -42,6 +52,22 @@ export async function POST(request: NextRequest) {
     console.log(`Meta transaction hash: ${tx.hash}`);
 
     const receipt = await tx.wait();
+
+		if (receipt.status === 1) {
+			const trace = await provider.call(
+				{
+					to: forwardRequest.to,
+					from: forwardRequest.from,
+					data: forwardRequest.data,
+					value: forwardRequest.value,
+				},
+				receipt.blockNumber
+			);
+			if (trace.startsWith('0x08c379a0')) {
+				const errorMessage = await decodeRevertReason(trace);
+				throw new Error(errorMessage);
+			}
+		}
 
     const faucetInterface = new ethers.utils.Interface(SepoliaFaucet.abi);
     const events = receipt.logs

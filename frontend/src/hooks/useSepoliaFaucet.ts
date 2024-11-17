@@ -72,7 +72,6 @@ export function useSepoliaFaucet() {
   };
 
   const requestTokensGasless = async (method: AuthMethod) => {
-    console.log(111)
     try {
       // メタトランザクションの作成と署名
       const { request, signature } = await createMetaTx(method);
