@@ -43,11 +43,12 @@ const Header: React.FC = () => {
             NFTrip
           </h1>
         </Link>
-        <div className="hidden sm:flex items-center space-x-4">
+        <div className="hidden sm:flex items-center space-x-4 ml-auto">
           <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
           <FaucetLink />
+          <LogoutButton isLoggingOut={isLoggingOut} handleLogout={handleLogout} />
         </div>
-        <div className="sm:hidden">
+        <div className="sm:hidden ml-auto">
           <Button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             variant="ghost"
