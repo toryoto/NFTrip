@@ -5,20 +5,62 @@ import SepoliaFaucet from '../../abi/SepoliaFaucet.json';
 import MinimalForwarder from '../../abi/MinimalForwarder.json';
 import { useAuth } from '../app/contexts/AuthContext';
 import { AuthMethod } from '../app/types/auth';
-import { useState } from "react";
 
 const FAUCET_ADDRESS = '0x3dA5c533d839e7a03B1D1a674456dBCf52759d88';
 const FORWARDER_ADDRESS = '0x56823B1E1eFcb375774AE955cCE6B1960F083C70';
 
 export function useSepoliaFaucet() {
   const { getProvider } = useAuth();
-  const [receipt, setReceipt] = useState<any | null>(null);
 
   const getContract = async (method: AuthMethod) => {
     const provider = await getProvider(method);
     const signer = provider.getSigner();
     return new ethers.Contract(FAUCET_ADDRESS, SepoliaFaucet.abi, signer);
   }
+
+  const canWithdrawToken = async (method: AuthMethod) => {
+    try {
+      const provider = await getProvider(method);
+      const balance = await provider.getBalance(FAUCET_ADDRESS);
+      return parseFloat(ethers.utils.formatEther(balance)) >= 0.1;
+    } catch (error) {
+      console.error("Failed to get token balance:", error);
+      throw error;
+    }
+  }
+
+  const isNoTransactionWithin24Hours = async (address: string) => {
+    try {
+      const response = await fetch('/api/v1/faucet/availability', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ address }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      return data.noRecentTransaction;
+    } catch (error) {
+      console.error("Failed to perform action check:", error);
+      throw error;
+    }
+  }
+  
+  const validateFaucetTransaction = async (method: AuthMethod, walletAddress: string) => {
+    const canWithdraw = await canWithdrawToken(method);
+    const isNoTransaction = await isNoTransactionWithin24Hours(walletAddress);
+    if (!canWithdraw) {
+      throw new Error("Faucet is empty");
+    }
+    if (!isNoTransaction) {
+      throw new Error("Must wait 1 day between withdrawals");
+    }
+  };
 
   // メタトランザクション用の関数を追加
   const createMetaTx = async (method: AuthMethod) => {
@@ -70,7 +112,10 @@ export function useSepoliaFaucet() {
     return { request, signature };
   };
 
-  const requestTokensGasless = async (method: AuthMethod) => {
+  const requestTokensGasless = async (method: AuthMethod, walletAddress: string) => {
+    // Faucetトランザクション発行前のバリデーション
+    await validateFaucetTransaction(method, walletAddress);
+
     try {
       // メタトランザクションの作成と署名
       const { request, signature } = await createMetaTx(method);
@@ -86,9 +131,7 @@ export function useSepoliaFaucet() {
       });
 
       const data = await response.json();
-      console.log(data)
       if (data.success) {
-        setReceipt(data.receipt);
         return data.receipt;
       } else {
         throw new Error(data.error);
