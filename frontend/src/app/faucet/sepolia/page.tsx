@@ -91,7 +91,7 @@ export default function SepoliaFaucetPage() {
                 NFT取得のためのテストトークンを受け取ることができます
               </CardDescription>
               <CardDescription className="text-center text-gray-400 mt-2">
-                ERC2771によりガス代を払わずに実行可能です。
+                ERC2771により誰でもガス代を払わずに実行可能です。
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -148,8 +148,8 @@ export default function SepoliaFaucetPage() {
                 <p className="font-semibold mb-2">注意事項:</p>
                 <ul className="list-disc list-inside space-y-1 md:whitespace-nowrap">
                   <li>テストトークンは1日に1回、0.01 ETHまで取得できます。</li>
-                  <li>これらのトークンは実際の価値を持ちません。</li>
-                  <li>テストネットでの開発やテストにのみ使用してください。</li>
+                  <li>これは約3つのNFTのガス代を支払うことができる量です。</li>
+                  <li>このトークンは実際の価値を持ちません。</li>
                 </ul>
               </div>
             </CardContent>
