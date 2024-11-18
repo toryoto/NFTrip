@@ -21,11 +21,12 @@ interface FormattedTransaction {
 }
 
 export default function WalletModal() {
-	const { user } = useAuth()
+	const { user, getSepoliaBalance } = useAuth()
 	const { userProfile } = useUserProfile(user?.id);
   const [isOpen, setIsOpen] = useState(false)
 	const [activities, setActivities] = useState([]);
 	const [activeTab, setActiveTab] = useState('tokens');
+	const [balance, setBalance] = useState('0');
 
   const walletData = {
     wallet_address: user?.wallet_address,
@@ -35,14 +36,23 @@ export default function WalletModal() {
   }
 
 	useEffect(() => {
+		const fetchBalance = async () => {
+			if (user?.auth_type) {
+				const balance = await getSepoliaBalance(user.auth_type);
+				setBalance(balance)
+			} else {
+				console.error('Auth type is undefined');
+			}
+		};
+		fetchBalance();
+
+		if (activeTab === 'tokens') {
+			fetchBalance();
+		}
     if (activeTab === 'activity' && walletData.wallet_address) {
       getActivities(walletData.wallet_address);
     }
 	}, [activeTab, walletData.wallet_address]);
-
-  const tokens = [
-    { name: 'Sepolia ETH', amount: '1.5' },
-  ]
 
   const nfts = [
     { name: 'Pixel Dinasour1 #1234', image: '/images/pixel-dinasour.avif?height=80&width=80' },
@@ -141,15 +151,10 @@ export default function WalletModal() {
                       <CardDescription className="text-blue-300">Your current token holdings</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      {tokens.map((token, index) => (
-                        <div
-                          key={index}
-                          className="flex justify-between items-center mb-4 text-white"
-                        >
-                          <span>{token.name}</span>
-                          <span>{token.amount}</span>
-                        </div>
-                      ))}
+											<div className="flex justify-between items-center mb-4 text-white">
+												<span>Sepolia ETH</span>
+												<span>{balance}</span>
+											</div>
                     </CardContent>
                   </Card>
                 </TabsContent>
