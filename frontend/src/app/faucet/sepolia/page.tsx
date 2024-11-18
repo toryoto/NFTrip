@@ -40,17 +40,18 @@ export default function SepoliaFaucetPage() {
         throw new Error('requestTokens is undefined');
       }
 
-      const transactionHash = await requestTokens(user.auth_type);
-      console.log(transactionHash);
+      const receipt = await requestTokens(user.auth_type, address);
+      console.log(receipt);
       setResult({ 
         success: true, 
         message: `テストトークンの送信に成功しました！ NFTripを楽しんでください！` 
       })
     } catch (error: any) {
-      if (error.message.includes('Faucet is empty')) {
+      const errorMessage = error?.message || '';
+      if (errorMessage.includes('Faucet is empty')) {
         setResult({ success: false, message: 'Faucetが空です。開発者に連絡をしてください。' })
-      } else if (error.message.includes('Must wait 2 days between withdrawals')) {
-        setResult({ success: false, message: 'Faucetは2日に1回使用できます。時間をおいて試してください。' })
+      } else if (errorMessage.includes('Must wait 1 day between withdrawals')) {
+        setResult({ success: false, message: 'Faucetは1日に1回使用できます。時間をおいて試してください。' })
       } else {
         setResult({ success: false, message: 'トークンの送信に失敗しました。もう一度お試しください。' })
       }
@@ -87,7 +88,10 @@ export default function SepoliaFaucetPage() {
                 </CardTitle>
               </motion.div>
               <CardDescription className="text-center text-gray-400 mt-2">
-                NFT取得のためのSepoliaテストトークンを取得できます。
+                NFT取得のためのテストトークンを受け取ることができます
+              </CardDescription>
+              <CardDescription className="text-center text-gray-400 mt-2">
+                ERC2771により誰でもガス代を払わずに実行可能です。
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -143,9 +147,9 @@ export default function SepoliaFaucetPage() {
               <div className="mt-6 text-sm text-gray-400 bg-gray-800/30 p-4 rounded-lg">
                 <p className="font-semibold mb-2">注意事項:</p>
                 <ul className="list-disc list-inside space-y-1 md:whitespace-nowrap">
-                  <li>テストトークンは2日に1回、0.01 ETHまで取得できます。</li>
-                  <li>これらのトークンは実際の価値を持ちません。</li>
-                  <li>テストネットでの開発やテストにのみ使用してください。</li>
+                  <li>テストトークンは1日に1回、0.01 ETHまで取得できます。</li>
+                  <li>これは約3つのNFTのガス代を支払うことができる量です。</li>
+                  <li>このトークンは実際の価値を持ちません。</li>
                 </ul>
               </div>
             </CardContent>
