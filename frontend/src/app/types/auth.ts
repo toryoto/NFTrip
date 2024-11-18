@@ -20,5 +20,6 @@ export interface AuthContextType {
   user: User | null;
   login: (method: AuthMethod) => Promise<void>;
   logout: () => Promise<void>;
-  getProvider: (method: AuthMethod) => Promise<ethers.providers.Web3Provider>
+  getProvider: (method: AuthMethod) => Promise<ethers.providers.Web3Provider>;
+  getSepoliaBalance: (method: AuthMethod) => Promise<string>;
 }
