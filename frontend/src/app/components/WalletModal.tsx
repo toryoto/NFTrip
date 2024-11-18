@@ -58,7 +58,12 @@ export default function WalletModal() {
     { name: 'Pixel Dinasour1 #1234', image: '/images/pixel-dinasour.avif?height=80&width=80' },
     { name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour2.jpg?height=80&width=80' },
 		{ name: 'Pixel DInasour3 #5678', image: '/images/pixel-dinasour3.avif?height=80&width=80' },
+		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
 		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
+		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
+		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
+		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
+
   ]
 	
 	const getActivities = async (wallet_address: string) => {
@@ -142,71 +147,68 @@ export default function WalletModal() {
               </TabsTrigger>
             </TabsList>
             
-            <div className="flex-grow overflow-hidden">
-              <ScrollArea className="h-full p-6">
-                <TabsContent value="tokens">
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardHeader>
-                      <CardTitle className="text-white">Tokens</CardTitle>
-                      <CardDescription className="text-blue-300">Your current token holdings</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-											<div className="flex justify-between items-center mb-4 text-white">
-												<span>Sepolia ETH</span>
-												<span>{balance}</span>
-											</div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                <TabsContent value="nfts">
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardHeader>
-                      <CardTitle className="text-white">NFTs</CardTitle>
-                      <CardDescription className="text-blue-300">Your NFT collection</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        {nfts.map((nft, index) => (
-                          <div
-                            key={index}
-                            className="text-center"
-                          >
-                            <img src={nft.image} alt={nft.name} className="w-full h-auto mx-auto mb-2 rounded" />
-                            <p className="text-sm text-white">{nft.name}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                <TabsContent value="activity">
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardHeader>
-                      <CardTitle className="text-white">Activity</CardTitle>
-                      <CardDescription className="text-blue-300">Recent transactions</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-											{activities.map((activity: FormattedTransaction, index) => (
-												<div key={index} className="mb-4">
-													<p className="text-sm text-white">
-														{activity.action}
-													</p>
-													<Link 
-														href={`https://sepolia.etherscan.io/tx/${activity.hash}`} 
-														className="text-xs text-blue-400"
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														{`${activity.hash.slice(0, 10)}...${activity.hash.slice(-10)}`}
-													</Link>
-													<p className="text-xs text-blue-500">{activity.time}</p>
+						<ScrollArea className="min-h-[500px] sm:h-[60vh] p-4">								<TabsContent value="tokens">
+								<Card className="bg-gray-800 border-gray-700">
+									<CardHeader>
+										<CardTitle className="text-white">Tokens</CardTitle>
+										<CardDescription className="text-blue-300">Your current token holdings</CardDescription>
+									</CardHeader>
+									<CardContent>
+										<div className="flex justify-between items-center mb-4 text-white">
+											<span>Sepolia ETH</span>
+											<span>{balance}</span>
+										</div>
+									</CardContent>
+								</Card>
+							</TabsContent>
+							<TabsContent value="nfts">
+								<Card className="bg-gray-800 border-gray-700">
+									<CardHeader>
+										<CardTitle className="text-white">NFTs</CardTitle>
+										<CardDescription className="text-blue-300">Your NFT collection</CardDescription>
+									</CardHeader>
+									<CardContent>
+										<div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+											{nfts.map((nft, index) => (
+												<div
+													key={index}
+													className="text-center"
+												>
+													<img src={nft.image} alt={nft.name} className="w-full h-auto mx-auto mb-2 rounded" />
+													<p className="text-sm text-white">{nft.name}</p>
 												</div>
 											))}
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </ScrollArea>
-            </div>
+										</div>
+									</CardContent>
+								</Card>
+							</TabsContent>
+							<TabsContent value="activity">
+								<Card className="bg-gray-800 border-gray-700">
+									<CardHeader>
+										<CardTitle className="text-white">Activity</CardTitle>
+										<CardDescription className="text-blue-300">Recent transactions</CardDescription>
+									</CardHeader>
+									<CardContent>
+										{activities.map((activity: FormattedTransaction, index) => (
+											<div key={index} className="mb-4">
+												<p className="text-sm text-white">
+													{activity.action}
+												</p>
+												<Link 
+													href={`https://sepolia.etherscan.io/tx/${activity.hash}`} 
+													className="text-xs text-blue-400"
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													{`${activity.hash.slice(0, 10)}...${activity.hash.slice(-10)}`}
+												</Link>
+												<p className="text-xs text-blue-500">{activity.time}</p>
+											</div>
+										))}
+									</CardContent>
+								</Card>
+							</TabsContent>
+						</ScrollArea>
           </Tabs>
         </div>
       </DialogContent>
