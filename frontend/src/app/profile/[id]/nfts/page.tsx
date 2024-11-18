@@ -58,13 +58,31 @@ export default function NFTGalleryPage() {
         };
 
         const processedNFTs = await Promise.all(fetchedNFTs.map(async (nft) => {
-          const response = await fetch(nft.tokenURI.replace('ipfs://', `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/`));
-          const data = await response.json();
-          return { ...data, tokenId: nft.tokenId };
+          const gateways = [
+            `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/`,
+            'https://ipfs.io/ipfs/'
+          ];
+        
+          for (const gateway of gateways) {
+            try {
+              const uri = nft.tokenURI.replace('ipfs://', gateway);
+              const response = await fetch(uri);
+              if (response.ok) {
+                const data = await response.json();
+                return { ...data, tokenId: nft.tokenId };
+              }
+            } catch (err) {
+              console.log(`Gateway ${gateway} failed: ${err}`);
+              continue;
+            }
+          }
+          // 両方のゲートウェイが失敗した場合
+          return { tokenId: nft.tokenId, error: true };
         }));
 
         processedNFTs.sort((firstNFT, secondNFT) => secondNFT.tokenId - firstNFT.tokenId);
-        setNfts(processedNFTs);
+        setNfts(processedNFTs.filter(nft => !nft.error));
+
         console.log(processedNFTs)
       } catch (error) {
         console.error('Error fetching NFTs:', error);
