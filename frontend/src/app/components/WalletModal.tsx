@@ -34,7 +34,7 @@ export default function Component() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-				<button className="flex items-center space-x-3 text-white rounded-lg p-2 transition duration-300 text-left">
+				<button className="flex items-center space-x-3 text-white rounded-lg transition duration-300 text-left">
           <div className="relative w-10 h-10 rounded-full overflow-hidden bg-blue-500 flex items-center justify-center">
             <Wallet className="w-6 h-6 text-white" />
           </div>
@@ -48,7 +48,7 @@ export default function Component() {
         <div className="flex flex-col h-full">
           <DialogHeader className="p-6 pb-2">
             <DialogTitle className="text-2xl sm:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-              Web3 Wallet
+              NFTrip Wallet
             </DialogTitle>
           </DialogHeader>
           
