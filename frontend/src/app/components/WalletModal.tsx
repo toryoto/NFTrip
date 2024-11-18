@@ -110,9 +110,14 @@ export default function WalletModal() {
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 p-6 pt-2 pb-4">
             <div className="flex items-center space-x-4">
 							<div className="h-16 w-16 rounded-full overflow-hidden bg-blue-700 flex items-center justify-center flex-shrink-0">
-								<img src={walletData.avatar_image || "/images/no-user-icon.png"} alt={"user_avatar"} className="w-full h-full object-cover" />
-              </div>
-
+								<Image 
+                  src={walletData.avatar_image || "/images/no-user-icon.png"} 
+                  alt={"user_avatar"} 
+                  width={64} 
+                  height={64} 
+                  className="w-full h-full object-cover" 
+                />
+							</div>
               <div>
                 <h2 className="text-lg font-semibold text-white">{walletData.name}</h2>
                 <p 
@@ -147,7 +152,8 @@ export default function WalletModal() {
               </TabsTrigger>
             </TabsList>
             
-						<ScrollArea className="min-h-[500px] sm:h-[60vh] p-4">								<TabsContent value="tokens">
+						<ScrollArea className="min-h-[500px] h-[60vh] p-4">								
+							<TabsContent value="tokens">
 								<Card className="bg-gray-800 border-gray-700">
 									<CardHeader>
 										<CardTitle className="text-white">Tokens</CardTitle>
@@ -174,7 +180,13 @@ export default function WalletModal() {
 													key={index}
 													className="text-center"
 												>
-													<img src={nft.image} alt={nft.name} className="w-full h-auto mx-auto mb-2 rounded" />
+													<Image 
+														src={nft.image} 
+														alt={nft.name} 
+														width={80} 
+														height={80} 
+														className="w-full h-auto mx-auto mb-2 rounded" 
+													/>
 													<p className="text-sm text-white">{nft.name}</p>
 												</div>
 											))}
