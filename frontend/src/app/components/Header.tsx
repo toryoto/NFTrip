@@ -7,6 +7,7 @@ import { LogOut, Menu, X, Droplet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import Web3WalletModal from './WalletModal';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth()
@@ -44,6 +45,7 @@ const Header: React.FC = () => {
           </h1>
         </Link>
         <div className="hidden sm:flex items-center space-x-4 ml-auto">
+          <Web3WalletModal />
           <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
           <FaucetLink />
           <LogoutButton isLoggingOut={isLoggingOut} handleLogout={handleLogout} />
@@ -63,10 +65,13 @@ const Header: React.FC = () => {
         <div className="sm:hidden bg-gray-900 py-4 border-t border-gray-800">
           <div className="container space-y-4">
             <div className="grid grid-cols-1 gap-4">
-              <div className="bg-gray-800 p-3 rounded-lg">
+              <div className="flex bg-gray-800 p-3 rounded-lg" style={{ height: '60px' }}>
+                <Web3WalletModal />
+              </div>
+              <div className="flex bg-gray-800 p-3 rounded-lg" style={{ height: '60px' }}>
                 <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
               </div>
-              <div className="bg-gray-800 p-3 rounded-lg">
+              <div className="flex bg-gray-800 p-3 rounded-lg" style={{ height: '60px' }}>
                 <FaucetLink />
               </div>
             </div>

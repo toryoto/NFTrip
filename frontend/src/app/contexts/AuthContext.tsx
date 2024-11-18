@@ -6,7 +6,7 @@ import { User, AuthMethod, AuthContextType } from '../types/auth';
 import { ExtendedWindow } from '../types/ethere';
 import { Loading } from '../components/Loading';
 import { useRouter } from 'next/navigation';
-import { initWeb3Auth, getWeb3AuthAccountInfo } from '@/lib/web3auth';
+import { initWeb3Auth, getWeb3AuthAccountInfo, connectWeb3Auth } from '@/lib/web3auth';
 import { Web3Auth } from "@web3auth/modal";
 import { supabase } from '@/lib/supabase';
 import axios from 'axios';
@@ -59,6 +59,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const signer = await provider.getSigner();
     return await signer.getAddress();
   };
+
+  const getSepoliaBalance = async (method: AuthMethod) => {
+    if (method === 'metamask') {
+      const provider = await getProvider(method)
+      const accounts = await provider.send('eth_requestAccounts', []);
+      const address = accounts[0];
+
+      // 残高を取得
+      const balance = await provider.getBalance(address);
+      return ethers.utils.formatEther(balance);
+    } else {
+      if (!web3auth) {
+        throw new Error('Web3Auth not initialized');
+      }
+      const ethersProvider = await connectWeb3Auth(web3auth);
+      const signer = await ethersProvider.getSigner();
+      const address = await signer.getAddress();
+      const balance = await ethersProvider.getBalance(address);
+      return ethers.utils.formatEther(balance);
+    }
+  }
 
   const login = async (method: AuthMethod) => {
     try {
@@ -188,7 +209,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
   
   return (
-    <AuthContext.Provider value={{ user, login, logout, getProvider }}>
+    <AuthContext.Provider value={{ user, login, logout, getProvider, getSepoliaBalance }}>
       {children}
     </AuthContext.Provider>
   );
