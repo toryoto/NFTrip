@@ -186,22 +186,22 @@ export default function WalletModal() {
                       <CardDescription className="text-blue-300">Recent transactions</CardDescription>
                     </CardHeader>
                     <CardContent>
-										{activities.map((activity: FormattedTransaction, index) => (
-											<div key={index} className="mb-4">
-												<p className="text-sm text-white">
-													{activity.action}
-												</p>
-												<Link 
-													href={`https://sepolia.etherscan.io/tx/${activity.hash}`} 
-													className="text-xs text-blue-400"
-													target="_blank"
-  												rel="noopener noreferrer"
-												>
-													{activity.hash}
-												</Link>
-												<p className="text-xs text-blue-500">{activity.time}</p>
-											</div>
-										))}
+											{activities.map((activity: FormattedTransaction, index) => (
+												<div key={index} className="mb-4">
+													<p className="text-sm text-white">
+														{activity.action}
+													</p>
+													<Link 
+														href={`https://sepolia.etherscan.io/tx/${activity.hash}`} 
+														className="text-xs text-blue-400"
+														target="_blank"
+														rel="noopener noreferrer"
+													>
+														{`${activity.hash.slice(0, 10)}...${activity.hash.slice(-10)}`}
+													</Link>
+													<p className="text-xs text-blue-500">{activity.time}</p>
+												</div>
+											))}
                     </CardContent>
                   </Card>
                 </TabsContent>
