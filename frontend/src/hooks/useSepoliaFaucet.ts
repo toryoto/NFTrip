@@ -33,7 +33,6 @@ export function useSepoliaFaucet() {
       provider
     );
     const nonce = await forwarder.getNonce(userAddress);
-    console.log(nonce)
 
     // トランザクションデータの作成
     const faucetInterface = new ethers.utils.Interface(SepoliaFaucet.abi);
@@ -75,7 +74,7 @@ export function useSepoliaFaucet() {
     try {
       // メタトランザクションの作成と署名
       const { request, signature } = await createMetaTx(method);
-      console.log(receipt, signature)
+      console.log(request, signature)
 
       // Relayerへの送信
       const response = await fetch('/api/v1/relayer', {
