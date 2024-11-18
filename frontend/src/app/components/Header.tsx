@@ -65,13 +65,13 @@ const Header: React.FC = () => {
         <div className="sm:hidden bg-gray-900 py-4 border-t border-gray-800">
           <div className="container space-y-4">
             <div className="grid grid-cols-1 gap-4">
-              <div className="flex items-stretch bg-gray-800 p-3 rounded-lg">
+              <div className="flex bg-gray-800 p-3 rounded-lg" style={{ height: '60px' }}>
                 <Web3WalletModal />
               </div>
-              <div className="flex items-stretch bg-gray-800 p-3 rounded-lg">
+              <div className="flex bg-gray-800 p-3 rounded-lg" style={{ height: '60px' }}>
                 <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
               </div>
-              <div className="flex items-stretch bg-gray-800 p-3 rounded-lg">
+              <div className="flex bg-gray-800 p-3 rounded-lg" style={{ height: '60px' }}>
                 <FaucetLink />
               </div>
             </div>

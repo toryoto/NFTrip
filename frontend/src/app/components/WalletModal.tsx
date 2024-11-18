@@ -34,7 +34,7 @@ export default function Component() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-				<button className="flex items-center space-x-3 text-white rounded-lg p-2 transition duration-300 text-left">
+				<button className="flex items-center space-x-3 text-white rounded-lg transition duration-300 text-left">
           <div className="relative w-10 h-10 rounded-full overflow-hidden bg-blue-500 flex items-center justify-center">
             <Wallet className="w-6 h-6 text-white" />
           </div>
