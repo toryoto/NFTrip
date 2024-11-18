@@ -27,10 +27,10 @@ export default function WalletModal() {
   ]
 
   const nfts = [
-    { name: 'Pixel Dinasour #1234', image: '/images/pixel-dinasour.avif?height=80&width=80' },
+    { name: 'Pixel Dinasour1 #1234', image: '/images/pixel-dinasour.avif?height=80&width=80' },
     { name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour2.jpg?height=80&width=80' },
-		{ name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour3.avif?height=80&width=80' },
-		{ name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
+		{ name: 'Pixel DInasour3 #5678', image: '/images/pixel-dinasour3.avif?height=80&width=80' },
+		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
   ]
 
   const activities = [
