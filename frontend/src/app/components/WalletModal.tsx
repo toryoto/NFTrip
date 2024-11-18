@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,11 +9,23 @@ import { CuboidIcon as Cube, Activity, Wallet } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useUserProfile } from '@/hooks/useUserProfile'
 import Image from 'next/image'
+import Link from 'next/link'
+
+interface FormattedTransaction {
+  hash: string;
+  time: string;
+  from: string;
+  to: string;
+  gasPrice: string;
+  action: 'Mint' | 'Send' | 'Receive';
+}
 
 export default function WalletModal() {
 	const { user } = useAuth()
 	const { userProfile } = useUserProfile(user?.id);
   const [isOpen, setIsOpen] = useState(false)
+	const [activities, setActivities] = useState([]);
+	const [activeTab, setActiveTab] = useState('tokens');
 
   const walletData = {
     wallet_address: user?.wallet_address,
@@ -21,6 +33,12 @@ export default function WalletModal() {
     email: userProfile?.email,
     avatar_image: userProfile?.avatar_url
   }
+
+	useEffect(() => {
+    if (activeTab === 'activity' && walletData.wallet_address) {
+      getActivities(walletData.wallet_address);
+    }
+	}, [activeTab, walletData.wallet_address]);
 
   const tokens = [
     { name: 'Sepolia ETH', amount: '1.5' },
@@ -32,11 +50,25 @@ export default function WalletModal() {
 		{ name: 'Pixel DInasour3 #5678', image: '/images/pixel-dinasour3.avif?height=80&width=80' },
 		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
   ]
-
-  const activities = [
-    { type: 'Send', amount: '0.5 ETH', to: '0xabcd...efgh', date: '2023-06-01' },
-    { type: 'Receive', amount: '100 USDC', from: '0x9876...5432', date: '2023-05-30' },
-  ]
+	
+	const getActivities = async (wallet_address: string) => {
+		try {
+			const response = await fetch('/api/v1/transaction', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ address: wallet_address }),
+			});
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+			const data = await response.json();
+			setActivities(data);
+		} catch (error) {
+			console.error('Error fetching activities:', error);
+		}
+	}
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -84,8 +116,8 @@ export default function WalletModal() {
             </p>
           </div>
 
-          <Tabs defaultValue="tokens" className="flex-grow flex flex-col">
-            <TabsList className="grid w-full grid-cols-3 bg-gray-800 px-6">
+					<Tabs defaultValue="tokens" className="flex-grow flex flex-col" onValueChange={setActiveTab}>
+						<TabsList className="grid w-full grid-cols-3 bg-gray-800 px-6">
               <TabsTrigger value="tokens" className="text-white data-[state=active]:bg-blue-700">
                 <Wallet className="w-4 h-4 mr-2" />
                 Tokens
@@ -149,21 +181,22 @@ export default function WalletModal() {
                       <CardDescription className="text-blue-300">Recent transactions</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      {activities.map((activity, index) => (
-                        <div
-                          key={index}
-                          className="mb-4"
-                        >
-                          <p className="text-sm text-white">
-                            {activity.type} {activity.amount}
-                          </p>
-                          <p className="text-xs text-blue-400">
-                            {activity.type === 'Send' ? 'To: ' : 'From: '}
-                            {activity.type === 'Send' ? activity.to : activity.from}
-                          </p>
-                          <p className="text-xs text-blue-500">{activity.date}</p>
-                        </div>
-                      ))}
+										{activities.map((activity: FormattedTransaction, index) => (
+											<div key={index} className="mb-4">
+												<p className="text-sm text-white">
+													{activity.action}
+												</p>
+												<Link 
+													href={`https://sepolia.etherscan.io/tx/${activity.hash}`} 
+													className="text-xs text-blue-400"
+													target="_blank"
+  												rel="noopener noreferrer"
+												>
+													{activity.hash}
+												</Link>
+												<p className="text-xs text-blue-500">{activity.time}</p>
+											</div>
+										))}
                     </CardContent>
                   </Card>
                 </TabsContent>
