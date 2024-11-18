@@ -88,7 +88,10 @@ export default function SepoliaFaucetPage() {
                 </CardTitle>
               </motion.div>
               <CardDescription className="text-center text-gray-400 mt-2">
-                NFT取得のためのSepoliaテストトークンを取得できます。
+                NFT取得のためのテストトークンを受け取ることができます
+              </CardDescription>
+              <CardDescription className="text-center text-gray-400 mt-2">
+                ERC2771によりガス代を払わずに実行可能です。
               </CardDescription>
             </CardHeader>
             <CardContent>
