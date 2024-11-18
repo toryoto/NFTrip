@@ -6,15 +6,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { CuboidIcon as Cube, Activity, Wallet } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
+import { useUserProfile } from '@/hooks/useUserProfile'
+import Image from 'next/image'
 
-export default function Component() {
+export default function WalletModal() {
+	const { user } = useAuth()
+	const { userProfile } = useUserProfile(user?.id);
   const [isOpen, setIsOpen] = useState(false)
 
   const walletData = {
-    wallet_address: '0x1234...5678',
-    name: 'Satoshi Nakamoto',
-    email: 'satoshi@example.com',
-    avatar_image: '/placeholder.svg?height=100&width=100'
+    wallet_address: user?.wallet_address,
+    name: userProfile?.name,
+    email: userProfile?.email,
+    avatar_image: userProfile?.avatar_url
   }
 
   const tokens = [
@@ -22,8 +27,10 @@ export default function Component() {
   ]
 
   const nfts = [
-    { name: 'CryptoPunk #1234', image: '/placeholder.svg?height=80&width=80' },
-    { name: 'Bored Ape #5678', image: '/placeholder.svg?height=80&width=80' },
+    { name: 'Pixel Dinasour #1234', image: '/images/pixel-dinasour.avif?height=80&width=80' },
+    { name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour2.jpg?height=80&width=80' },
+		{ name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour3.avif?height=80&width=80' },
+		{ name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
   ]
 
   const activities = [
@@ -51,22 +58,30 @@ export default function Component() {
               NFTrip Wallet
             </DialogTitle>
           </DialogHeader>
+					
           
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4 p-6 pt-2 pb-4">
             <div className="flex items-center space-x-4">
-              <div className="h-16 w-16 rounded-full overflow-hidden bg-blue-700 flex items-center justify-center flex-shrink-0">
-                {walletData.avatar_image ? (
-                  <img src={walletData.avatar_image} alt={walletData.name} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-2xl font-bold text-white">{walletData.name.slice(0, 2)}</span>
-                )}
+							<div className="h-16 w-16 rounded-full overflow-hidden bg-blue-700 flex items-center justify-center flex-shrink-0">
+								<img src={walletData.avatar_image || "/images/no-user-icon.png"} alt={"user_avatar"} className="w-full h-full object-cover" />
               </div>
+
               <div>
                 <h2 className="text-lg font-semibold text-white">{walletData.name}</h2>
-                <p className="text-sm text-blue-300">{walletData.email}</p>
+                <p 
+									className="text-sm text-blue-300 hover:text-blue-600"
+									onClick={() => navigator.clipboard.writeText(walletData.email || '')}
+								>
+									{walletData.email}
+								</p>
               </div>
             </div>
-            <p className="text-xs text-blue-400">{walletData.wallet_address}</p>
+            <p 
+              className="text-xs text-blue-400 cursor-pointer hover:text-blue-600" 
+              onClick={() => navigator.clipboard.writeText(walletData.wallet_address || '')}
+            >
+              {walletData.wallet_address}
+            </p>
           </div>
 
           <Tabs defaultValue="tokens" className="flex-grow flex flex-col">
