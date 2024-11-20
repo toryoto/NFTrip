@@ -152,7 +152,7 @@ export default function WalletModal() {
               </TabsTrigger>
             </TabsList>
             
-						<ScrollArea className="min-h-[500px] h-[60vh] p-4">								
+						<ScrollArea className="h-[55vh] sm:h-[60vh] p-4">						
 							<TabsContent value="tokens">
 								<Card className="bg-gray-800 border-gray-700">
 									<CardHeader>
@@ -202,7 +202,7 @@ export default function WalletModal() {
 									</CardHeader>
 									<CardContent>
 										{activities.map((activity: FormattedTransaction, index) => (
-											<div key={index} className="mb-4">
+											<div key={index} className="mb-5">
 												<p className="text-sm text-white">
 													{activity.action}
 												</p>

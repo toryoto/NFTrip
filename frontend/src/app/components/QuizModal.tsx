@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from "framer-motion"
 import { CheckCircle2, XCircle, Award, Sparkles } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -28,19 +28,19 @@ export default function QuizModal({ location }: { location: LocationWithThumbnai
   const [showNFTReward, setShowNFTReward] = useState(false)
   const [quizStarted, setQuizStarted] = useState(false)
 
+  const getQuizzes = useCallback(async () => {
+    const quizzes = await getLocationQuizzes(location.id)
+    setQuizzes(quizzes)
+  }, [location.id])
+
   useEffect(() => {
     if (isOpen) {
       getQuizzes()
     } else {
       resetQuiz()
     }
-  }, [isOpen])
-
-  const getQuizzes = async () => {
-    const quizzes = await getLocationQuizzes(location.id)
-    setQuizzes(quizzes)
-  }
-
+  }, [isOpen, getQuizzes])
+  
   const handleAnswerChange = (quizId: number, optionId: number) => {
     setUserAnswers(prev => ({ ...prev, [quizId]: optionId }))
   }
