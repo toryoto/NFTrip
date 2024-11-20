@@ -98,8 +98,7 @@ export default function WalletModal() {
           </div>
         </button>
       </DialogTrigger>
-      <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] max-h-[800px] p-0 bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl shadow-2xl overflow-hidden">
-        <div className="flex flex-col h-full">
+				<DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] h-[90vh] max-h-[800px] p-0 bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl shadow-2xl overflow-hidden overflow-x-auto">        <div className="flex flex-col h-full">
           <DialogHeader className="p-6 pb-2">
             <DialogTitle className="text-2xl sm:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
               NFTrip Wallet
@@ -152,7 +151,7 @@ export default function WalletModal() {
               </TabsTrigger>
             </TabsList>
             
-						<ScrollArea className="h-[55vh] sm:h-[60vh] p-4">						
+						<ScrollArea className="h-[60vh] sm:h-[62vh] md:h-[65vh] lg:h-[65vh] p-4">
 							<TabsContent value="tokens">
 								<Card className="bg-gray-800 border-gray-700">
 									<CardHeader>
@@ -200,23 +199,26 @@ export default function WalletModal() {
 										<CardTitle className="text-white">Activity</CardTitle>
 										<CardDescription className="text-blue-300">Recent transactions</CardDescription>
 									</CardHeader>
-									<CardContent>
-										{activities.map((activity: FormattedTransaction, index) => (
-											<div key={index} className="mb-5">
-												<p className="text-sm text-white">
-													{activity.action}
-												</p>
-												<Link 
-													href={`https://sepolia.etherscan.io/tx/${activity.hash}`} 
-													className="text-xs text-blue-400"
-													target="_blank"
-													rel="noopener noreferrer"
-												>
-													{`${activity.hash.slice(0, 10)}...${activity.hash.slice(-10)}`}
-												</Link>
-												<p className="text-xs text-blue-500">{activity.time}</p>
-											</div>
-										))}
+									<CardContent className=''>
+									{activities.map((activity: FormattedTransaction, index) => (
+										<div 
+											key={index} 
+											className={index === activities.length - 1 ? "" : "pb-5"}
+										>
+											<p className="text-sm text-white">
+												{activity.action}
+											</p>
+											<Link 
+												href={`https://sepolia.etherscan.io/tx/${activity.hash}`} 
+												className="text-xs text-blue-400"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												{`${activity.hash.slice(0, 10)}...${activity.hash.slice(-10)}`}
+											</Link>
+											<p className="text-xs text-blue-500">{activity.time}</p>
+										</div>
+									))}
 									</CardContent>
 								</Card>
 							</TabsContent>
