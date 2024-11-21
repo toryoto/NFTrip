@@ -46,8 +46,12 @@ const Header: React.FC = () => {
           </Link>
           <div className="hidden md:flex items-center space-x-4 ml-auto">
             <Web3WalletModal />
-            <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
-            <FaucetLink />
+            <Link href={`/profile/${user.id}`}>
+              <UserInfo user={user} userProfile={userProfile} sliceWalletAddress={sliceWalletAddress} />
+            </Link>
+            <Link href="/faucet/sepolia">
+              <FaucetLink />
+            </Link>
             <LogoutButton isLoggingOut={isLoggingOut} handleLogout={handleLogout} />
           </div>
           <div className="md:hidden">
