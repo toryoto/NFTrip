@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation'
 import { Loading } from '../components/Loading'
 import { MetamaskGuide } from '../components/MetamaskGuide'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ExtendedWindow } from '../types/ethere'
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -39,7 +38,7 @@ export default function LoginPage() {
   }
 
   const isMetamaskInstalled = () => {
-    const ethereum = (window as ExtendedWindow).ethereum; 
+    const { ethereum } = window as any;
     return ethereum !== undefined
   }
 

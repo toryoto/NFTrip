@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import { User, AuthMethod, AuthContextType } from '../types/auth'
-import { ExtendedWindow } from '../types/ethere'
 import { Loading } from '../components/Loading'
 import { useRouter } from 'next/navigation'
 import { initWeb3Auth, getWeb3AuthAccountInfo, connectWeb3Auth } from '@/lib/web3auth'
@@ -39,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getProvider = async (method: AuthMethod): Promise<ethers.providers.Web3Provider> => {
     if (method === 'metamask') {
-      const ethereum = (window as ExtendedWindow).ethereum;
+      const { ethereum } = window as any;
       if (!ethereum) {
         throw new Error('MetaMask not detected');
       }
