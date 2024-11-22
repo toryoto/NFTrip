@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,96 +8,21 @@ import { MapPin, Calendar, ExternalLink } from 'lucide-react';
 import { Footer } from '../../../components/Footer';
 import Header from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
-import { NFT } from '../../../types/nft';
 import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
-import { toast } from '@/components/ui/use-toast';
 import { useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuth } from '@/app/contexts/AuthContext';
+import { useNFTs } from '@/hooks/useNFTs';
 
 export default function NFTGalleryPage() {
   const { user } = useAuth();
-  const [nfts, setNfts] = useState<NFT[]>([]);
-  const [loading, setLoading] = useState(true);
+  if (!user) {
+    throw new Error('User is undefined');
+  }
   const { id } = useParams();
   const { userProfile } = useUserProfile(Number(id));
   const { fetchAllNFTs } = useSmartContractInteractions();
-
-  const fetchWalletAddress = async () => {
-    const { data, error } = await supabase
-      .from("users")
-      .select("wallet_address")
-      .eq("id", Number(id))
-      .single();
-    if (error) {
-      console.error('Error fetching wallet address:', error);
-      return null;
-    }
-    return data.wallet_address;
-  };
-
-  useEffect(() => {
-    const fetchNFTs = async () => {
-      if (!user?.auth_type) {
-        return;
-      }
-
-      try {
-        const wallet_address = await fetchWalletAddress()
-        if (!wallet_address) {
-          setLoading(false);
-          return;
-        }
-
-        // URLに基づくユーザごとのNFTを取得する
-        const fetchedNFTs = await fetchAllNFTs(user.auth_type, wallet_address);
-        if (!fetchedNFTs) {
-          setLoading(false)
-          return null;
-        };
-
-        const processedNFTs = await Promise.all(fetchedNFTs.map(async (nft) => {
-          const gateways = [
-            `https://${process.env.NEXT_PUBLIC_PINATA_GATEWAY}/ipfs/`,
-            'https://ipfs.io/ipfs/'
-          ];
-        
-          for (const gateway of gateways) {
-            try {
-              const uri = nft.tokenURI.replace('ipfs://', gateway);
-              const response = await fetch(uri);
-              if (response.ok) {
-                const data = await response.json();
-                return { ...data, tokenId: nft.tokenId };
-              }
-            } catch (err) {
-              console.log(`Gateway ${gateway} failed: ${err}`);
-              continue;
-            }
-          }
-          // 両方のゲートウェイが失敗した場合
-          return { tokenId: nft.tokenId, error: true };
-        }));
-
-        processedNFTs.sort((firstNFT, secondNFT) => secondNFT.tokenId - firstNFT.tokenId);
-        setNfts(processedNFTs.filter(nft => !nft.error));
-
-        console.log(processedNFTs)
-      } catch (error) {
-        console.error('Error fetching NFTs:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch your NFTs. Please try again later.",
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNFTs();
-  }, []);
+  const { nfts, loading } = useNFTs(id as string, user.auth_type, fetchAllNFTs)
 
   if (loading) {
     return <Loading />;
