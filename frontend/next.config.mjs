@@ -15,7 +15,11 @@ const nextConfig = {
       },
     ],
     domains: ['hbdlgkqiqnzkdlzrcihg.supabase.co'],
-  }
+  },
+  i18n: {
+    locales: ['ja'],
+    defaultLocale: 'ja',
+  },
 };
 
 export default nextConfig;
