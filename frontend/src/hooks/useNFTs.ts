@@ -9,7 +9,7 @@ import { supabase } from '@/lib/supabase';
 type FetchAllNFTs = (method: AuthMethod, wallet_address: string) => Promise<{ tokenId: number, tokenURI: string }[]>
 
 export const useNFTs = (
-	userId: string,
+	userId: number,
 	authType: AuthMethod,
 	fetchAllNFTs: FetchAllNFTs
 ) => {

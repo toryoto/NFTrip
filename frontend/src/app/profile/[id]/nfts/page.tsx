@@ -15,14 +15,14 @@ import { useAuth } from '@/app/contexts/AuthContext';
 import { useNFTs } from '@/hooks/useNFTs';
 
 export default function NFTGalleryPage() {
-  const { user } = useAuth();
+  const { user } = useAuth()
   if (!user) {
-    throw new Error('User is undefined');
+    throw new Error('User is undefined')
   }
-  const { id } = useParams();
-  const { userProfile } = useUserProfile(Number(id));
-  const { fetchAllNFTs } = useSmartContractInteractions();
-  const { nfts, loading } = useNFTs(id as string, user.auth_type, fetchAllNFTs)
+  const { id } = useParams()
+  const { userProfile } = useUserProfile(Number(id))
+  const { fetchAllNFTs } = useSmartContractInteractions()
+  const { nfts, loading } = useNFTs(Number(id), user.auth_type, fetchAllNFTs)
 
   if (loading) {
     return <Loading />;
