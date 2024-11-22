@@ -70,6 +70,7 @@ export function useSmartContractInteractions() {
       return nfts;
     } catch (error) {
       console.error('Error fetching NFTs:', error);
+      return []
     }
   };
 
