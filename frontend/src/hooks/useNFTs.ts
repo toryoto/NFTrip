@@ -71,6 +71,10 @@ export const useNFTs = (
 					throw new Error('All gateways failed')
 				}
 
+<<<<<<< HEAD
+=======
+				// NFTメタデータにhttps:として保存してしまっているので、その対応
+>>>>>>> origin/main
 				const fetchImageFromGateways = async (url: string): Promise<string> => {
 					const pathMatch = url.match(/\/ipfs\/(.+)$/)
 					if (!pathMatch) {
