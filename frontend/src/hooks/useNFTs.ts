@@ -51,8 +51,7 @@ export const useNFTs = (
           return;
         }
 
-				const fetchWithFallback = async (url: string): Promise<any> => {
-					const errors: string[] = []
+				const fetchFromGateways = async (url: string): Promise<any> => {
 					for (const gateway of gateways) {
 						const modifiedUrl = url.replace('ipfs://', gateway)
 						try {
@@ -60,30 +59,53 @@ export const useNFTs = (
 							if (response.ok) {
 								const contentType = response.headers.get('Content-Type') || ''
 								if (contentType.includes('application/json')) {
-									return await response.json()
+									const jsonData = await response.json()
+									return jsonData
 								}
-								errors.push(`Unexpected Content-Type: ${contentType}`)
-							} else {
-								errors.push(`Failed with status: ${response.status}`)
-							}
+							} 
 						} catch (error: any) {
-							errors.push(`Fetch error: ${error.message}`)
+							console.log(error)
+							continue
 						}
 					}
-					throw new Error(`All gateways failed: ${errors.join('; ')}`)
-				};
-				
+					throw new Error('All gateways failed')
+				}
+
+				const fetchImageFromGateways = async (url: string): Promise<string> => {
+					const pathMatch = url.match(/\/ipfs\/(.+)$/)
+					if (!pathMatch) {
+						throw new Error('Invalid IPFS URL format')
+					}
+					const ipfsPath = pathMatch[1]
+
+					for (const gateway of gateways) {
+						try {
+							const gatewayUrl = `${gateway}${ipfsPath}`
+							const response = await fetch(gatewayUrl)
+
+							if (response.ok) {
+								const blob = await response.blob()
+								return URL.createObjectURL(blob)
+							} else {
+								console.warn(`Gateway ${gatewayUrl} returned status: ${response.status}`)
+							}
+						} catch (error) {
+							console.error(`Error fetching from gateway ${gateway}:`, error)
+						}
+					}
+					throw new Error('Failed to fetch image from all gateways')
+				}
 								
 				const processedNFTs = await Promise.all(
 					fetchedNFTs.map(async (nft: any) => {
 						const uri = nft.tokenURI
 				
 						try {
-							const data = await fetchWithFallback(uri)
+							const data = await fetchFromGateways(uri)
 				
 							let imageUrl = data.image;
-							if (imageUrl && typeof imageUrl === 'string' && imageUrl.startsWith('ipfs://')) {
-								imageUrl = await fetchWithFallback(data.image)
+							if (imageUrl && typeof imageUrl === 'string') {
+								imageUrl = await fetchImageFromGateways(data.image)
 							}
 				
 							return { ...data, tokenId: nft.tokenId, image: imageUrl }
