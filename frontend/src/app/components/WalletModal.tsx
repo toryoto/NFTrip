@@ -8,6 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { CuboidIcon as Cube, Activity, Wallet } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useUserProfile } from '@/hooks/useUserProfile'
+import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
+import { useNFTs } from '@/hooks/useNFTs'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -17,16 +19,21 @@ interface FormattedTransaction {
   from: string;
   to: string;
   gasPrice: string;
-  action: 'Mint' | 'Send' | 'Receive';
+  action: 'Mint' | 'Send' | 'Receive'
 }
 
 export default function WalletModal() {
 	const { user, getSepoliaBalance } = useAuth()
-	const { userProfile } = useUserProfile(user?.id);
+	if (!user) {
+    throw new Error('User is undefined')
+  }
+	const { userProfile } = useUserProfile(user?.id)
   const [isOpen, setIsOpen] = useState(false)
-	const [activities, setActivities] = useState([]);
-	const [activeTab, setActiveTab] = useState('tokens');
-	const [balance, setBalance] = useState('0');
+	const [activities, setActivities] = useState([])
+	const [activeTab, setActiveTab] = useState('tokens')
+	const [balance, setBalance] = useState('0')
+	const { fetchAllNFTs } = useSmartContractInteractions()
+  const { nfts, loading } = useNFTs(user.id, user.auth_type, fetchAllNFTs)
 
   const walletData = {
     wallet_address: user?.wallet_address,
@@ -38,33 +45,21 @@ export default function WalletModal() {
 	useEffect(() => {
 		const fetchBalance = async () => {
 			if (user?.auth_type) {
-				const balance = await getSepoliaBalance(user.auth_type);
+				const balance = await getSepoliaBalance(user.auth_type)
 				setBalance(balance)
 			} else {
-				console.error('Auth type is undefined');
+				console.error('Auth type is undefined')
 			}
 		};
-		fetchBalance();
+		fetchBalance()
 
 		if (activeTab === 'tokens') {
-			fetchBalance();
+			fetchBalance()
 		}
     if (activeTab === 'activity' && walletData.wallet_address) {
-      getActivities(walletData.wallet_address);
+      getActivities(walletData.wallet_address)
     }
-	}, [activeTab, walletData.wallet_address]);
-
-  const nfts = [
-    { name: 'Pixel Dinasour1 #1234', image: '/images/pixel-dinasour.avif?height=80&width=80' },
-    { name: 'Pixel DInasour2 #5678', image: '/images/pixel-dinasour2.jpg?height=80&width=80' },
-		{ name: 'Pixel DInasour3 #5678', image: '/images/pixel-dinasour3.avif?height=80&width=80' },
-		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
-		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
-		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
-		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
-		{ name: 'Pixel DInasour4 #5678', image: '/images/pixel-dinasour4.jpg?height=80&width=80' },
-
-  ]
+	}, [activeTab, walletData.wallet_address])
 	
 	const getActivities = async (wallet_address: string) => {
 		try {
@@ -173,23 +168,27 @@ export default function WalletModal() {
 										<CardDescription className="text-blue-300">Your NFT collection</CardDescription>
 									</CardHeader>
 									<CardContent>
-										<div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-											{nfts.map((nft, index) => (
-												<div
-													key={index}
-													className="text-center"
-												>
-													<Image 
-														src={nft.image} 
-														alt={nft.name} 
-														width={80} 
-														height={80} 
-														className="w-full h-auto mx-auto mb-2 rounded" 
-													/>
-													<p className="text-sm text-white">{nft.name}</p>
-												</div>
-											))}
-										</div>
+										{loading ? (
+											<div className="text-center text-white">Loading NFTs...</div>
+										) : (
+											<div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+												{nfts.map((nft, index) => (
+													<div
+														key={index}
+														className="text-center"
+													>
+														<Image
+															src={nft.image}
+															alt={nft.name}
+															width={80}
+															height={80}
+															className="w-full h-auto mx-auto mb-2 rounded"
+														/>
+														<p className="text-sm text-white">{nft.name}</p>
+													</div>
+												))}
+											</div>
+										)}
 									</CardContent>
 								</Card>
 							</TabsContent>
