@@ -82,7 +82,7 @@ export default function QuizModal({ location }: { location: LocationWithThumbnai
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl shadow-2xl p-4 sm:p-6 h-[80vh]">
+        <DialogContent className="w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[80vw] lg:max-w-[70vw] xl:max-w-[60vw] bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl shadow-2xl p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="text-2xl sm:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
               {location.name}のクイズチャレンジ
