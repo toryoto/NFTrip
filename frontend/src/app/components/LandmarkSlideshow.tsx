@@ -6,7 +6,7 @@ import Image from 'next/image'
 
 export default function LandmarkSlideshow({ images }: { images: string[] }) {
   const [currentImage, setCurrentImage] = useState(0)
-  
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length)

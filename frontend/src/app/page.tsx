@@ -1,6 +1,13 @@
 import Link from 'next/link'
-import { Button } from "@/components/ui/button"
-import { ArrowRight, MapPin, Gift, Cog, GamepadIcon, ArrowLeft } from "lucide-react"
+import { Button } from '@/components/ui/button'
+import {
+  ArrowRight,
+  MapPin,
+  Gift,
+  Cog,
+  GamepadIcon,
+  ArrowLeft
+} from 'lucide-react'
 import LandmarkSlideshow from './components/LandmarkSlideshow'
 import { Footer } from './components/Footer'
 
@@ -26,7 +33,10 @@ export default function Home() {
             <NavLink href="#about">About</NavLink>
           </nav>
           <Link href="/login">
-            <Button variant="outline" className="bg-transparent text-white border-gray-600 hover:bg-gray-800">
+            <Button
+              variant="outline"
+              className="bg-transparent text-white border-gray-600 hover:bg-gray-800"
+            >
               ログイン
             </Button>
           </Link>
@@ -38,21 +48,29 @@ export default function Home() {
           <LandmarkSlideshow images={images} />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-white">
-              <h2 className="text-5xl md:text-6xl font-bold mb-4">
-                NFTrip
-              </h2>
+              <h2 className="text-5xl md:text-6xl font-bold mb-4">NFTrip</h2>
               <p className="text-xl md:text-2xl mb-8">
                 観光地の歴史・文化学習を通して限定NFTを獲得する
               </p>
               <div className="flex justify-center space-x-4">
                 <Link href="/login">
-                  <Button size="lg" className="bg-blue-600 text-white hover:bg-blue-700">
+                  <Button
+                    size="lg"
+                    className="bg-blue-600 text-white hover:bg-blue-700"
+                  >
                     今すぐ始める
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="https://ryotos-organization.gitbook.io/nftrip" target="_blank" rel='noopener'>
-                  <Button size="lg" className="bg-green-600 text-white hover:bg-green-700">
+                <Link
+                  href="https://ryotos-organization.gitbook.io/nftrip"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  <Button
+                    size="lg"
+                    className="bg-green-600 text-white hover:bg-green-700"
+                  >
                     使い方
                     <ArrowLeft className="ml-2 h-5 w-5" />
                   </Button>
@@ -64,7 +82,9 @@ export default function Home() {
 
         <section id="features" className="py-20 bg-gray-800">
           <div className="container mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">アプリの特徴</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
+              アプリの特徴
+            </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               <FeatureCard
                 icon={<MapPin className="h-8 w-8" />}
@@ -92,7 +112,9 @@ export default function Home() {
 
         <section id="how-it-works" className="py-20 bg-gray-900">
           <div className="container mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">使い方</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 text-blue-400">
+              使い方
+            </h2>
             <div className="max-w-3xl mx-auto">
               <ol className="relative border-l border-gray-700">
                 <HowItWorksStep
@@ -131,15 +153,32 @@ export default function Home() {
   )
 }
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+function NavLink({
+  href,
+  children
+}: {
+  href: string
+  children: React.ReactNode
+}) {
   return (
-    <Link href={href} className="text-gray-300 hover:text-white transition-colors">
+    <Link
+      href={href}
+      className="text-gray-300 hover:text-white transition-colors"
+    >
       {children}
     </Link>
   )
 }
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+function FeatureCard({
+  icon,
+  title,
+  description
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+}) {
   return (
     <div className="bg-gray-700 p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
       <div className="text-blue-400 mb-4">{icon}</div>
@@ -149,7 +188,15 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
   )
 }
 
-function HowItWorksStep({ number, title, description }: { number: number; title: string; description: string }) {
+function HowItWorksStep({
+  number,
+  title,
+  description
+}: {
+  number: number
+  title: string
+  description: string
+}) {
   return (
     <li className="mb-10 ml-6">
       <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-900 rounded-full -left-4 ring-4 ring-gray-900">

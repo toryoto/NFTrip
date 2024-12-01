@@ -16,7 +16,7 @@ export async function getTopNFTHolders(userId: number) {
 
     // ランキングを計算
     let currentRank = 0
-    let previousNFTs: number | null = null 
+    let previousNFTs: number | null = null
     const rankedUsers = allUsersData.map((user, index) => {
       if (user.total_nfts !== previousNFTs) {
         currentRank = index + 1
@@ -26,19 +26,18 @@ export async function getTopNFTHolders(userId: number) {
     })
 
     const ranking = rankedUsers.slice(0, 5)
-    const userRankData = rankedUsers.find(user => user.user_id === userId)
+    const userRankData = rankedUsers.find((user) => user.user_id === userId)
 
     if (!userRankData) {
       console.warn(`User with ID ${userId} not found in ranked users.`)
     }
 
-    if (userRankData && !ranking.some(user => user.user_id === userId)) {
+    if (userRankData && !ranking.some((user) => user.user_id === userId)) {
       ranking.push(userRankData)
     }
 
     revalidatePath('/dashboard')
     return { ranking }
-
   } catch (error: any) {
     console.error('Error fetching top NFT holders:', error.message)
     return null

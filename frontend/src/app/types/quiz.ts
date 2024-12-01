@@ -10,7 +10,7 @@ export type QuizOption = {
 }
 
 export type QuizAnswers = {
-	correct_option_id: number
-	explanation_text: string
+  correct_option_id: number
+  explanation_text: string
   additional_resources: string
 }

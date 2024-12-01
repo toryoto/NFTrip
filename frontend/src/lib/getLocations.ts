@@ -1,16 +1,23 @@
 import { supabase } from './supabase'
-import { Location, LocationImage,LocationWithThumbnailAndDistance, LocationWithThumbnail } from '../app/types/location'
+import {
+  Location,
+  LocationImage,
+  LocationWithThumbnailAndDistance,
+  LocationWithThumbnail
+} from '../app/types/location'
 
 // Supabaseから全ての観光地情報を取得する関数
 export async function getLocations(): Promise<LocationWithThumbnail[]> {
   const { data, error } = await supabase
     .from('locations')
-    .select(`
+    .select(
+      `
       *,
       location_images!inner(
         image_hash
       )
-    `)
+    `
+    )
     .eq('location_images.image_type', 'thumbnail')
     .eq('location_images.is_primary', true)
     .limit(100)
@@ -41,20 +48,20 @@ export async function getLocationBySlug(slug: string) {
     .from('locations')
     .select('*')
     .eq('slug', slug)
-    .single();
+    .single()
 
   if (error) {
     console.error('Error fetching location:', error)
     return null
   }
-  
+
   const { data: locationImage, error: locationImagesError } = await supabase
     .from('location_images')
     .select('*')
     .eq('location_id', location.id)
     .eq('image_type', 'thumbnail')
     .eq('is_primary', true)
-    .single();
+    .single()
 
   if (locationImagesError) {
     console.error('Error fetching location images:', locationImagesError)
@@ -63,21 +70,25 @@ export async function getLocationBySlug(slug: string) {
 
   return {
     ...location,
-    thumbnail: locationImage.image_hash ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${locationImage.image_hash}` : null
+    thumbnail: locationImage.image_hash
+      ? `https://chocolate-secret-cat-833.mypinata.cloud/ipfs/${locationImage.image_hash}`
+      : null
   }
-};
+}
 
 export async function getNearestLocations(
-  user_lat: number, 
-  user_lon: number, 
+  user_lat: number,
+  user_lon: number,
   max_results: number
 ): Promise<LocationWithThumbnailAndDistance[]> {
-  const { data: nearestLocations, error: nearestError } = await supabase
-    .rpc('get_nearest_locations', {
+  const { data: nearestLocations, error: nearestError } = await supabase.rpc(
+    'get_nearest_locations',
+    {
       user_lat,
       user_lon,
       max_results
-    })
+    }
+  )
 
   if (nearestError) {
     console.error('Error fetching nearest locations:', nearestError)
@@ -85,8 +96,10 @@ export async function getNearestLocations(
   }
 
   // 取得した場所IDに基づいて画像情報を取得
-  const locationIds = nearestLocations.map((location: LocationWithThumbnailAndDistance) => location.id)
-  
+  const locationIds = nearestLocations.map(
+    (location: LocationWithThumbnailAndDistance) => location.id
+  )
+
   const { data: locationImages, error: imagesError } = await supabase
     .from('location_images')
     .select('*')
@@ -100,7 +113,9 @@ export async function getNearestLocations(
   }
 
   return nearestLocations.map((location: LocationWithThumbnailAndDistance) => {
-    const locationImage = locationImages.find(img => img.location_id === location.id)
+    const locationImage = locationImages.find(
+      (img) => img.location_id === location.id
+    )
     return {
       id: location.id,
       name: location.name,
@@ -127,12 +142,12 @@ export async function getNFTImage(locationId: number) {
     .eq('location_id', locationId)
     .eq('image_type', 'nft')
     .eq('is_primary', true)
-    .single();
-  
+    .single()
+
   if (error) {
     console.error('Error fetching locations:', error)
     throw Error
   }
 
-  return nftImage.image_hash;
+  return nftImage.image_hash
 }

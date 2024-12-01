@@ -4,22 +4,36 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/app/contexts/AuthContext'
 import Header from '@/app/components/Header'
 import { Footer } from '@/app/components/Footer'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Droplet, AlertCircle, HelpCircle, Wallet } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { motion } from "framer-motion"
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
+import { motion } from 'framer-motion'
 import { useSepoliaFaucet } from '@/hooks/useSepoliaFaucet'
 
 export default function SepoliaFaucetPage() {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const [address, setAddress] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
-  const { requestTokens } = useSepoliaFaucet() || {};
+  const [result, setResult] = useState<{
+    success: boolean
+    message: string
+  } | null>(null)
+  const { requestTokens } = useSepoliaFaucet() || {}
 
   useEffect(() => {
     if (user) setAddress(user.wallet_address)
@@ -27,8 +41,8 @@ export default function SepoliaFaucetPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     if (!user) {
-      console.log('Please authenticate first');
-      return;
+      console.log('Please authenticate first')
+      return
     }
 
     e.preventDefault()
@@ -37,23 +51,32 @@ export default function SepoliaFaucetPage() {
 
     try {
       if (!requestTokens) {
-        throw new Error('requestTokens is undefined');
+        throw new Error('requestTokens is undefined')
       }
 
-      const receipt = await requestTokens(user.auth_type, address);
-      console.log(receipt);
-      setResult({ 
-        success: true, 
-        message: `テストトークンの送信に成功しました！ NFTripを楽しんでください！` 
+      const receipt = await requestTokens(user.auth_type, address)
+      console.log(receipt)
+      setResult({
+        success: true,
+        message: `テストトークンの送信に成功しました！ NFTripを楽しんでください！`
       })
     } catch (error: any) {
-      const errorMessage = error?.message || '';
+      const errorMessage = error?.message || ''
       if (errorMessage.includes('Faucet is empty')) {
-        setResult({ success: false, message: 'Faucetが空です。開発者に連絡をしてください。' })
+        setResult({
+          success: false,
+          message: 'Faucetが空です。開発者に連絡をしてください。'
+        })
       } else if (errorMessage.includes('Must wait 1 day between withdrawals')) {
-        setResult({ success: false, message: 'Faucetは1日に1回使用できます。時間をおいて試してください。' })
+        setResult({
+          success: false,
+          message: 'Faucetは1日に1回使用できます。時間をおいて試してください。'
+        })
       } else {
-        setResult({ success: false, message: 'トークンの送信に失敗しました。もう一度お試しください。' })
+        setResult({
+          success: false,
+          message: 'トークンの送信に失敗しました。もう一度お試しください。'
+        })
       }
     } finally {
       setIsLoading(false)
@@ -70,7 +93,7 @@ export default function SepoliaFaucetPage() {
               <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+                transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
               >
                 <CardTitle className="text-3xl font-bold text-center text-blue-400 flex items-center justify-center">
                   <Droplet className="mr-2 h-6 w-6" />
@@ -81,7 +104,10 @@ export default function SepoliaFaucetPage() {
                         <HelpCircle className="ml-2 h-5 w-5 text-gray-400 hover:text-blue-400 transition-colors duration-200" />
                       </TooltipTrigger>
                       <TooltipContent className="bg-gray-800 border-gray-700 text-white">
-                        <p>Sepolia Faucetとは、テストネット上で使用できる無料のテストトークンを取得できるサービスです。</p>
+                        <p>
+                          Sepolia
+                          Faucetとは、テストネット上で使用できる無料のテストトークンを取得できるサービスです。
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -97,7 +123,9 @@ export default function SepoliaFaucetPage() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2 text-gray-400">
-                  <Label htmlFor="address" className="text-lg">ウォレットアドレス</Label>
+                  <Label htmlFor="address" className="text-lg">
+                    ウォレットアドレス
+                  </Label>
                   <div className="relative">
                     <Wallet className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                     <Input
@@ -109,11 +137,16 @@ export default function SepoliaFaucetPage() {
                       required
                     />
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">テストトークンを受け取るアドレスを入力してください。</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    テストトークンを受け取るアドレスを入力してください。
+                  </p>
                 </div>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button 
-                    type="submit" 
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <Button
+                    type="submit"
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300"
                     disabled={isLoading}
                   >
@@ -137,10 +170,16 @@ export default function SepoliaFaucetPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Alert className={`mt-6 ${result.success ? 'bg-green-700/50' : 'bg-red-700/50'} backdrop-blur-sm`}>
+                  <Alert
+                    className={`mt-6 ${result.success ? 'bg-green-700/50' : 'bg-red-700/50'} backdrop-blur-sm`}
+                  >
                     <AlertCircle className="h-5 w-5" />
-                    <AlertTitle className="text-lg text-white">{result.success ? '成功' : 'エラー'}</AlertTitle>
-                    <AlertDescription className="text-white">{result.message}</AlertDescription>
+                    <AlertTitle className="text-lg text-white">
+                      {result.success ? '成功' : 'エラー'}
+                    </AlertTitle>
+                    <AlertDescription className="text-white">
+                      {result.message}
+                    </AlertDescription>
                   </Alert>
                 </motion.div>
               )}

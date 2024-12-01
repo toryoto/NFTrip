@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { MapPin, ChevronRight, Compass } from 'lucide-react'
 import { useLocations } from '@/hooks/useLocations'
 import { LocationWithThumbnailAndDistance } from '../types/location'
@@ -12,11 +12,14 @@ import QuizModal from './QuizModal'
 
 export const NearestNFTSpots: React.FC = () => {
   const { userLocation, fetchNearestLocations } = useLocations()
-  const [nearestLocations, setNearestLocations] = useState<LocationWithThumbnailAndDistance[]>([])
+  const [nearestLocations, setNearestLocations] = useState<
+    LocationWithThumbnailAndDistance[]
+  >([])
 
   useEffect(() => {
     const fetchLocations = async () => {
-      const locations: LocationWithThumbnailAndDistance[] = await fetchNearestLocations()
+      const locations: LocationWithThumbnailAndDistance[] =
+        await fetchNearestLocations()
       if (locations) {
         setNearestLocations(locations)
       }
@@ -62,10 +65,14 @@ export const NearestNFTSpots: React.FC = () => {
               </Link>
               <CardContent className="p-4 relative flex-1 flex flex-col justify-between">
                 <Link href={`/spots/${location.slug}`} className="block">
-                  <h3 className="text-xl md:text-lg lg:text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300 truncate">{location.name}</h3>
+                  <h3 className="text-xl md:text-lg lg:text-xl font-semibold mb-2 text-blue-400 group-hover:text-blue-300 transition-colors duration-300 truncate">
+                    {location.name}
+                  </h3>
                   <div className="flex items-center text-green-400 mb-2">
                     <MapPin className="h-4 w-4 mr-1 text-green-400 flex-shrink-0" />
-                    <span className="truncate">{location.distance.toFixed(2)} km</span>
+                    <span className="truncate">
+                      {location.distance.toFixed(2)} km
+                    </span>
                   </div>
                 </Link>
                 <div className="flex space-x-2 mt-4">

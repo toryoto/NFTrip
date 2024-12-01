@@ -1,33 +1,37 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import jwt from 'jsonwebtoken';
-import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
+import jwt from 'jsonwebtoken'
+import { cookies } from 'next/headers'
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = process.env.JWT_SECRET!
 
 export async function POST(req: Request) {
-  const { wallet_address, auth_type } = await req.json();
+  const { wallet_address, auth_type } = await req.json()
   try {
     const { data: existingUser, error: selectError } = await supabase
       .from('users')
       .select('id')
       .eq('wallet_address', wallet_address)
-      .single();
+      .single()
 
-    if (selectError && selectError.code !== 'PGRST116') throw selectError;
+    if (selectError && selectError.code !== 'PGRST116') throw selectError
 
-    const isNewUser = !existingUser;
+    const isNewUser = !existingUser
 
     const { data, error } = await supabase
       .from('users')
       .upsert({ wallet_address, auth_type }, { onConflict: 'wallet_address' })
       .select()
-      .single();
+      .single()
 
-    if (error) throw error;
+    if (error) throw error
 
     // JWTトークンの生成
-    const token = jwt.sign({ id: data.id, wallet_address, auth_type }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign(
+      { id: data.id, wallet_address, auth_type },
+      JWT_SECRET,
+      { expiresIn: '1d' }
+    )
 
     // cookieをセット
     cookies().set('auth_token', token, {
@@ -35,13 +39,16 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV !== 'development',
       sameSite: 'strict',
       maxAge: 86400, // 1日
-      path: '/',
-    });
+      path: '/'
+    })
 
-    const response = NextResponse.json({ user: data, isNewUser }, { status: 200 });
-    return response;
+    const response = NextResponse.json(
+      { user: data, isNewUser },
+      { status: 200 }
+    )
+    return response
   } catch (error) {
-    console.error('Error during login:', error);
-    return NextResponse.json({ error: 'Login failed' }, { status: 500 });
+    console.error('Error during login:', error)
+    return NextResponse.json({ error: 'Login failed' }, { status: 500 })
   }
 }

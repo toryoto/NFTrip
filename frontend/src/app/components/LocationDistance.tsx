@@ -6,27 +6,43 @@ import { useLocations } from '@/hooks/useLocations'
 import { LocationWithThumbnail } from '../types/location'
 import QuizModal from './QuizModal'
 
-export default function LocationDistance({ location }: { location: LocationWithThumbnail }) {
-  const { userLocation } = useLocations();
-	const [distance, setDistance] = useState<number>();
+export default function LocationDistance({
+  location
+}: {
+  location: LocationWithThumbnail
+}) {
+  const { userLocation } = useLocations()
+  const [distance, setDistance] = useState<number>()
 
-	useEffect(() => {
-		const calculatedDistance = calculateDistance(userLocation.lat, userLocation.lon, location.latitude, location.longitude);
-		setDistance(calculatedDistance);
-	}, [userLocation, location.latitude, location.longitude]);
+  useEffect(() => {
+    const calculatedDistance = calculateDistance(
+      userLocation.lat,
+      userLocation.lon,
+      location.latitude,
+      location.longitude
+    )
+    setDistance(calculatedDistance)
+  }, [userLocation, location.latitude, location.longitude])
 
-  const calculateDistance = (lat1: number | null, lon1: number | null, lat2: number, lon2: number): number => {
+  const calculateDistance = (
+    lat1: number | null,
+    lon1: number | null,
+    lat2: number,
+    lon2: number
+  ): number => {
     if (lat1 === null || lon1 === null) {
       return 0
     }
     const R = 6371 // Earth's radius in km
-    const dLat = (lat2 - lat1) * Math.PI / 180
-    const dLon = (lon2 - lon1) * Math.PI / 180
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+    const dLat = ((lat2 - lat1) * Math.PI) / 180
+    const dLon = ((lon2 - lon1) * Math.PI) / 180
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
     const distance = R * c
     return Number(distance.toFixed(1))
   }
@@ -37,7 +53,9 @@ export default function LocationDistance({ location }: { location: LocationWithT
         <MapPin className="h-4 w-4 mr-1" />
         {distance} km
       </span>
-			{distance !== undefined && <QuizModal location={{ ...location, distance }} />}
+      {distance !== undefined && (
+        <QuizModal location={{ ...location, distance }} />
+      )}
     </>
   )
 }
