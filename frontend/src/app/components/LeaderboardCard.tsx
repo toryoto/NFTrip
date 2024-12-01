@@ -1,9 +1,9 @@
-import { getUserIdFromToken } from "../actions/userProgress";
-import { getTopNFTHolders } from "@/lib/getNFTRanking";
-import { Card, CardContent } from "@/components/ui/card"
+import { getUserIdFromToken } from '../actions/userProgress'
+import { getTopNFTHolders } from '@/lib/getNFTRanking'
+import { Card, CardContent } from '@/components/ui/card'
 import { Trophy, Medal, Star } from 'lucide-react'
 import Image from 'next/image'
-import Link from "next/link"
+import Link from 'next/link'
 
 export async function LeaderboardCard() {
   const userId = await getUserIdFromToken()
@@ -33,8 +33,8 @@ export async function LeaderboardCard() {
               <div className={`
                 p-3 sm:p-4 rounded-lg flex items-center justify-between
                 ${user.user_id === Number(userId) 
-                  ? "bg-blue-500/10 border border-blue-500/20" 
-                  : "bg-gray-700/50"}
+                  ? 'bg-blue-500/10 border border-blue-500/20' 
+                  : 'bg-gray-700/50'}
               `}>
                 <div className="flex items-center gap-2 sm:gap-4">
                   <div className="flex items-center gap-2 sm:gap-3 min-w-[80px] sm:min-w-[100px]">
@@ -43,7 +43,7 @@ export async function LeaderboardCard() {
                   </div>
                   <div className="relative w-6 h-6 sm:w-8 sm:h-8">
                     <Image
-                      src={user.avatar_url || "/images/no-user-icon.png"}
+                      src={user.avatar_url || '/images/no-user-icon.png'}
                       alt={`${user.name}'s avatar`}
                       className="rounded-full object-cover"
                       fill

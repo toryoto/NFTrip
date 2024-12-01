@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 import { 
   AlertDialog, 
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogDescription
-} from "@/components/ui/alert-dialog";
-import { Check, Loader2, Image as ImageIcon, Database, Share2, HelpCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+} from '@/components/ui/alert-dialog'
+import { Check, Loader2, Image as ImageIcon, Database, Share2, HelpCircle } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const EducationalTip = ({ tip }: { tip: string }) => (
   <motion.div
@@ -24,7 +24,7 @@ const EducationalTip = ({ tip }: { tip: string }) => (
       </div>
     </div>
   </motion.div>
-);
+)
 
 const NFTMintingModal = ({ isOpen, stage, locationName }: { isOpen: boolean; stage: string; locationName: string }) => {
   const stages = [
@@ -49,9 +49,9 @@ const NFTMintingModal = ({ isOpen, stage, locationName }: { isOpen: boolean; sta
       icon: Share2,
       educationalTip: 'ブロックチェーンは、データを分散して保存する技術です。一度記録された情報は改ざんが困難で、あなたの観光記念は永続的に証明可能な形で残ります。'
     }
-  ];
+  ]
 
-  const currentStageIndex = stages.findIndex(s => s.id === stage);
+  const currentStageIndex = stages.findIndex(s => s.id === stage)
 
   return (
     <AlertDialog open={isOpen}>
@@ -70,8 +70,8 @@ const NFTMintingModal = ({ isOpen, stage, locationName }: { isOpen: boolean; sta
 
         <div className="space-y-6">
           {stages.map((s, index) => {
-            const isComplete = currentStageIndex > index;
-            const isCurrent = currentStageIndex === index;
+            const isComplete = currentStageIndex > index
+            const isCurrent = currentStageIndex === index
             
             return (
               <motion.div
@@ -124,7 +124,7 @@ const NFTMintingModal = ({ isOpen, stage, locationName }: { isOpen: boolean; sta
                   )}
                 </AnimatePresence>
               </motion.div>
-            );
+            )
           })}
 
           {stage === 'complete' && (
@@ -161,7 +161,7 @@ const NFTMintingModal = ({ isOpen, stage, locationName }: { isOpen: boolean; sta
         </div>
       </AlertDialogContent>
     </AlertDialog>
-  );
-};
+  )
+}
 
-export default NFTMintingModal;
+export default NFTMintingModal

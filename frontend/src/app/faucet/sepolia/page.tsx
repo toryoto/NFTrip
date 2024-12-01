@@ -4,22 +4,22 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '@/app/contexts/AuthContext'
 import Header from '@/app/components/Header'
 import { Footer } from '@/app/components/Footer'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Droplet, AlertCircle, HelpCircle, Wallet } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { motion } from "framer-motion"
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { motion } from 'framer-motion'
 import { useSepoliaFaucet } from '@/hooks/useSepoliaFaucet'
 
 export default function SepoliaFaucetPage() {
-  const { user } = useAuth();
+  const { user } = useAuth()
   const [address, setAddress] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null)
-  const { requestTokens } = useSepoliaFaucet() || {};
+  const { requestTokens } = useSepoliaFaucet() || {}
 
   useEffect(() => {
     if (user) setAddress(user.wallet_address)
@@ -27,8 +27,8 @@ export default function SepoliaFaucetPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     if (!user) {
-      console.log('Please authenticate first');
-      return;
+      console.log('Please authenticate first')
+      return
     }
 
     e.preventDefault()
@@ -37,17 +37,17 @@ export default function SepoliaFaucetPage() {
 
     try {
       if (!requestTokens) {
-        throw new Error('requestTokens is undefined');
+        throw new Error('requestTokens is undefined')
       }
 
-      const receipt = await requestTokens(user.auth_type, address);
-      console.log(receipt);
+      const receipt = await requestTokens(user.auth_type, address)
+      console.log(receipt)
       setResult({ 
         success: true, 
-        message: `テストトークンの送信に成功しました！ NFTripを楽しんでください！` 
+        message: 'テストトークンの送信に成功しました！ NFTripを楽しんでください！' 
       })
     } catch (error: any) {
-      const errorMessage = error?.message || '';
+      const errorMessage = error?.message || ''
       if (errorMessage.includes('Faucet is empty')) {
         setResult({ success: false, message: 'Faucetが空です。開発者に連絡をしてください。' })
       } else if (errorMessage.includes('Must wait 1 day between withdrawals')) {
@@ -70,7 +70,7 @@ export default function SepoliaFaucetPage() {
               <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+                transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
               >
                 <CardTitle className="text-3xl font-bold text-center text-blue-400 flex items-center justify-center">
                   <Droplet className="mr-2 h-6 w-6" />

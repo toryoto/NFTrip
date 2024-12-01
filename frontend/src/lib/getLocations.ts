@@ -41,7 +41,7 @@ export async function getLocationBySlug(slug: string) {
     .from('locations')
     .select('*')
     .eq('slug', slug)
-    .single();
+    .single()
 
   if (error) {
     console.error('Error fetching location:', error)
@@ -54,7 +54,7 @@ export async function getLocationBySlug(slug: string) {
     .eq('location_id', location.id)
     .eq('image_type', 'thumbnail')
     .eq('is_primary', true)
-    .single();
+    .single()
 
   if (locationImagesError) {
     console.error('Error fetching location images:', locationImagesError)
@@ -127,12 +127,12 @@ export async function getNFTImage(locationId: number) {
     .eq('location_id', locationId)
     .eq('image_type', 'nft')
     .eq('is_primary', true)
-    .single();
+    .single()
   
   if (error) {
     console.error('Error fetching locations:', error)
     throw Error
   }
 
-  return nftImage.image_hash;
+  return nftImage.image_hash
 }

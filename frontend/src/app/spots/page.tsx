@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from '@/components/ui/card'
 import { MapPin, Info } from 'lucide-react'
 import { Footer } from '../components/Footer'
 import Header from '../components/Header'

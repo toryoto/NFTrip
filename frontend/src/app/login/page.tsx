@@ -2,19 +2,19 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import { useAuth } from '../contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { Loading } from '../components/Loading'
 import { MetamaskGuide } from '../components/MetamaskGuide'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function LoginPage() {
-  const { login } = useAuth();
-  const [isLoginLoading, setIsLoginLoading] = useState(false);
-  const [isMetamask, setIsMetamask] = useState(false);
-  const [showMetamaskGuide, setShowMetamaskGuide] = useState(false);
-  const router = useRouter();
+  const { login } = useAuth()
+  const [isLoginLoading, setIsLoginLoading] = useState(false)
+  const [isMetamask, setIsMetamask] = useState(false)
+  const [showMetamaskGuide, setShowMetamaskGuide] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     setIsMetamask(isMetamaskInstalled())
@@ -22,28 +22,28 @@ export default function LoginPage() {
 
   const handleLogin = async(method: 'metamask' | 'web3auth') => {
     if (method === 'metamask' && !isMetamask) {
-      setShowMetamaskGuide(true);
-      return;
+      setShowMetamaskGuide(true)
+      return
     }
 
     try {
-      setIsLoginLoading(true);
-      await login(method);
-      await router.push('/dashboard');
+      setIsLoginLoading(true)
+      await login(method)
+      await router.push('/dashboard')
     } catch (error) {
-      console.error(`Error during ${method} login:`, error);
+      console.error(`Error during ${method} login:`, error)
     } finally {
-      setIsLoginLoading(false);
+      setIsLoginLoading(false)
     }
   }
 
   const isMetamaskInstalled = () => {
-    const { ethereum } = window as any;
+    const { ethereum } = window as any
     return ethereum !== undefined
   }
 
   if (isLoginLoading) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (

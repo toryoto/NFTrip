@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { Button } from "@/components/ui/button"
-import { ArrowRight, MapPin, Gift, Cog, GamepadIcon, ArrowLeft } from "lucide-react"
+import { Button } from '@/components/ui/button'
+import { ArrowRight, MapPin, Gift, Cog, GamepadIcon, ArrowLeft } from 'lucide-react'
 import LandmarkSlideshow from './components/LandmarkSlideshow'
 import { Footer } from './components/Footer'
 

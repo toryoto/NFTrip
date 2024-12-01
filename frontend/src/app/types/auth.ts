@@ -1,5 +1,5 @@
 export type AuthMethod = 'metamask' | 'web3auth';
-import { ethers } from 'ethers';
+import { ethers } from 'ethers'
 
 export interface User {
   id: number;

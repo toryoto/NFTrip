@@ -1,18 +1,18 @@
 'use client'
 
-import React from 'react';
-import Image from 'next/image';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Calendar, ExternalLink } from 'lucide-react';
-import { Footer } from '../../../components/Footer';
-import Header from '../../../components/Header';
-import { Loading } from '../../../components/Loading';
-import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
-import { useParams } from 'next/navigation';
-import { useUserProfile } from '@/hooks/useUserProfile';
-import { useAuth } from '@/app/contexts/AuthContext';
-import { useNFTs } from '@/hooks/useNFTs';
+import React from 'react'
+import Image from 'next/image'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { MapPin, Calendar, ExternalLink } from 'lucide-react'
+import { Footer } from '../../../components/Footer'
+import Header from '../../../components/Header'
+import { Loading } from '../../../components/Loading'
+import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions'
+import { useParams } from 'next/navigation'
+import { useUserProfile } from '@/hooks/useUserProfile'
+import { useAuth } from '@/app/contexts/AuthContext'
+import { useNFTs } from '@/hooks/useNFTs'
 
 export default function NFTGalleryPage() {
   const { user } = useAuth()
@@ -25,7 +25,7 @@ export default function NFTGalleryPage() {
   const { nfts, loading } = useNFTs(Number(id), user.auth_type, fetchAllNFTs)
 
   if (loading) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
@@ -54,11 +54,11 @@ export default function NFTGalleryPage() {
                     <div className="space-y-2">
                       {nft.attributes.map((attr, attrIndex) => (
                         <div key={attrIndex} className="flex items-center text-sm">
-                          {attr.trait_type === "Location" && <MapPin className="h-4 w-4 mr-2 text-green-400" />}
-                          {attr.trait_type === "Minted Date" && <Calendar className="h-4 w-4 mr-2 text-yellow-400" />}
+                          {attr.trait_type === 'Location' && <MapPin className="h-4 w-4 mr-2 text-green-400" />}
+                          {attr.trait_type === 'Minted Date' && <Calendar className="h-4 w-4 mr-2 text-yellow-400" />}
                           <span className="text-gray-400">{attr.trait_type}:</span>
                           <span className="ml-2 text-white">
-                            {attr.trait_type === "wallet_address"
+                            {attr.trait_type === 'wallet_address'
                               ? `${attr.value.slice(0, 6)}...${attr.value.slice(-4)}` 
                               : attr.value}
                           </span>
@@ -81,5 +81,5 @@ export default function NFTGalleryPage() {
       </main>
       <Footer />
     </div>
-  );
+  )
 }

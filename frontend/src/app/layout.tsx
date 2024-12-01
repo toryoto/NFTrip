@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import dynamic from "next/dynamic";
-import { Toaster } from "@/components/ui/toaster"
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import dynamic from 'next/dynamic'
+import { Toaster } from '@/components/ui/toaster'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] })
 
 const AuthProviderClient = dynamic(
   () => import('../app/contexts/AuthContext').then((mod) => mod.AuthProvider),
@@ -12,9 +12,9 @@ const AuthProviderClient = dynamic(
 )
 
 export const metadata: Metadata = {
-  title: "NFTrip",
-  description: "観光地を巡り、現地限定のNFTを収集する新感覚の旅アプリ。思い出をブロックチェーンに刻もう",
-};
+  title: 'NFTrip',
+  description: '観光地を巡り、現地限定のNFTを収集する新感覚の旅アプリ。思い出をブロックチェーンに刻もう',
+}
 
 export default function RootLayout({
   children,
@@ -33,5 +33,5 @@ export default function RootLayout({
         <Toaster />
       </body>
     </html>
-  );
+  )
 }

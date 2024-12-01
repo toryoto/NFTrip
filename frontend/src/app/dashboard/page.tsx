@@ -1,6 +1,6 @@
 import { NearestNFTSpots } from '../components/NearestNFTSpots'
-import { UserProgressCard } from "../components/UserProgressCard"
-import { LeaderboardCard } from "../components/LeaderboardCard"
+import { UserProgressCard } from '../components/UserProgressCard'
+import { LeaderboardCard } from '../components/LeaderboardCard'
 import Header from '../components/Header'
 import { Footer } from '../components/Footer'
 

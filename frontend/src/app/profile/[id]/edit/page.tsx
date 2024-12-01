@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { Upload, Save } from 'lucide-react'
 import { Footer } from '@/app/components/Footer'
 import { useAuth } from '@/app/contexts/AuthContext'
@@ -19,16 +19,16 @@ import { X } from 'lucide-react'
 
 export default function EditProfilePage() {
   const { user } = useAuth()
-  const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user?.id);
-  const [ loading, setLoading ] = useState(false);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const { userProfile, updateProfile, uploadAvatar } = useUserProfile(user?.id)
+  const [ loading, setLoading ] = useState(false)
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
   const router = useRouter()
   const [formData, setFormData] = useState<Partial<UserProfile>>({
     name: '',
     email: '',
     bio: '',
     avatar_url: ''
-  });
+  })
 
   // フォーム管理stateにページアクセス時のデータをセットする
   useEffect(() => {
@@ -38,49 +38,49 @@ export default function EditProfilePage() {
         email: userProfile.email,
         bio: userProfile.bio,
         avatar_url: userProfile.avatar_url
-      });
+      })
     }
-  }, [userProfile]);
+  }, [userProfile])
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     setFormData(prevData => ({
       ...prevData,
       [name]: value || null
-    }));
-  };
+    }))
+  }
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setAvatarFile(file);
+      const file = event.target.files[0]
+      setAvatarFile(file)
 
-      const tmpImageUrl = URL.createObjectURL(file);
+      const tmpImageUrl = URL.createObjectURL(file)
       setFormData(prevData => ({
         ...prevData,
         avatar_url: tmpImageUrl
-      }));
+      }))
     }
-  };
+  }
 
   const handleResetAvatar = () => {
     setFormData(prevData => ({
       ...prevData,
       avatar_url: ''
-    }));
-    setAvatarFile(null);
-  };
+    }))
+    setAvatarFile(null)
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    setLoading(true);
-    event.preventDefault();
+    setLoading(true)
+    event.preventDefault()
     try {
-      let avatar_url = formData.avatar_url;
+      let avatar_url = formData.avatar_url
 
       if (avatarFile) {
-        const uploadedUrl = await uploadAvatar(avatarFile);
+        const uploadedUrl = await uploadAvatar(avatarFile)
         if (uploadedUrl) {
-          avatar_url = uploadedUrl;
+          avatar_url = uploadedUrl
         }
       }
 
@@ -90,22 +90,22 @@ export default function EditProfilePage() {
             Object.entries(formData).filter(([_, value]) => value !== '')
           ),
           avatar_url: avatar_url
-        };
-        await updateProfile(updatedProfile);
+        }
+        await updateProfile(updatedProfile)
         
         router.push(`/profile/${user?.id}`)
       } else {
-        console.error('User profile not found');
+        console.error('User profile not found')
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error('Error updating profile:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   if (!userProfile || loading) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
@@ -120,8 +120,8 @@ export default function EditProfilePage() {
                 <div className="relative w-32 h-32">
                   <div className="w-32 h-32 rounded-full overflow-hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                     <Image
-                      src={formData.avatar_url || "/images/no-user-icon.png"}
-                      alt={formData.name || "User avatar"}
+                      src={formData.avatar_url || '/images/no-user-icon.png'}
+                      alt={formData.name || 'User avatar'}
                       fill
                       style={{ objectFit: 'cover' }}
                       className="transition-opacity duration-300 group-hover:opacity-50"

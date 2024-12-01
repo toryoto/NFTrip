@@ -6,7 +6,7 @@ import { User, AuthMethod, AuthContextType } from '../types/auth'
 import { Loading } from '../components/Loading'
 import { useRouter } from 'next/navigation'
 import { initWeb3Auth, getWeb3AuthAccountInfo, connectWeb3Auth } from '@/lib/web3auth'
-import { Web3Auth } from "@web3auth/modal"
+import { Web3Auth } from '@web3auth/modal'
 import { supabase } from '@/lib/supabase'
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -38,9 +38,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const getProvider = async (method: AuthMethod): Promise<ethers.providers.Web3Provider> => {
     if (method === 'metamask') {
-      const { ethereum } = window as any;
+      const { ethereum } = window as any
       if (!ethereum) {
-        throw new Error('MetaMask not detected');
+        throw new Error('MetaMask not detected')
       }
       const provider = new ethers.providers.Web3Provider(ethereum)
       await ethereum.request?.({ method: 'eth_requestAccounts' })
@@ -49,15 +49,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!web3auth) {
         throw new Error('Web3Auth not initialized')
       }
-      const web3authProvider = await web3auth.connect();
+      const web3authProvider = await web3auth.connect()
       return new ethers.providers.Web3Provider(web3authProvider as any)
     }
-  };
+  }
 
   const getAddress = async (provider: ethers.providers.Web3Provider): Promise<string> => {
     const signer = await provider.getSigner()
     return await signer.getAddress()
-  };
+  }
 
   const getSepoliaBalance = async (method: AuthMethod) => {
     if (method === 'metamask') {
@@ -92,7 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
         body: JSON.stringify({ wallet_address: address, auth_type: method }),
         credentials: 'include',
-      });
+      })
   
       if (!response.ok) {
         throw new Error('Login failed')
@@ -109,7 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error(`Error during ${method} login:`, error)
       throw error
     }
-  };
+  }
 
   const setWeb3AuthUserProfile = async (user: User) => {
     try {
@@ -139,7 +139,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!response.ok) throw new Error('Failed to fetch the image')
       const blob = await response.blob()
   
-      const fileExtension = blob.type.split('/')[1];
+      const fileExtension = blob.type.split('/')[1]
       const fileName = `${String(userId)}_avatar.${fileExtension}`
   
       // blobをFileオブジェクトに変換
@@ -151,7 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
       if (error) {
         console.error('Error uploading avatar:', error)
-        return null;
+        return null
       }
   
       const { data } = supabase.storage
@@ -163,14 +163,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Error in avatar upload process:', error)
       return null
     }
-  };
+  }
 
   const logout = async () => {
     try {
       const response = await fetch('/api/v1/auth/logout', {
         method: 'POST',
         credentials: 'include',
-      });
+      })
 
       if (!response.ok) throw new Error('Logout failed')
 
@@ -182,14 +182,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Error during logout:', error)
       throw error
     }
-  };
+  }
 
   const checkAuth = async () => {
     try {
       const response = await fetch('/api/v1/auth/me', {
         method: 'GET',
         credentials: 'include',
-      });
+      })
 
       if (response.ok) {
         const userData = await response.json()
@@ -211,8 +211,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider value={{ user, login, logout, getProvider, getSepoliaBalance }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext)

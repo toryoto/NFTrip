@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { MapPin, ChevronRight, Compass } from 'lucide-react'
 import { useLocations } from '@/hooks/useLocations'
 import { LocationWithThumbnailAndDistance } from '../types/location'

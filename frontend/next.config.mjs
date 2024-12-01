@@ -20,6 +20,6 @@ const nextConfig = {
     locales: ['ja'],
     defaultLocale: 'ja',
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

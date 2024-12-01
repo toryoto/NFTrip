@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { ethers } from 'ethers';
+import { NextRequest, NextResponse } from 'next/server'
+import { ethers } from 'ethers'
 
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
 
 interface RawTransaction {
   blockNumber: string;
@@ -25,14 +25,14 @@ interface FormattedTransaction {
 
 const formatTransaction = (walletAddress: string, transactions: RawTransaction[]) => {
 	return transactions.map(tx => {
-    let action: 'Mint' | 'Send' | 'Receive';
+    let action: 'Mint' | 'Send' | 'Receive'
     
     if (tx.functionName.startsWith('mint')) {
-      action = 'Mint';
+      action = 'Mint'
     } else if (tx.from.toLowerCase() === walletAddress.toLowerCase()) {
-      action = 'Send';
+      action = 'Send'
     } else {
-      action = 'Receive';
+      action = 'Receive'
     }
 
     return {
@@ -42,35 +42,35 @@ const formatTransaction = (walletAddress: string, transactions: RawTransaction[]
       to: tx.to,
       gasPrice: ethers.utils.formatUnits(tx.gasPrice, 'ether'),
 			action
-    };
-  });
+    }
+  })
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { address } = await req.json();
+    const { address } = await req.json()
 		console.log(address)
 
     if (!address || typeof address !== 'string') {
       return NextResponse.json(
         { error: 'Invalid address parameter' },
         { status: 400 }
-      );
+      )
     }
 
     const response = await fetch(
       `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=${address}&page=1&offset=10&sort=desc&apikey=${ETHERSCAN_API_KEY}`
-    );
+    )
 
-    const data = await response.json();
-		const formattedTransactions: FormattedTransaction[] = formatTransaction(address, data.result);
+    const data = await response.json()
+		const formattedTransactions: FormattedTransaction[] = formatTransaction(address, data.result)
 
-    return NextResponse.json(formattedTransactions);
+    return NextResponse.json(formattedTransactions)
   } catch (error) {
-    console.error("API Error:", error);
+    console.error('API Error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    );
+    )
   }
 }
