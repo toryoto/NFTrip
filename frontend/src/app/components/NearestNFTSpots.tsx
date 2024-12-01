@@ -22,7 +22,7 @@ export const NearestNFTSpots: React.FC = () => {
       }
     }
     fetchLocations()
-  }, [userLocation])
+  }, [userLocation, fetchNearestLocations])
 
   return (
     <section className="space-y-6">

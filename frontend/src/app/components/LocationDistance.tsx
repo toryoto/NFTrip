@@ -13,7 +13,7 @@ export default function LocationDistance({ location }: { location: LocationWithT
 	useEffect(() => {
 		const calculatedDistance = calculateDistance(userLocation.lat, userLocation.lon, location.latitude, location.longitude);
 		setDistance(calculatedDistance);
-	}, [userLocation]);
+	}, [userLocation, location.latitude, location.longitude]);
 
   const calculateDistance = (lat1: number | null, lon1: number | null, lat2: number, lon2: number): number => {
     if (lat1 === null || lon1 === null) {

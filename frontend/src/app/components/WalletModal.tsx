@@ -59,7 +59,7 @@ export default function WalletModal() {
     if (activeTab === 'activity' && walletData.wallet_address) {
       getActivities(walletData.wallet_address)
     }
-	}, [activeTab, walletData.wallet_address])
+	}, [activeTab, walletData.wallet_address, getSepoliaBalance, user.auth_type])
 	
 	const getActivities = async (wallet_address: string) => {
 		try {

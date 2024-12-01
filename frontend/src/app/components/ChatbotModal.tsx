@@ -38,7 +38,7 @@ export default function ChatbotModal({ location }: { location: LocationWithThumb
     ];
     
     setMessages(initialMessages);
-  }, [])
+  }, [location.name])
   
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()

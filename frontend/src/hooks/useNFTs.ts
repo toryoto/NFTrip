@@ -132,7 +132,7 @@ export const useNFTs = (
     }
 
     fetchNFTs()
-  }, [authType, userId])
+  }, [authType, userId, fetchAllNFTs, fetchWalletAddress])
 
   return { nfts, loading }
 };
