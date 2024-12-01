@@ -55,7 +55,6 @@ export const getWeb3AuthAccountInfo = async (web3auth: Web3Auth) => {
     const ethersProvider = await connectWeb3Auth(web3auth)
     const signer = await ethersProvider.getSigner()
     const address = await signer.getAddress()
-    const balance = await ethersProvider.getBalance(address)
 
     return { user, address, signer }
   } catch (error) {

@@ -1,7 +1,5 @@
 import { supabase } from './supabase'
 import {
-  Location,
-  LocationImage,
   LocationWithThumbnailAndDistance,
   LocationWithThumbnail
 } from '../app/types/location'
@@ -27,7 +25,7 @@ export async function getLocations(): Promise<LocationWithThumbnail[]> {
     return []
   }
 
-  return data.map((row: any) => ({
+  return data.map((row) => ({
     id: row.id,
     name: row.name,
     slug: row.slug,

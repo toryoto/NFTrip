@@ -58,7 +58,8 @@ export default function SepoliaFaucetPage() {
       console.log(receipt)
       setResult({
         success: true,
-        message: 'テストトークンの送信に成功しました！ NFTripを楽しんでください！'
+        message:
+          'テストトークンの送信に成功しました！ NFTripを楽しんでください！'
       })
     } catch (error: any) {
       const errorMessage = error?.message || ''
