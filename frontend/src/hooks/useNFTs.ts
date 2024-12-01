@@ -54,7 +54,7 @@ export const useNFTs = (
           return
         }
 
-        const fetchFromGateways = async (url: string): Promise<any> => {
+        const fetchFromGateways = async (url: string) => {
           for (const gateway of gateways) {
             const modifiedUrl = url.replace('ipfs://', gateway)
             try {
@@ -66,7 +66,7 @@ export const useNFTs = (
                   return jsonData
                 }
               }
-            } catch (error: any) {
+            } catch (error) {
               console.log(error)
               continue
             }
@@ -103,7 +103,7 @@ export const useNFTs = (
         }
 
         const processedNFTs = await Promise.all(
-          fetchedNFTs.map(async (nft: any) => {
+          fetchedNFTs.map(async (nft) => {
             const uri = nft.tokenURI
 
             try {
