@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-const { Defender } = require('@openzeppelin/defender-sdk')
+import { Defender } from '@openzeppelin/defender-sdk'
 import { ethers } from 'ethers'
 import MinimalForwarder from '../../../../../abi/MinimalForwarder.json'
 

@@ -11,7 +11,8 @@ interface RawTransaction {
   to: string;
   gasPrice: string;
   functionName: string;
-  [key: string]: string;
+  isInternal?: boolean;
+  [key: string]: string | boolean | undefined;
 }
 
 interface FormattedTransaction {
@@ -21,13 +22,14 @@ interface FormattedTransaction {
   to: string;
   gasPrice: string;
   action: 'Mint' | 'Send' | 'Receive';
+  isInternal: boolean;
 }
 
 const formatTransaction = (walletAddress: string, transactions: RawTransaction[]) => {
-	return transactions.map(tx => {
+  return transactions.map(tx => {
     let action: 'Mint' | 'Send' | 'Receive'
-    
-    if (tx.functionName.startsWith('mint')) {
+
+    if (tx.functionName?.startsWith('mint')) {
       action = 'Mint'
     } else if (tx.from.toLowerCase() === walletAddress.toLowerCase()) {
       action = 'Send'
@@ -37,11 +39,12 @@ const formatTransaction = (walletAddress: string, transactions: RawTransaction[]
 
     return {
       hash: tx.hash,
-			time: new Date(parseInt(tx.timeStamp) * 1000).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
-			from: tx.from,
+      time: new Date(parseInt(tx.timeStamp) * 1000).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' }),
+      from: tx.from,
       to: tx.to,
-      gasPrice: ethers.utils.formatUnits(tx.gasPrice, 'ether'),
-			action
+      gasPrice: tx.gasPrice ? ethers.utils.formatUnits(tx.gasPrice, 'gwei') : '0',
+      action,
+      isInternal: !!tx.isInternal,
     }
   })
 }
@@ -49,7 +52,6 @@ const formatTransaction = (walletAddress: string, transactions: RawTransaction[]
 export async function POST(req: NextRequest) {
   try {
     const { address } = await req.json()
-		console.log(address)
 
     if (!address || typeof address !== 'string') {
       return NextResponse.json(
@@ -58,12 +60,35 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const response = await fetch(
-      `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=${address}&page=1&offset=10&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+    // Fetch regular transactions
+    const txResponse = await fetch(
+      `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=${address}&page=1&offset=100&sort=desc&apikey=${ETHERSCAN_API_KEY}`
     )
+    const txData = await txResponse.json()
 
-    const data = await response.json()
-		const formattedTransactions: FormattedTransaction[] = formatTransaction(address, data.result)
+    // Fetch internal transactions
+    const internalTxResponse = await fetch(
+      `https://api-sepolia.etherscan.io/api?module=account&action=txlistinternal&address=${address}&page=1&offset=100&sort=desc&apikey=${ETHERSCAN_API_KEY}`
+    )
+    const internalTxData = await internalTxResponse.json()
+
+    if (txData.status !== '1' || internalTxData.status !== '1') {
+      return NextResponse.json(
+        { error: 'Failed to fetch transactions' },
+        { status: 500 }
+      )
+    }
+
+    // Merge transactions and sort by timestamp
+    const allTransactions: RawTransaction[] = [
+      ...txData.result.map((tx: RawTransaction) => ({ ...tx, isInternal: false })),
+      ...internalTxData.result.map((tx: RawTransaction) => ({ ...tx, isInternal: true })),
+    ].sort((newTx, oldTx) => parseInt(oldTx.timeStamp) - parseInt(newTx.timeStamp))
+
+    // Get latest 10 transactions
+    const latestTransactions = allTransactions.slice(0, 10)
+
+    const formattedTransactions: FormattedTransaction[] = formatTransaction(address, latestTransactions)
 
     return NextResponse.json(formattedTransactions)
   } catch (error) {
