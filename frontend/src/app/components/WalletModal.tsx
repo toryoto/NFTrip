@@ -1,14 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { CuboidIcon as Cube, Activity, Wallet } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useUserProfile } from '@/hooks/useUserProfile'
-import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
+import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions'
 import { useNFTs } from '@/hooks/useNFTs'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -50,7 +50,7 @@ export default function WalletModal() {
 			} else {
 				console.error('Auth type is undefined')
 			}
-		};
+		}
 		fetchBalance()
 
 		if (activeTab === 'tokens') {
@@ -69,14 +69,14 @@ export default function WalletModal() {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({ address: wallet_address }),
-			});
+			})
 			if (!response.ok) {
-				throw new Error('Network response was not ok');
+				throw new Error('Network response was not ok')
 			}
-			const data = await response.json();
-			setActivities(data);
+			const data = await response.json()
+			setActivities(data)
 		} catch (error) {
-			console.error('Error fetching activities:', error);
+			console.error('Error fetching activities:', error)
 		}
 	}
 
@@ -105,8 +105,8 @@ export default function WalletModal() {
             <div className="flex items-center space-x-4">
 							<div className="h-16 w-16 rounded-full overflow-hidden bg-blue-700 flex items-center justify-center flex-shrink-0">
 								<Image 
-                  src={walletData.avatar_image || "/images/no-user-icon.png"} 
-                  alt={"user_avatar"} 
+                  src={walletData.avatar_image || '/images/no-user-icon.png'} 
+                  alt={'user_avatar'} 
                   width={64} 
                   height={64} 
                   className="w-full h-full object-cover" 
@@ -202,7 +202,7 @@ export default function WalletModal() {
 									{activities.map((activity: FormattedTransaction, index) => (
 										<div 
 											key={index} 
-											className={index === activities.length - 1 ? "" : "pb-5"}
+											className={index === activities.length - 1 ? '' : 'pb-5'}
 										>
 											<p className="text-sm text-white">
 												{activity.action}

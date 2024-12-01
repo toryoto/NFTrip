@@ -1,55 +1,55 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import { useEffect, useRef, useState } from 'react'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import Image from "next/image"
-import Link from 'next/link';
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useAuth } from '@/app/contexts/AuthContext'
 import { useUserProfile } from '@/hooks/useUserProfile'
-import { getChatResponse } from "../actions/chat"
-import { ChatMessage } from "../types/chat"
-import { LocationWithThumbnail } from "../types/location"
+import { getChatResponse } from '../actions/chat'
+import { ChatMessage } from '../types/chat'
+import { LocationWithThumbnail } from '../types/location'
 
 export default function ChatbotModal({ location }: { location: LocationWithThumbnail }) {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
-  const { user } = useAuth();
-  const { userProfile } = useUserProfile(user?.id);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const { user } = useAuth()
+  const { userProfile } = useUserProfile(user?.id)
+  const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
   const [suggestedQuestions, setSuggestedQuestions] = useState<string[]>([
     `${location.name}の歴史について教えてください。`,
     `${location.name}のおすすめの観光スポットは？`,
     `${location.name}で開かれるイベントはありますか？`
-  ]);
+  ])
 
   useEffect(() => {
     const initialMessages: ChatMessage[] = [
       { role: 'assistant', content: `こんにちは！${location.name}に関する情報を何でもわかりやすくお答えします！下のおすすめの質問をクリックするか、自由に質問を入力してください。` },
-    ];
+    ]
     
-    setMessages(initialMessages);
+    setMessages(initialMessages)
   }, [])
   
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim()) return
 
-    await sendMessage(input);
+    await sendMessage(input)
   }
 
   const handleSuggestedQuestion = async (question: string) => {
-    await sendMessage(question);
-    setSuggestedQuestions(prev => prev.filter(q => q !== question));
+    await sendMessage(question)
+    setSuggestedQuestions(prev => prev.filter(q => q !== question))
   }
 
   const sendMessage = async (message: string) => {
@@ -58,11 +58,11 @@ export default function ChatbotModal({ location }: { location: LocationWithThumb
     setInput('')
 
     try {
-      const aiResponse = await getChatResponse([...messages, userMessage], location);
+      const aiResponse = await getChatResponse([...messages, userMessage], location)
       if (aiResponse) {
-        setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+        setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }])
       } else {
-        throw Error;
+        throw Error
       }
     } catch (error) {
       console.error('Error getting AI response:', error)
@@ -71,8 +71,8 @@ export default function ChatbotModal({ location }: { location: LocationWithThumb
   }
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
 
   return (
     <div>
@@ -94,7 +94,7 @@ export default function ChatbotModal({ location }: { location: LocationWithThumb
                     {message.role === 'user' ? (
                       <Link href={`/profile/${user?.id}`} className="relative w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden ml-2 flex-shrink-0">
                         <Image
-                          src={userProfile?.avatar_url || "/images/no-user-icon.png"}
+                          src={userProfile?.avatar_url || '/images/no-user-icon.png'}
                           alt="User Avatar"
                           style={{ objectFit: 'cover' }}
                           className="transition-opacity duration-300 group-hover:opacity-50"

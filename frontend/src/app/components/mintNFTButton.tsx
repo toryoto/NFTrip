@@ -1,110 +1,110 @@
 'use client'
 
-import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions';
-import { LocationWithThumbnailAndDistance } from '../types/location';
-import { getNFTImage } from '@/lib/getLocations';
-import { generateAndUploadNFTMetaData, deleteNFTdata } from '@/lib/pinata';
-import { useToast } from "@/components/ui/use-toast"
-import { useAuth } from '../contexts/AuthContext';
-import { updateUserData } from '@/app/actions/userProgress';
+import React, { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { useSmartContractInteractions } from '@/hooks/useSmartContractInteractions'
+import { LocationWithThumbnailAndDistance } from '../types/location'
+import { getNFTImage } from '@/lib/getLocations'
+import { generateAndUploadNFTMetaData, deleteNFTdata } from '@/lib/pinata'
+import { useToast } from '@/components/ui/use-toast'
+import { useAuth } from '../contexts/AuthContext'
+import { updateUserData } from '@/app/actions/userProgress'
 import { Award } from 'lucide-react'
-import { getTopNFTHolders } from '@/lib/getNFTRanking';
-import NFTMintingModal from './NFTMintingModal';
+import { getTopNFTHolders } from '@/lib/getNFTRanking'
+import NFTMintingModal from './NFTMintingModal'
 
 export default function MintNFTButton({ location }: { location: LocationWithThumbnailAndDistance }) {
-  const { user } = useAuth();
-  const { mintNFT } = useSmartContractInteractions();
-  const [isMinting, setIsMinting] = useState(false);
-  const [mintingStage, setMintingStage] = useState<'preparing' | 'metadata' | 'minting' | 'complete' | 'error' | null>(null);
-  const { toast } = useToast();
+  const { user } = useAuth()
+  const { mintNFT } = useSmartContractInteractions()
+  const [isMinting, setIsMinting] = useState(false)
+  const [mintingStage, setMintingStage] = useState<'preparing' | 'metadata' | 'minting' | 'complete' | 'error' | null>(null)
+  const { toast } = useToast()
 
   const handleMintNFT = async () => {
     if (!user) {
       toast({
-        title: "認証が必要です",
-        description: "NFTを発行するには、先にウォレット接続が必要です",
-        variant: "destructive",
-      });
-      return;
+        title: '認証が必要です',
+        description: 'NFTを発行するには、先にウォレット接続が必要です',
+        variant: 'destructive',
+      })
+      return
     }
 
-    setIsMinting(true);
-    setMintingStage('preparing');
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    setIsMinting(true)
+    setMintingStage('preparing')
+    await new Promise(resolve => setTimeout(resolve, 5000))
 
-    let NFTMetadataHash: string | undefined;
+    let NFTMetadataHash: string | undefined
 
     try {
 
-      const imageHash = await getNFTImage(location.id);
-      console.log('NFT image prepared:', imageHash);
+      const imageHash = await getNFTImage(location.id)
+      console.log('NFT image prepared:', imageHash)
 
-      setMintingStage('metadata');
-      NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location, user);
+      setMintingStage('metadata')
+      NFTMetadataHash = await generateAndUploadNFTMetaData(imageHash, location, user)
       if (!NFTMetadataHash) {
-        throw new Error('NFT metadata hash is undefined');
+        throw new Error('NFT metadata hash is undefined')
       }
-      console.log('NFT metadata generated:', NFTMetadataHash);
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      console.log('NFT metadata generated:', NFTMetadataHash)
+      await new Promise(resolve => setTimeout(resolve, 3000))
 
-      setMintingStage('minting');
+      setMintingStage('minting')
       const { transactionHash, balanceNumber } = await mintNFT(
         user.auth_type,
         location.id,
         `ipfs://${NFTMetadataHash}`
-      );
-      console.log('NFT minted successfully! Transaction hash:', transactionHash);
+      )
+      console.log('NFT minted successfully! Transaction hash:', transactionHash)
 
-      await updateUserData(balanceNumber);
-      await getTopNFTHolders(user.id);
+      await updateUserData(balanceNumber)
+      await getTopNFTHolders(user.id)
       
-      setMintingStage('complete');
+      setMintingStage('complete')
 
       setTimeout(() => {
-        setMintingStage(null);
-        window.location.href = `/profile/${user.id}/nfts`;
-      }, 5000);
+        setMintingStage(null)
+        window.location.href = `/profile/${user.id}/nfts`
+      }, 5000)
 
-      return transactionHash;
+      return transactionHash
 
     } catch (error: any) {
-      console.error("NFT minting failed:", error);
-      setMintingStage('error');
+      console.error('NFT minting failed:', error)
+      setMintingStage('error')
 
-      let errorTitle = "NFTの発行に失敗しました";
-      let errorDescription = "予期しないエラーが発生しました。もう一度お試しください。";
+      let errorTitle = 'NFTの発行に失敗しました'
+      let errorDescription = '予期しないエラーが発生しました。もう一度お試しください。'
 
-      if (error?.info?.error?.message.includes("MetaMask Tx Signature: User denied transaction signature")) {
-        errorTitle = "トランザクションが拒否されました";
-        errorDescription = "トランザクションを拒否しました。ガス代が十分であることを確認してください。";
-      } else if (error?.message.includes("insufficient funds for intrinsic transaction cost")) {
-        errorTitle = "ガス代不足";
-        errorDescription = "ガス代が不足しています。ウォレットに十分な資金があることを確認してください。";
-      } else if (error?.message.includes("User has already minted for this location today")) {
-        errorTitle = "デイリーNFT Mint制限";
-        errorDescription = "NFT Mintは1日1回までです。後日また訪問してクイズに挑戦してください。";
+      if (error?.info?.error?.message.includes('MetaMask Tx Signature: User denied transaction signature')) {
+        errorTitle = 'トランザクションが拒否されました'
+        errorDescription = 'トランザクションを拒否しました。ガス代が十分であることを確認してください。'
+      } else if (error?.message.includes('insufficient funds for intrinsic transaction cost')) {
+        errorTitle = 'ガス代不足'
+        errorDescription = 'ガス代が不足しています。ウォレットに十分な資金があることを確認してください。'
+      } else if (error?.message.includes('User has already minted for this location today')) {
+        errorTitle = 'デイリーNFT Mint制限'
+        errorDescription = 'NFT Mintは1日1回までです。後日また訪問してクイズに挑戦してください。'
       }
 
       toast({
         title: errorTitle,
         description: errorDescription,
-        variant: "destructive",
-      });
+        variant: 'destructive',
+      })
 
       setTimeout(() => {
-        setMintingStage(null);
-      }, 3000);
+        setMintingStage(null)
+      }, 3000)
 
       // NFTメタデータのクリーンアップ
       if (NFTMetadataHash) {
-        await deleteNFTdata(NFTMetadataHash);
+        await deleteNFTdata(NFTMetadataHash)
       }
     } finally {
-      setIsMinting(false);
+      setIsMinting(false)
     }
-  };
+  }
 
   return (
     <>
@@ -116,8 +116,8 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
 
       <button 
         onClick={(event) => {
-          event.preventDefault();
-          handleMintNFT();
+          event.preventDefault()
+          handleMintNFT()
         }}
         disabled={isMinting}
         className="w-full p-0 h-auto hover:no-underline group"
@@ -138,5 +138,5 @@ export default function MintNFTButton({ location }: { location: LocationWithThum
         </div>
       </button>
     </>
-  );
+  )
 }

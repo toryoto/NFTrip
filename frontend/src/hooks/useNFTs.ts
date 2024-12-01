@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import { NFT } from '@/app/types/nft';
-import { toast } from '@/components/ui/use-toast';
-import { AuthMethod } from '@/app/types/auth';
-import { supabase } from '@/lib/supabase';
+import { useState, useEffect, useCallback } from 'react'
+import { NFT } from '@/app/types/nft'
+import { toast } from '@/components/ui/use-toast'
+import { AuthMethod } from '@/app/types/auth'
+import { supabase } from '@/lib/supabase'
 
 type FetchAllNFTs = (method: AuthMethod, wallet_address: string) => Promise<{ tokenId: number, tokenURI: string }[]>
 
@@ -21,15 +21,15 @@ export const useNFTs = (
 
 	const fetchWalletAddress = useCallback(async () => {
     const { data, error } = await supabase
-      .from("users")
-      .select("wallet_address")
-      .eq("id", Number(userId))
+      .from('users')
+      .select('wallet_address')
+      .eq('id', Number(userId))
       .single()
     if (error) {
       console.error('Error fetching wallet address:', error)
       return null
     }
-    return data.wallet_address;
+    return data.wallet_address
   }, [userId])
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export const useNFTs = (
         const fetchedNFTs = await fetchAllNFTs(authType, wallet_address)
         if (!fetchedNFTs) {
           setLoading(false)
-          return;
+          return
         }
 
 				const fetchFromGateways = async (url: string): Promise<any> => {
@@ -104,7 +104,7 @@ export const useNFTs = (
 						try {
 							const data = await fetchFromGateways(uri)
 				
-							let imageUrl = data.image;
+							let imageUrl = data.image
 							if (imageUrl && typeof imageUrl === 'string') {
 								imageUrl = await fetchImageFromGateways(data.image)
 							}
@@ -115,16 +115,16 @@ export const useNFTs = (
 							return { tokenId: nft.tokenId, error: true }
 						}
 					})
-				);
+				)
 				
-				processedNFTs.sort((firstNFT, secondNFT) => secondNFT.tokenId - firstNFT.tokenId);
+				processedNFTs.sort((firstNFT, secondNFT) => secondNFT.tokenId - firstNFT.tokenId)
 				setNfts(processedNFTs.filter((nft) => !nft.error))
       } catch (error) {
         console.error('Error fetching NFTs:', error)
         toast({
-          title: "Error",
-          description: "Failed to fetch your NFTs. Please try again later.",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Failed to fetch your NFTs. Please try again later.',
+          variant: 'destructive',
         })
       } finally {
         setLoading(false)
@@ -135,4 +135,4 @@ export const useNFTs = (
   }, [authType, userId])
 
   return { nfts, loading }
-};
+}

@@ -98,7 +98,7 @@ const UserInfo: React.FC<{ user: any; userProfile: any; sliceWalletAddress: (str
   <div className="flex items-center space-x-3">
     <div className="relative w-10 h-10 rounded-full overflow-hidden">
       <Image
-        src={userProfile?.avatar_url || "/images/no-user-icon.png"}
+        src={userProfile?.avatar_url || '/images/no-user-icon.png'}
         alt="User Avatar"
         style={{ objectFit: 'cover' }}
         className="transition-opacity duration-300 group-hover:opacity-75"

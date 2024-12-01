@@ -1,28 +1,28 @@
 'use server'
 
-import OpenAI from "openai";
-import { ChatMessage } from "../types/chat";
+import OpenAI from 'openai'
+import { ChatMessage } from '../types/chat'
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 	baseURL: process.env.BASE_URL
-});
-import { LocationWithThumbnail } from "../types/location";
+})
+import { LocationWithThumbnail } from '../types/location'
 
 export async function getChatResponse(messages: ChatMessage[], location: LocationWithThumbnail) {
   try {
-    const systemPrompt = generatePrompt(location);
+    const systemPrompt = generatePrompt(location)
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: 'gpt-4o-mini',
       messages: [
-        { role: "system", content: systemPrompt },
+        { role: 'system', content: systemPrompt },
         ...messages
       ],
-    });
+    })
 
-    return response.choices[0].message.content;
+    return response.choices[0].message.content
   } catch (error) {
-    console.error('OpenAI API error:', error);
-    throw new Error('Failed to get response from AI');
+    console.error('OpenAI API error:', error)
+    throw new Error('Failed to get response from AI')
   }
 }
 
@@ -37,7 +37,7 @@ function generatePrompt(location: LocationWithThumbnail) {
   - 観光客からの質問がイベントや行事に関連するものであれば、${location.name}で毎年行われているイベントの情報を簡潔に提供してください
   - 観光客はおすすめの観光地を質問する場合があります。その場合は、${location.name}に関する観光地や、${location.name}周辺の有名観光地を概要とともに回答してください
   - 必要に応じて、追加の質問を促し、訪問者の興味を引き出してください。
-  `;
+  `
 
   return systemPrompt
 }

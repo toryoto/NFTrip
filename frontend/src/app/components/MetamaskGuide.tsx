@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from 'react'
+import { X } from 'lucide-react'
 
 // Propsで親コンポーネントの表示管理Stateをfalseにするメソッドを受け取る
 export const MetamaskGuide = ({ onClose }: { onClose: () => void }) => {
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0)
   const steps = [
-		{ title: "Metamaskをインストールしてください", content: "MetamaskをインストールしているブラウザのみがMetamask認証ができます。" },
-    { title: "Metamaskとは？", content: "Metamaskは暗号通貨ウォレットであり、ブロックチェーンアプリへのゲートウェイです。" },
-    { title: "なぜ必要なのか？", content: "私たちのNFTプラットフォームと安全にやり取りするために必要です。" },
-    { title: "インストール方法", content: "metamask.ioにアクセスし、お使いのブラウザ向けのインストールガイドに従ってください。" }
-  ];
+		{ title: 'Metamaskをインストールしてください', content: 'MetamaskをインストールしているブラウザのみがMetamask認証ができます。' },
+    { title: 'Metamaskとは？', content: 'Metamaskは暗号通貨ウォレットであり、ブロックチェーンアプリへのゲートウェイです。' },
+    { title: 'なぜ必要なのか？', content: '私たちのNFTプラットフォームと安全にやり取りするために必要です。' },
+    { title: 'インストール方法', content: 'metamask.ioにアクセスし、お使いのブラウザ向けのインストールガイドに従ってください。' }
+  ]
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -50,5 +50,5 @@ export const MetamaskGuide = ({ onClose }: { onClose: () => void }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

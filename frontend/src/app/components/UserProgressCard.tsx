@@ -1,8 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+import { Card, CardContent } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
 import { Award } from 'lucide-react'
-import Link from "next/link"
-import { getUserData } from "../actions/userProgress";
+import Link from 'next/link'
+import { getUserData } from '../actions/userProgress'
 
 export async function UserProgressCard() {
   const userData = await getUserData()

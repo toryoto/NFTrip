@@ -7,13 +7,13 @@ import { LocationWithThumbnail } from '../types/location'
 import QuizModal from './QuizModal'
 
 export default function LocationDistance({ location }: { location: LocationWithThumbnail }) {
-  const { userLocation } = useLocations();
-	const [distance, setDistance] = useState<number>();
+  const { userLocation } = useLocations()
+	const [distance, setDistance] = useState<number>()
 
 	useEffect(() => {
-		const calculatedDistance = calculateDistance(userLocation.lat, userLocation.lon, location.latitude, location.longitude);
-		setDistance(calculatedDistance);
-	}, [userLocation]);
+		const calculatedDistance = calculateDistance(userLocation.lat, userLocation.lon, location.latitude, location.longitude)
+		setDistance(calculatedDistance)
+	}, [userLocation])
 
   const calculateDistance = (lat1: number | null, lon1: number | null, lat2: number, lon2: number): number => {
     if (lat1 === null || lon1 === null) {

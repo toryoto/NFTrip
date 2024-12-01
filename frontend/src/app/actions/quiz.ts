@@ -1,7 +1,7 @@
 'use server'
 
-import { supabase } from "@/lib/supabase";
-import { Quiz, QuizAnswers } from "../types/quiz";
+import { supabase } from '@/lib/supabase'
+import { Quiz, QuizAnswers } from '../types/quiz'
 
 // Supabaseから観光地のクイズを3つ取得するメソッド
 export async function getLocationQuizzes(locationId: number): Promise<Quiz[]> {
@@ -12,7 +12,7 @@ export async function getLocationQuizzes(locationId: number): Promise<Quiz[]> {
 		.eq('location_id', locationId)
 		.limit(3)
 
-	if (error) throw error;
+	if (error) throw error
 
 	return quizzes.map(quiz => ({
 		id: quiz.id,
@@ -21,7 +21,7 @@ export async function getLocationQuizzes(locationId: number): Promise<Quiz[]> {
 			id: option.id,
 			option_text: option.option_text
 		}))
-	}));
+	}))
 }
 
 // ユーザの回答を受け取り、それぞれの問題のis_correct, explanation_textm, additional_resourcesをSupabaseから取得する
@@ -35,18 +35,18 @@ export async function getQuizAnswers(userAnswers: { [key: number]: number }): Pr
 			.select('id')
 			.eq('quiz_id', quizId)
 			.eq('is_correct', true)
-			.single();
+			.single()
 
-		if (optionError) throw optionError;
+		if (optionError) throw optionError
 
 		// quizzes_explanationsテーブルから全ての問題のqexplanation_textとadditional_resourcesを取得
 		const { data: explanationData, error: explanationError } = await supabase
 			.from('quizzes_explanations')
 			.select('explanation_text, additional_resources')
 			.eq('quiz_id', quizId)
-			.single();
+			.single()
 
-		if (explanationError) throw explanationError;
+		if (explanationError) throw explanationError
 
 		// クイズごとに正解のoption
 		return {
@@ -55,9 +55,9 @@ export async function getQuizAnswers(userAnswers: { [key: number]: number }): Pr
 				explanation_text: explanationData.explanation_text,
 				additional_resources: explanationData.additional_resources
 			}
-		};
-	}));
+		}
+	}))
 
 	// 複数のresults配列を1つのオブジェクトにまとめる
-	return results.reduce((acc, result) => ({ ...acc, ...result }), {});
+	return results.reduce((acc, result) => ({ ...acc, ...result }), {})
 }

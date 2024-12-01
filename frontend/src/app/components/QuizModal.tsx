@@ -1,17 +1,17 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle2, XCircle, Award, Sparkles } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Progress } from "@/components/ui/progress"
+} from '@/components/ui/dialog'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Progress } from '@/components/ui/progress'
 import { Quiz, QuizAnswers } from '../types/quiz'
 import { getLocationQuizzes, getQuizAnswers } from '../actions/quiz'
 import MintNFTButton from './mintNFTButton'
@@ -123,7 +123,7 @@ export default function QuizModal({ location }: { location: LocationWithThumbnai
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    transition={{ duration: 0.5, ease: 'easeInOut' }}
                   >
                     {!showResults ? (
                       <div className="mb-4 sm:mb-8 p-4 sm:p-6 bg-gray-800 rounded-xl shadow-inner">
@@ -190,8 +190,8 @@ export default function QuizModal({ location }: { location: LocationWithThumbnai
                                   <p className="font-semibold mb-1">
                                     <span className={`${userAnswers[quiz.id] === answers[quiz.id].correct_option_id ? 'text-green-400' : 'text-red-400'}`}>
                                       {userAnswers[quiz.id] === answers[quiz.id].correct_option_id
-                                        ? "正解です！"
-                                        : "不正解です。"}
+                                        ? '正解です！'
+                                        : '不正解です。'}
                                     </span>
                                   </p>
                                   <p>{answers[quiz.id].explanation_text}</p>
