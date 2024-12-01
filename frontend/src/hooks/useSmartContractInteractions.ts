@@ -98,7 +98,7 @@ export function useSmartContractInteractions() {
 
       // ユーザーの現在のNFT残高を取得
       let balance = await contract.balanceOf(myAddress)
-      let initialBalance = Number(balance)
+      const initialBalance = Number(balance)
 
       console.log(`Initial NFT balance: ${initialBalance}`)
 
@@ -120,7 +120,7 @@ export function useSmartContractInteractions() {
 
       // 最終的なNFT残高を取得
       balance = await contract.balanceOf(myAddress)
-      let finalBalance = Number(balance)
+      const finalBalance = Number(balance)
 
       console.log(`Final NFT balance: ${finalBalance}`)
 
