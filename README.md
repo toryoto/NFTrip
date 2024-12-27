@@ -1,11 +1,5 @@
 # 概要
-NFTとゲーミフィケーションを使用した持続可能な観光地の促進
-  ### 提供する機能
-  - 観光地ごとのNFT発行
-  - ガス代のためのトークンを取得するERC7221のメタトランザクションを実装したSepoliaFaucet
-  - ユーザ間NFT所有数ランキング・NFT所有数によるレベル
-  - 観光地ごとのクイズ機能
-  - 観光地ごとのAIチャット機能
+
 
 # Docs
 https://ryotos-organization.gitbook.io/nftrip
