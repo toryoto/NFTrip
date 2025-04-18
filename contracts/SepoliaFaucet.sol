@@ -38,7 +38,7 @@ contract SepoliaFaucet is ERC2771Context {
 	function requestTokens() external {
 		// メタトランザクションをサポートするために、_msgSender()を使用して元の送信者を取得
     address sender = _msgSender();
-    require(block.timestamp >= lastWithdrawTime[sender] + lockTime, "Must wait 2 days between withdrawals");
+    require(block.timestamp >= lastWithdrawTime[sender] + lockTime, "Must wait 1 days between withdrawals");
     require(address(this).balance >= withdrawalAmount, "Faucet is empty");
 		lastWithdrawTime[sender] = block.timestamp;
       

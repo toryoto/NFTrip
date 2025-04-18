@@ -22,7 +22,6 @@ export async function deleteNFTdata(cid: string) {
     const response = await axios.delete(`/api/v1/pinata/nft-metadata/${cid}`, {
       data: {cid}
     })
-    console.groupCollapsed(response)
     return response.data
   } catch (error) {
     console.error('Error in deleteNFTdata:', error)
